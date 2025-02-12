@@ -1,7 +1,7 @@
-package com.example.nln_project.Controller;
+package com.example.nln_project.controller;
 
-import com.example.nln_project.Model.Account;
-import com.example.nln_project.Repository.AccountRepo;
+import com.example.nln_project.model.Account;
+import com.example.nln_project.repository.AccountRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
