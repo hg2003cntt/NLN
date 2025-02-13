@@ -3,25 +3,35 @@ package com.example.nln_project.controller;
 import com.example.nln_project.model.Account;
 import com.example.nln_project.model.AccountRole;
 import com.example.nln_project.model.Role;
+import com.example.nln_project.payload.request.LoginRequest;
+import com.example.nln_project.payload.response.JwtResponse;
 import com.example.nln_project.payload.response.MessageResponse;
 import com.example.nln_project.repository.AccountRepo;
 import com.example.nln_project.payload.request.SignupRequest;
 import com.example.nln_project.repository.RoleRepo;
+import com.example.nln_project.security.jwt.JwtUtils;
+import com.example.nln_project.security.services.AccountDetailsImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.net.Authenticator;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-@RestController
-public class AccountController {
+@CrossOrigin(origins = "*", maxAge = 3600) // Allow cross-origin requests for all origins
+@RestController // Indicate that this class is a REST controller
+@RequestMapping("/api/auth")
+public class AuthController {
     @Autowired
     AccountRepo accountRepo;
 
@@ -31,6 +41,12 @@ public class AccountController {
     @Autowired
     PasswordEncoder encoder;
 
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Autowired
+    JwtUtils jwtUtils;
+
     @GetMapping("/accounts")
     public ResponseEntity<?> getAllAccounts() {
         List<Account> accounts = accountRepo.findAll();
@@ -39,7 +55,39 @@ public class AccountController {
         }else
             return new ResponseEntity<>(accounts, HttpStatus.OK);
     }
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody @Valid LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
+                        loginRequest.getPassword()));
 
+        System.out.println(loginRequest.getUsername()+";"+loginRequest.getPassword());
+        //Luu authentication giup he thong biet nguoi dung da dang nhap
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        //Tao jwt token
+        String jwt = jwtUtils.generateJwtToken(authentication);
+        System.out.println("token"+jwt);
+        //Lấy thông tin người dùng
+        AccountDetailsImpl accountDetails = (AccountDetailsImpl) authentication.getPrincipal();
+
+        //Lấy danh sách quyền
+        List<String> roles = new ArrayList<>();
+        for (GrantedAuthority authority : accountDetails.getAuthorities()) {
+            roles.add(authority.getAuthority());
+        }
+
+        return ResponseEntity.ok(new JwtResponse(jwt,
+                accountDetails.getId(),
+                accountDetails.getUsername(),
+                accountDetails.getName(),
+                accountDetails.getEmail(),
+                accountDetails.getPhone(),
+                roles)
+        );
+
+
+    }
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signupRequest) {
         //Check if the username is already taken
@@ -55,7 +103,6 @@ public class AccountController {
                     .body(new MessageResponse("Error: Email is already in use!"));
         }
 
-        System.out.println("nhập vào:"+signupRequest.getUsername());
         //Create a new user's account
         Account account = new Account(signupRequest.getUsername(),encoder.encode(signupRequest.getPassword()), signupRequest.getName(),
                 signupRequest.getDateOfBirth(),signupRequest.getEmail(),signupRequest.getPhone()

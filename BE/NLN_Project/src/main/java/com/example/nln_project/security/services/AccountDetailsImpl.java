@@ -7,6 +7,7 @@ import java.util.Objects; // Import Objects for object comparison
 import java.util.stream.Collectors; // Import Collectors for stream operations
 
 import com.example.nln_project.model.Account;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority; // Import GrantedAuthority for user authorities
 import org.springframework.security.core.authority.SimpleGrantedAuthority; // Import SimpleGrantedAuthority for role representation
 import org.springframework.security.core.userdetails.UserDetails; // Import UserDetails for Spring Security
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore; // Import JsonIgnore to prev
 /**
  * Implementation of Spring Security's UserDetails interface for representing account details.
  */
+@Data
 public class AccountDetailsImpl implements UserDetails {
 	private static final long serialVersionUID = 1L; // Serializable version identifier
 
@@ -83,25 +85,25 @@ public class AccountDetailsImpl implements UserDetails {
 		return authorities; // Return account's authorities
 	}
 
-	public String getId() {
-		return id; // Return account ID
-	}
-
-	public String getName() {
-		return name; // Return account name
-	}
-
-	public LocalDate getDateOfBirth() {
-		return dateOfBirth; // Return account date of birth
-	}
-
-	public String getEmail() {
-		return email; // Return email
-	}
-
-	public String getPhone() {
-		return phone; // Return phone number
-	}
+//	public String getId() {
+//		return id; // Return account ID
+//	}
+//
+//	public String getName() {
+//		return name; // Return account name
+//	}
+//
+//	public LocalDate getDateOfBirth() {
+//		return dateOfBirth; // Return account date of birth
+//	}
+//
+//	public String getEmail() {
+//		return email; // Return email
+//	}
+//
+//	public String getPhone() {
+//		return phone; // Return phone number
+//	}
 
 	@Override
 	public String getPassword() {

@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional; // Import for t
 public class AccountDetailsServiceImpl implements UserDetailsService {
 
 	@Autowired // Automatically injects UserRepository bean
-	AccountRepo userRepository;
+	AccountRepo accountRepo;
 
 	/**
 	 * Loads user details by username.
@@ -29,10 +29,10 @@ public class AccountDetailsServiceImpl implements UserDetailsService {
 	@Transactional // Ensures that the method is transactional
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		// Attempt to find the user by username
-		Account user = userRepository.findByUsername(username)
+		Account account = accountRepo.findByUsername(username)
 				.orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
 
-		// Return UserDetails implementation for the found user
-		return AccountDetailsImpl.build(user);
+		// Return AccountDetails implementation for the found user
+		return AccountDetailsImpl.build(account);
 	}
 }

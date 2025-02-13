@@ -21,7 +21,7 @@ public class JwtUtils {
 
   private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class); // Logger for logging errors
 
-  @Value("${jwtSecret}") // Inject the JWT secret from application properties
+  @Value("${jwt.secret}") // Inject the JWT secret from application properties
   private String jwtSecret;
 
   @Value("${jwtExpirationMs}") // Inject the JWT expiration time from application properties
@@ -36,7 +36,6 @@ public class JwtUtils {
   public String generateJwtToken(Authentication authentication) {
     // Get the user details from the authentication object
     AccountDetailsImpl userPrincipal = (AccountDetailsImpl) authentication.getPrincipal();
-
     // Build and return the JWT token
     return Jwts.builder()
             .setSubject((userPrincipal.getUsername())) // Set the subject (username)
