@@ -21,18 +21,25 @@ public class ConsultationController {
 
     // API để đăng ký tư vấn
     @PostMapping("/register")
-    public ResponseEntity<?> registerConsultation(@Valid @RequestBody ConsultationRequest consultationRequest) {
-        // Lấy thông tin người dùng đang đăng nhập
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
+    public ResponseEntity<?> registerConsultation(@RequestBody ConsultationRequest consultationRequest) {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
 
-        // Gán userId của tài khoản hiện tại vào request
-        consultationRequest.setUserId(userDetails.getId());
+            if (consultationRequest.getAvailableTimeSlots() == null || consultationRequest.getSpecialist() == null) {
+                return ResponseEntity.badRequest().body("Vui lòng chọn khung giờ và chuyên gia tư vấn!");
+            }
 
-        // Lưu vào MongoDB
-        consultationRequestRepo.save(consultationRequest);
+            consultationRequest.setFullName(userDetails.getName());
+            consultationRequest.setDateOfBirth(userDetails.getDateOfBirth());
+            consultationRequest.setPhoneNumber(userDetails.getPhone());
+            consultationRequest.setUserId(userDetails.getId());
 
-        return ResponseEntity.ok("Đăng ký tư vấn thành công!");
+            consultationRequestRepo.save(consultationRequest);
+            return ResponseEntity.ok("Đăng ký tư vấn thành công!");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Lỗi khi đăng ký tư vấn: " + e.getMessage());
+        }
     }
 
     // API để lấy danh sách yêu cầu tư vấn của user hiện tại
