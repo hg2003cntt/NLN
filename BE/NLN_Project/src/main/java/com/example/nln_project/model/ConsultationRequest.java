@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
 
-@Document(collection = "consultation_requests") // Lưu vào collection này trong MongoDB
+@Document(collection = "consultation_requests") // Lưu vào MongoDB collection này
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,6 +34,12 @@ public class ConsultationRequest {
     private String service; // Dịch vụ tư vấn đã chọn (Dropdown)
 
     private String description; // Mô tả sơ bộ vấn đề gặp phải
+
+    @NotBlank
+    private String availableTimeSlots; // Khung giờ tư vấn mà người dùng chọn
+
+    @NotBlank
+    private String specialist; // Chuyên gia tư vấn đã chọn
 
     private String userId; // Liên kết với tài khoản đã đăng nhập
 }
