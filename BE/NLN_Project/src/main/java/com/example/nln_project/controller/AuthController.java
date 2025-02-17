@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -55,36 +56,46 @@ public class AuthController {
         }else
             return new ResponseEntity<>(accounts, HttpStatus.OK);
     }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
-                        loginRequest.getPassword()));
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
+                            loginRequest.getPassword()));
 
-        System.out.println(loginRequest.getUsername()+";"+loginRequest.getPassword());
-        //Luu authentication giup he thong biet nguoi dung da dang nhap
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            System.out.println(loginRequest.getUsername() + ";" + loginRequest.getPassword());
 
-        //Tao jwt token
-        String jwt = jwtUtils.generateJwtToken(authentication);
-        System.out.println("token"+jwt);
-        //Lấy thông tin người dùng
-        AccountDetailsImpl accountDetails = (AccountDetailsImpl) authentication.getPrincipal();
+            // Lưu authentication vào SecurityContextHolder
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        //Lấy danh sách quyền
-        List<String> roles = new ArrayList<>();
-        for (GrantedAuthority authority : accountDetails.getAuthorities()) {
-            roles.add(authority.getAuthority());
+            // Tạo JWT token
+            String jwt = jwtUtils.generateJwtToken(authentication);
+            System.out.println("token: " + jwt);
+
+            // Lấy thông tin người dùng
+            AccountDetailsImpl accountDetails = (AccountDetailsImpl) authentication.getPrincipal();
+
+            // Lấy danh sách quyền
+            List<String> roles = new ArrayList<>();
+            for (GrantedAuthority authority : accountDetails.getAuthorities()) {
+                roles.add(authority.getAuthority());
+            }
+
+            return ResponseEntity.ok(new JwtResponse(jwt,
+                    accountDetails.getId(),
+                    accountDetails.getUsername(),
+                    accountDetails.getName(),
+                    accountDetails.getEmail(),
+                    accountDetails.getPhone(),
+                    roles)
+            );
+
+        } catch (BadCredentialsException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sai username hoặc mật khẩu!");
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi hệ thống!");
         }
-
-        return ResponseEntity.ok(new JwtResponse(jwt,
-                accountDetails.getId(),
-                accountDetails.getUsername(),
-                accountDetails.getName(),
-                accountDetails.getEmail(),
-                accountDetails.getPhone(),
-                roles)
-        );
 
 
     }

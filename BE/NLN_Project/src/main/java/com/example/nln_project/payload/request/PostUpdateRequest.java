@@ -1,4 +1,4 @@
-package com.example.nln_project.model;
+package com.example.nln_project.payload.request;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,29 +14,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Document(collection = "posts")
-@Data
-public class Post {
+public class PostUpdateRequest {
     @Id
     private String id;
-
-    @NotBlank
     @Size(max = 255)
     private String title;
 
-    @NotBlank
     @Size(max = 5000)
     private String content;
-
-    @NotBlank
     private String author;
     private String image;
-    private Date createdAt;
-    private int likeCount;
-    private int cmtCount;
     private String userID;
-
-    private String topicId;
-
 
 }
