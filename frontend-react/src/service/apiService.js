@@ -1,0 +1,132 @@
+import axios from "axios"
+
+export default class ApiService {
+
+    static BASE_URL = "http://localhost:30003000"
+
+    static getHeader() {
+        const token = localStorage.getItem("token");
+        return {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
+        };
+    }
+
+    /** AUTH */
+    static async registerUser(registration) {
+        const response = await axios.post(`${this.BASE_URL}/auth/register`, registration)
+        return response.data
+    }
+
+    static async loginUser(loginDetails) {
+        const response = await axios.post(`${this.BASE_URL}/auth/login`, loginDetails)
+        return response.data
+    }
+
+    /** USERS */
+    static async getAllUsers() {
+        const response = await axios.get(`${this.BASE_URL}/users/all`, {
+            headers: this.getHeader()
+        })
+        return response.data
+    }
+
+    static async getUserProfile() {
+        const response = await axios.get(`${this.BASE_URL}/users/get-logged-in-profile-info`, {
+            headers: this.getHeader()
+        })
+        return response.data
+    }
+
+    static async getUser(userId) {
+        const response = await axios.get(`${this.BASE_URL}/users/get-by-id/${userId}`, {
+            headers: this.getHeader()
+        })
+        return response.data
+    }
+
+    static async getUserBookings(userId) {
+        const response = await axios.get(`${this.BASE_URL}/users/get-user-bookings/${userId}`, {
+            headers: this.getHeader()
+        })
+        return response.data
+    }
+
+    static async deleteUser(userId) {
+        const response = await axios.delete(`${this.BASE_URL}/users/delete/${userId}`, {
+            headers: this.getHeader()
+        })
+        return response.data
+    }
+
+    /** BOOKING */
+    static async bookRoom(roomId, userId, booking) {
+        const response = await axios.post(`${this.BASE_URL}/bookings/book-room/${roomId}/${userId}`, booking, {
+            headers: this.getHeader()
+        })
+        return response.data
+    }
+
+    static async getAllBookings() {
+        const result = await axios.get(`${this.BASE_URL}/bookings/all`, {
+            headers: this.getHeader()
+        })
+        return result.data
+    }
+
+    static async getBookingByConfirmationCode(bookingCode) {
+        const result = await axios.get(`${this.BASE_URL}/bookings/get-by-confirmation-code/${bookingCode}`)
+        return result.data
+    }
+
+    static async cancelBooking(bookingId) {
+        const result = await axios.delete(`${this.BASE_URL}/bookings/cancel/${bookingId}`, {
+            headers: this.getHeader()
+        })
+        return result.data
+    }
+
+    /** ARTICLES */
+    static async postArticle(articleData) {
+        const response = await axios.post(`${this.BASE_URL}/articles`, articleData, {
+            headers: this.getHeader()
+        })
+        return response.data
+    }
+
+    static async addCommentToArticle(articleId, commentData) {
+        const response = await axios.post(`${this.BASE_URL}/articles/${articleId}/comments`, commentData, {
+            headers: this.getHeader()
+        })
+        return response.data
+    }
+
+    /** CONSULTATION */
+    static async submitConsultationRequest(consultationData) {
+        const response = await axios.post(`${this.BASE_URL}/consultations`, consultationData, {
+            headers: this.getHeader()
+        })
+        return response.data
+    }
+
+    /** AUTHENTICATION CHECKER */
+    static logout() {
+        localStorage.removeItem('token')
+        localStorage.removeItem('role')
+    }
+
+    static isAuthenticated() {
+        const token = localStorage.getItem('token')
+        return !!token
+    }
+
+    static isAdmin() {
+        const role = localStorage.getItem('role')
+        return role === 'ADMIN'
+    }
+
+    static isUser() {
+        const role = localStorage.getItem('role')
+        return role === 'USER'
+    }
+}
