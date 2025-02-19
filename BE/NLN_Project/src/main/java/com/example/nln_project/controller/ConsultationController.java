@@ -26,8 +26,8 @@ public class ConsultationController {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
 
-            if (consultationRequest.getAvailableTimeSlots() == null || consultationRequest.getSpecialist() == null) {
-                return ResponseEntity.badRequest().body("Vui lòng chọn khung giờ và chuyên gia tư vấn!");
+            if (consultationRequest.getAvailableTimeSlots() == null ) {
+                return ResponseEntity.badRequest().body("Vui lòng chọn khung giờ tư vấn!");
             }
 
             consultationRequest.setFullName(userDetails.getName());

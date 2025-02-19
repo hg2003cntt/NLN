@@ -38,8 +38,8 @@ public class ConsultationRequest {
     @NotBlank
     private String availableTimeSlots; // Khung giờ tư vấn mà người dùng chọn
 
-    @NotBlank
-    private String specialist; // Chuyên gia tư vấn đã chọn
+    //@NotBlank
+    //private String specialist; // Chuyên gia tư vấn đã chọn
 
     private String userId; // Liên kết với tài khoản đã đăng nhập
 }
