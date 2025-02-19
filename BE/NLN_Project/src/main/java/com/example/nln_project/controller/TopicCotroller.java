@@ -1,6 +1,7 @@
 package com.example.nln_project.controller;
 
 import com.example.nln_project.model.Topic;
+import com.example.nln_project.payload.response.MessageResponse;
 import com.example.nln_project.repository.PostRepo;
 import com.example.nln_project.repository.TopicRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,9 @@ public class TopicCotroller {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/createTopic")
     public ResponseEntity<?>createTopic(@RequestBody Topic topic) {
+        if (!topicRepo.existsByName(topic.getName())) {
         return new ResponseEntity<>(topicRepo.save(topic), HttpStatus.CREATED);
+        }else return ResponseEntity.badRequest().body(new MessageResponse("Topic already exists"));
     }
 
     @PreAuthorize("hasRole('ADMIN')")

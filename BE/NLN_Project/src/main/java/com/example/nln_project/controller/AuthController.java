@@ -92,7 +92,7 @@ public class AuthController {
             );
 
         } catch (BadCredentialsException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sai username hoặc mật khẩu!");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username or password is incorrect!");
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi hệ thống!");
         }

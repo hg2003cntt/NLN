@@ -7,6 +7,7 @@ import RegisterPage from './component/auth/RegisterPage';
 import HomePage from './component/home/HomePage';
 import ProfilePage from './component/profile/ProfilePage';
 import ArticlePage from './component/articles/ArticlePage';
+import ArticleForm from './component/articles/ArticleForm';
 import ConsultationRequestPage from './component/consultation/ConsultationRequestPage';
 import AdminPage from './component/admin/AdminPage';
 import { ProtectedRoute, AdminRoute } from './service/guard';
@@ -25,6 +26,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/articles" element={<ArticlePage />} />
+            <Route path="/add-articles" element={<ArticleForm />} />
             <Route path="/submit-consultation" element={<ConsultationRequestPage />} />
 
             {/* Protected Routes */}
