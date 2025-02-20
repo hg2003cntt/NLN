@@ -3,7 +3,7 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 import ApiService from "../../service/apiService";
 
 function LoginPage() {
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -22,7 +22,7 @@ function LoginPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!email || !password) {
+        if (!username || !password) {
             setError("Vui lòng điền đầy đủ thông tin.");
             return;
         }
@@ -30,7 +30,7 @@ function LoginPage() {
         setIsLoading(true);
 
         try {
-            const response = await ApiService.loginUser({ email, password });
+            const response = await ApiService.loginUser({ username, password });
 
             if (response.statusCode === 200) {
                 localStorage.setItem("token", response.token);
@@ -51,11 +51,11 @@ function LoginPage() {
             
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                    <label>Email: </label>
+                    <label>Username: </label>
                     <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        type="text"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
                         required
                     />
                 </div>
@@ -67,6 +67,7 @@ function LoginPage() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
+
                     />
                 </div>
 
