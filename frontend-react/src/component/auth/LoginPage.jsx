@@ -12,6 +12,7 @@ function LoginPage() {
 
     const from = location.state?.from?.pathname || "/home";
 
+
     useEffect(() => {
         if (error) {
             const timer = setTimeout(() => setError(''), 5000);
@@ -31,8 +32,8 @@ function LoginPage() {
 
         try {
             const response = await ApiService.loginUser({ username, password });
-
-            if (response.statusCode === 200) {
+            
+            if (response.token) {
                 localStorage.setItem("token", response.token);
                 localStorage.setItem("role", response.role);
                 navigate(from, { replace: true });

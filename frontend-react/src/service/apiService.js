@@ -74,13 +74,23 @@ export default class ApiService {
     //       //  headers: this.getHeader()
     //    //
     // }
-
     static async getTopics() {
         const response = await axios.get(`${this.BASE_URL}/api/topics/getAlltopics`, {
             headers: this.getHeader()
         });
         return response.data;
     }
+    
+    static async postArticle(articleData) {
+        const response = await axios.post(`${this.BASE_URL}/api/posts/createPost`, articleData, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        return response.data;
+    }
+    
+
 
     static async postArticle(articleData) {
         const response = await axios.post(`${this.BASE_URL}/api/posts/createPost`, articleData, {
