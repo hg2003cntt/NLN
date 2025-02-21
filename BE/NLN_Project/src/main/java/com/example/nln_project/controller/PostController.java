@@ -11,9 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/posts")
 public class PostController {
@@ -27,9 +28,9 @@ public class PostController {
 
     @PostMapping("/createPost")
     public ResponseEntity createPost(@Valid @RequestBody Post post) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
-        post.setUserID(userDetails.getId());
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
+//        post.setUserID(userDetails.getId());
         try{
             Post createdPost = postService.savePost(post);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
@@ -37,6 +38,8 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+
 
     @DeleteMapping("/deletePost/{id}")
     public void deletePost(@PathVariable String id) {

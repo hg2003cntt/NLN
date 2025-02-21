@@ -11,6 +11,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/topics")
 public class TopicCotroller {
@@ -20,10 +24,17 @@ public class TopicCotroller {
     @Autowired
     PostRepo postRepo;
 
-    @GetMapping("/topics")
-    public List<Topic> getAllTopics() {
-        return topicRepo.findAll();  // Trả về danh sách chủ đề
-    }
+//    @GetMapping("/topics")
+//    public List<Topic> getAllTopics() {
+//        return topicRepo.findAll();  // Trả về danh sách chủ đề
+//    }
+    @GetMapping("/getAlltopics")
+    public List<Map<String, String>> getAllTopics() {
+        return topicRepo.findAll().stream()
+                .map(topic -> Map.of("topicID", topic.getId(), "name", topic.getName()))
+                .collect(Collectors.toList());
+}
+
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/createTopic")

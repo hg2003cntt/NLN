@@ -101,8 +101,8 @@ public class WebSecurityConfig {
                     .requestMatchers("/api/auth/**").permitAll()
                     // Allow public access to auth endpoints
                     .requestMatchers("/api/test/s**").permitAll()
-                    .requestMatchers("/api/posts/**").authenticated()
-                    .requestMatchers("/api/topics/**").hasRole("ADMIN")
+                    .requestMatchers("/api/posts/**").permitAll()
+                    .requestMatchers("/api/topics/**").permitAll()
                     // Allow public access to test endpoints
                     .anyRequest().authenticated());
     // Require authentication for any other request
