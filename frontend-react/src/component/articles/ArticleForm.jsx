@@ -1,14 +1,15 @@
 import React, { useState, forwardRef } from 'react';
 import ReactQuill from 'react-quill';
+import apiService from "../../service/apiService";
 import 'react-quill/dist/quill.snow.css'; // Import CSS cho Quill
 
 const ArticleForm = () => {
   const [formData, setFormData] = useState({
     title: '',
     image: null,
-    topic: '',
+    topicId: '',
     content: '',
-    penName: '',
+    author: '',
   });
   const [preview, setPreview] = useState(null);
   const [error, setError] = useState('');
@@ -45,9 +46,9 @@ const ArticleForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { title, image, topic, content, penName } = formData;
+    const { title, image, topicId, content, author } = formData;
 
-    if (!title || !image || !topic || !content || !penName) {
+    if (!title || !image || !topicId || !content || !author) {
       setError('Please fill in all fields');
       setTimeout(() => setError(''), 5000);
       return;
@@ -58,12 +59,12 @@ const ArticleForm = () => {
       const formDataToSend = new FormData();
       formDataToSend.append('title', title);
       formDataToSend.append('image', image);
-      formDataToSend.append('topic', topic);
+      formDataToSend.append('topic', topicId);
       formDataToSend.append('content', content);
-      formDataToSend.append('penName', penName);
+      formDataToSend.append('penName', author);
 
       // Giả lập gửi dữ liệu (API Service)
-      // const result = await ApiService.submitBlog(formDataToSend);
+       const result = await apiService.postArticle(formDataToSend);
       setSuccess('Blog added successfully!');
       setTimeout(() => {
         setSuccess('');

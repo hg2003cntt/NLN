@@ -13,7 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/posts")
 public class PostController {
@@ -27,9 +27,9 @@ public class PostController {
 
     @PostMapping("/createPost")
     public ResponseEntity createPost(@Valid @RequestBody Post post) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
-        post.setUserID(userDetails.getId());
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
+//        post.setUserID(userDetails.getId());
         try{
             Post createdPost = postService.savePost(post);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);

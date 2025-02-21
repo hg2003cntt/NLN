@@ -2,7 +2,8 @@ import axios from "axios"
 
 export default class ApiService {
 
-    static BASE_URL = "http://localhost:30003000"
+   // static BASE_URL = "http://localhost:30003000"
+    static BASE_URL = "http://localhost:8080"
 
     static getHeader() {
         const token = localStorage.getItem("token");
@@ -87,12 +88,21 @@ export default class ApiService {
     }
 
     /** ARTICLES */
+    // static async postArticle(articleData) {
+    //     const response = await axios.post(`${this.BASE_URL}/createPost`, articleData);//, {
+    //       //  headers: this.getHeader()
+    //    //
+    // }
     static async postArticle(articleData) {
-        const response = await axios.post(`${this.BASE_URL}/articles`, articleData, {
-            headers: this.getHeader()
-        })
-        return response.data
+        const response = await axios.post(`${this.BASE_URL}/api/posts/createPost`, articleData, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        return response.data;
     }
+    
+
 
     static async addCommentToArticle(articleId, commentData) {
         const response = await axios.post(`${this.BASE_URL}/articles/${articleId}/comments`, commentData, {
