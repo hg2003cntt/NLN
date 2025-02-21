@@ -24,7 +24,7 @@ function Navbar() {
             </div>
             <ul className="navbar-ul">
                  <li><NavLink to="/home" activeclassname="active">Trang chủ</NavLink></li>
-                 <li><NavLink to="/rooms" activeclassname="active">Bài viết</NavLink></li>
+                 <li><NavLink to="/add-articles" activeclassname="active">Bài viết</NavLink></li>
                  <li><NavLink to="/contact" activeclassname="active">Liên hệ</NavLink></li>
                 <li>
                     <button className="consultation-btn" onClick={() => setShowModal(true)}>

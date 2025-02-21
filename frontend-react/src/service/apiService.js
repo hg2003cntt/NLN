@@ -91,18 +91,6 @@ export default class ApiService {
     }
     
 
-
-    static async postArticle(articleData) {
-        const response = await axios.post(`${this.BASE_URL}/api/posts/createPost`, articleData, {
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-        return response.data;
-    }
-
-
-
     static async addCommentToArticle(articleId, commentData) {
         const response = await axios.post(`${this.BASE_URL}/articles/${articleId}/comments`, commentData, {
             headers: this.getHeader(),
@@ -112,7 +100,7 @@ export default class ApiService {
 
     /** CONSULTATION */
     static async submitConsultationRequest(consultationData) {
-        const response = await axios.post(`${this.BASE_URL}/consultations`, consultationData, {
+        const response = await axios.post(`${this.BASE_URL}/consultations/register`, consultationData, {
             headers: this.getHeader(),
         });
         return response.data;
