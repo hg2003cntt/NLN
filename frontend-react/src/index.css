@@ -227,3 +227,118 @@ input {
 .form-group select {
   margin-left: 10px;
 }
+
+/* Cải thiện modal */
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  width: 380px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  position: relative;
+}
+
+/* Nút đóng */
+.close-btn {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.3s;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 12px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.close-btn:hover {
+  background-color: #cc0000;
+}
+
+/* Các input và textarea */
+.modal-content input,
+.modal-content select,
+.modal-content textarea {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.modal-content input:focus,
+.modal-content select:focus,
+.modal-content textarea:focus {
+  border: 1px solid #1a747a;
+  box-shadow: 0 0 4px rgba(26, 116, 122, 0.5);
+}
+
+/* Dropdown */
+.modal-content select {
+  appearance: none;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+/* Placeholder cho textarea */
+.modal-content textarea {
+  resize: none;
+  min-height: 80px;
+}
+
+/* Nút gửi */
+button {
+  padding: 10px;
+  width: 100%;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: bold;
+  border: none;
+  background-color: #28a745;
+  color: white;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #218838;
+}
+
+/* Căn chỉnh dropdown */
+.select-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.select-group select {
+  width: 50%;
+}
+
+/* Responsive */
+@media (max-width: 450px) {
+  .modal-content {
+    width: 90%;
+    padding: 15px;
+  }
+
+  .select-group {
+    flex-direction: column;
+  }
+
+  .select-group select {
+    width: 100%;
+  }
+}
+
