@@ -1,8 +1,8 @@
 import axios from "axios"
 
 export default class ApiService {
-
    // static BASE_URL = "http://localhost:30003000"
+
     static BASE_URL = "http://localhost:8080"
 
     static getHeader() {
@@ -15,12 +15,12 @@ export default class ApiService {
 
     /** AUTH */
     static async registerUser(registration) {
-        const response = await axios.post(`${this.BASE_URL}/auth/register`, registration)
+        const response = await axios.post(`${this.BASE_URL}/api/auth/register`, registration)
         return response.data
     }
 
     static async loginUser(loginDetails) {
-        const response = await axios.post(`${this.BASE_URL}/auth/login`, loginDetails)
+        const response = await axios.post(`${this.BASE_URL}/api/auth/login`, loginDetails)
         return response.data
     }
 
@@ -60,32 +60,7 @@ export default class ApiService {
         return response.data
     }
 
-    /** BOOKING */
-    static async bookRoom(roomId, userId, booking) {
-        const response = await axios.post(`${this.BASE_URL}/bookings/book-room/${roomId}/${userId}`, booking, {
-            headers: this.getHeader()
-        })
-        return response.data
-    }
 
-    static async getAllBookings() {
-        const result = await axios.get(`${this.BASE_URL}/bookings/all`, {
-            headers: this.getHeader()
-        })
-        return result.data
-    }
-
-    static async getBookingByConfirmationCode(bookingCode) {
-        const result = await axios.get(`${this.BASE_URL}/bookings/get-by-confirmation-code/${bookingCode}`)
-        return result.data
-    }
-
-    static async cancelBooking(bookingId) {
-        const result = await axios.delete(`${this.BASE_URL}/bookings/cancel/${bookingId}`, {
-            headers: this.getHeader()
-        })
-        return result.data
-    }
 
     /** ARTICLES */
     // static async postArticle(articleData) {
@@ -93,6 +68,14 @@ export default class ApiService {
     //       //  headers: this.getHeader()
     //    //
     // }
+    
+    static async getTopics() {
+        const response = await axios.get(`${this.BASE_URL}/api/topics/getAlltopics`, {
+            headers: this.getHeader()
+        });
+        return response.data;
+    }
+    
     static async postArticle(articleData) {
         const response = await axios.post(`${this.BASE_URL}/api/posts/createPost`, articleData, {
             headers: {

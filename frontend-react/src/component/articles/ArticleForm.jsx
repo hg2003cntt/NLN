@@ -1,21 +1,32 @@
-import React, { useState, forwardRef } from 'react';
-import ReactQuill from 'react-quill';
+import React, { useState, useEffect } from "react";
+import ReactQuill from "react-quill";
 import apiService from "../../service/apiService";
-import 'react-quill/dist/quill.snow.css'; // Import CSS cho Quill
+import "react-quill/dist/quill.snow.css"; // Import CSS cho Quill
 
 const ArticleForm = () => {
   const [formData, setFormData] = useState({
-    title: '',
-    image: null,
-    topicId: '',
-    content: '',
-    author: '',
+    title: "",
+    image: "", // Luôn gửi chuỗi rỗng
+    topicId: "",
+    content: "",
+    author: "",
   });
+  const [topics, setTopics] = useState([]);
   const [preview, setPreview] = useState(null);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const topics = ['Technology', 'Health', 'Education', 'Entertainment', 'Lifestyle'];
+  useEffect(() => {
+    const fetchTopics = async () => {
+      try {
+        const data = await apiService.getTopics();
+        setTopics(data);
+      } catch (error) {
+        console.error("Lỗi khi lấy topics:", error);
+      }
+    };
+    fetchTopics();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,10 +39,6 @@ const ArticleForm = () => {
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
-      setFormData((prevState) => ({
-        ...prevState,
-        image: selectedFile,
-      }));
       setPreview(URL.createObjectURL(selectedFile));
     }
   };
@@ -46,33 +53,23 @@ const ArticleForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { title, image, topicId, content, author } = formData;
+    const { title, topicId, content, author } = formData;
 
-    if (!title || !image || !topicId || !content || !author) {
-      setError('Please fill in all fields');
-      setTimeout(() => setError(''), 5000);
+    if (!title || !topicId || !content || !author) {
+      setError("Please fill in all fields");
+      setTimeout(() => setError(""), 5000);
       return;
     }
 
     try {
-      // Giả sử bạn sẽ gửi dữ liệu lên API
-      const formDataToSend = new FormData();
-      formDataToSend.append('title', title);
-      formDataToSend.append('image', image);
-      formDataToSend.append('topic', topicId);
-      formDataToSend.append('content', content);
-      formDataToSend.append('penName', author);
+      const newPost = { ...formData, image: "" }; // Luôn gửi chuỗi rỗng cho image
+      await apiService.postArticle(newPost);
 
-      // Giả lập gửi dữ liệu (API Service)
-       const result = await apiService.postArticle(formDataToSend);
-      setSuccess('Blog added successfully!');
-      setTimeout(() => {
-        setSuccess('');
-        // Navigate to blogs list
-      }, 3000);
+      setSuccess("Blog added successfully!");
+      setTimeout(() => setSuccess(""), 3000);
     } catch (error) {
-      setError('An error occurred while submitting the blog');
-      setTimeout(() => setError(''), 5000);
+      setError("An error occurred while submitting the blog");
+      setTimeout(() => setError(""), 5000);
     }
   };
 
@@ -93,20 +90,18 @@ const ArticleForm = () => {
           />
         </div>
 
-       
-
         <div className="form-group">
           <label>Topic</label>
           <select
-            name="topic"
-            value={formData.topic}
+            name="topicId"
+            value={formData.topicId}
             onChange={handleChange}
             required
           >
             <option value="">Select a topic</option>
-            {topics.map((topic, index) => (
-              <option key={index} value={topic}>
-                {topic}
+            {topics.map((topic) => (
+              <option key={topic.topicID} value={topic.topicID}>
+                {topic.name}
               </option>
             ))}
           </select>
@@ -121,30 +116,30 @@ const ArticleForm = () => {
             required
           />
         </div>
+
         <div className="form-group">
-          <label>Image</label>
+          <label>Image (Not uploaded, only previewed)</label>
           <input
             type="file"
             name="image"
             onChange={handleFileChange}
             accept="image/*"
-            //required
           />
           {preview && <img src={preview} alt="Image Preview" className="image-preview" />}
         </div>
 
         <div className="form-group">
-          <label>Pen Name</label>
+          <label>Author</label>
           <input
             type="text"
-            name="penName"
-            value={formData.penName}
+            name="author"
+            value={formData.author}
             onChange={handleChange}
             required
           />
         </div>
 
-        <button name="submit-blog" type="submit">Submit Blog</button>
+        <button type="submit">Submit Blog</button>
       </form>
     </div>
   );
