@@ -105,7 +105,7 @@ export default class ApiService {
     /** AUTHENTICATION CHECKER */
     static logout() {
         localStorage.removeItem('token')
-        localStorage.removeItem('role')
+        localStorage.removeItem('roles')
     }
 
     static isAuthenticated() {
@@ -114,12 +114,12 @@ export default class ApiService {
     }
 
     static isAdmin() {
-        const role = localStorage.getItem('role')
+        const role = localStorage.getItem('roles')
         return role === 'ADMIN'
     }
 
     static isUser() {
-        const role = localStorage.getItem('role')
+        const role = localStorage.getItem('roles')
         return role === 'USER'
     }
 }

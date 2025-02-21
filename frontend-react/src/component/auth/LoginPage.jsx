@@ -35,7 +35,7 @@ function LoginPage() {
             
             if (response.token) {
                 localStorage.setItem("token", response.token);
-                localStorage.setItem("role", response.role);
+                localStorage.setItem("roles", response.roles);
                 navigate(from, { replace: true });
             }
         } catch (err) {
