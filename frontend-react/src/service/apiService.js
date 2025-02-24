@@ -35,11 +35,17 @@ export default class ApiService {
     }
 
     static async getUserProfile() {
-        const response = await axios.get(`${this.BASE_URL}/users/get-logged-in-profile-info`, {
-            headers: this.getHeader(),
-        });
-        return response.data;
-    }
+            try {
+                const response = await axios.get(`${this.BASE_URL}/api/auth/me`, {
+                    headers: this.getHeader(),
+                    withCredentials: true,
+                });
+                return response.data;
+            } catch (error) {
+                console.error("Lỗi lấy thông tin user:", error.response?.data || error.message);
+                throw error;
+            }
+        }
 
     static async getUser(userId) {
         const response = await axios.get(`${this.BASE_URL}/users/get-by-id/${userId}`, {
@@ -62,10 +68,6 @@ export default class ApiService {
         return response.data;
     }
 
-    /** Thêm getUserInfo để tránh lỗi */
-    static async getUserInfo() {
-        return this.getUserProfile();
-    }
 
     /** ARTICLES */
 
@@ -80,7 +82,7 @@ export default class ApiService {
         });
         return response.data;
     }
-    
+
     static async postArticle(articleData) {
         const response = await axios.post(`${this.BASE_URL}/api/posts/createPost`, articleData, {
             headers: {
@@ -89,7 +91,7 @@ export default class ApiService {
         });
         return response.data;
     }
-    
+
 
     static async addCommentToArticle(articleId, commentData) {
         const response = await axios.post(`${this.BASE_URL}/articles/${articleId}/comments`, commentData, {
@@ -98,13 +100,43 @@ export default class ApiService {
         return response.data;
     }
 
-    /** CONSULTATION */
-    static async submitConsultationRequest(consultationData) {
-        const response = await axios.post(`${this.BASE_URL}/consultations/register`, consultationData, {
-            headers: this.getHeader(),
-        });
-        return response.data;
-    }
+     /** CONSULTATION - API ĐĂNG KÝ TƯ VẤN */
+        static async submitConsultationRequest(consultationData) {
+            try {
+                const formattedData = {
+                    ...consultationData,
+                    dateOfBirth: consultationData.dateOfBirth.split("T")[0], // Định dạng `YYYY-MM-DD`
+                };
+
+                const response = await axios.post(
+                    `${this.BASE_URL}/consultations/register`,
+                    formattedData,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem("token")}`, // Gửi token
+                            "Content-Type": "application/json",
+                        },
+                        withCredentials: true,  // Hỗ trợ xác thực
+                    }
+                );
+
+                return response.data;
+            } catch (error) {
+                console.error("Lỗi khi gửi yêu cầu tư vấn:", error.response?.data || error.message);
+                throw error;
+            }
+        }
+
+
+
+        /** CONSULTATION - API LẤY DANH SÁCH TƯ VẤN */
+        static async getUserConsultations() {
+            const response = await axios.get(`${this.BASE_URL}/api/consultations/myrequests`, {
+                headers: this.getHeader(),
+                withCredentials: true,
+            });
+            return response.data;
+        }
 
     /** AUTHENTICATION CHECKER */
     static logout() {

@@ -24,13 +24,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.net.Authenticator;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-@CrossOrigin(origins = "*", maxAge = 3600) // Allow cross-origin requests for all origins
-@RestController // Indicate that this class is a REST controller
+
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true") // Allow cross-origin requests for all origins
+@RestController
 @RequestMapping("/api/auth")
 public class AuthController {
     @Autowired
@@ -52,9 +52,9 @@ public class AuthController {
     public ResponseEntity<?> getAllAccounts() {
         List<Account> accounts = accountRepo.findAll();
         if (accounts.isEmpty()) {
-            return new ResponseEntity<>("No account available",HttpStatus.NOT_FOUND);
-        }else
-            return new ResponseEntity<>(accounts, HttpStatus.OK);
+            return new ResponseEntity<>("No account available", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(accounts, HttpStatus.OK);
     }
 
     @PostMapping("/login")
@@ -96,27 +96,26 @@ public class AuthController {
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi hệ thống!");
         }
-
-
     }
+
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signupRequest) {
-        //Check if the username is already taken
-        if (accountRepo.existsByUsername(signupRequest.getUsername())){
+        // Check if the username is already taken
+        if (accountRepo.existsByUsername(signupRequest.getUsername())) {
             return ResponseEntity.badRequest()
                     .body(new MessageResponse("Error: Username is already taken!"));
         }
 
         // Check if the email is already in use
-        if (accountRepo.existsByEmail(signupRequest.getEmail())){
+        if (accountRepo.existsByEmail(signupRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Email is already in use!"));
         }
 
-        //Create a new user's account
-        Account account = new Account(signupRequest.getUsername(),encoder.encode(signupRequest.getPassword()), signupRequest.getName(),
-                signupRequest.getDateOfBirth(),signupRequest.getEmail(),signupRequest.getPhone()
+        // Create a new user's account
+        Account account = new Account(signupRequest.getUsername(), encoder.encode(signupRequest.getPassword()), signupRequest.getName(),
+                signupRequest.getDateOfBirth(), signupRequest.getEmail(), signupRequest.getPhone()
         );
         System.out.println(account.getUsername());
         Set<Role> roles = new HashSet<>();
@@ -128,8 +127,24 @@ public class AuthController {
         account.setRoles(roles);
         accountRepo.save(account);
         return ResponseEntity.ok(new MessageResponse("Successfully registered!"));
+    }
+    
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUserInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        if (authentication == null || !authentication.isAuthenticated() ||
+                "anonymousUser".equals(authentication.getPrincipal())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
+        }
 
+        AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
+        Account user = accountRepo.findByUsername(userDetails.getUsername()).orElse(null);
 
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        return ResponseEntity.ok(user);
     }
 }

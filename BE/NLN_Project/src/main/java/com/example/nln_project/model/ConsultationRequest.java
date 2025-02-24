@@ -27,19 +27,10 @@ public class ConsultationRequest {
     @NotNull
     private LocalDate dateOfBirth;
 
-    @NotBlank
-    private String city;
+    private String description = ""; // Mô tả vấn đề (không bắt buộc)
 
     @NotBlank
-    private String service; // Dịch vụ tư vấn đã chọn (Dropdown)
-
-    private String description; // Mô tả sơ bộ vấn đề gặp phải
-
-    @NotBlank
-    private String availableTimeSlots; // Khung giờ tư vấn mà người dùng chọn
-
-    //@NotBlank
-    //private String specialist; // Chuyên gia tư vấn đã chọn
+    private String availableTimeSlots; // Bắt buộc phải có khung giờ tư vấn
 
     private String userId; // Liên kết với tài khoản đã đăng nhập
 }
