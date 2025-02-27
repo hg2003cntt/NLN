@@ -2,8 +2,6 @@ import axios from "axios";
 
 export default class ApiService {
 
-   // static BASE_URL = "http://localhost:30003000"
-
     static BASE_URL = "http://localhost:8080"
 
 
@@ -90,8 +88,29 @@ export default class ApiService {
         return response.data;
     }
 
+    static async getPostsByTopic(topicId) {
+        try {
+            const response = await axios.get(`${this.BASE_URL}/api/posts/getPostsByTopic/${topicId}`, {
+                headers: this.getHeader(),
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Lỗi khi lấy bài viết theo topic:", error);
+            throw error;
+        }
+    }
     
-
+    static async getAllPosts() {
+        try {
+            const response = await axios.get(`${this.BASE_URL}/api/posts/getAllPosts`, {
+                headers: this.getHeader(),
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Lỗi khi lấy danh sách bài viết:", error);
+            throw error;
+        }
+    }
 
     static async addCommentToArticle(articleId, commentData) {
         const response = await axios.post(`${this.BASE_URL}/articles/${articleId}/comments`, commentData, {
