@@ -39,6 +39,15 @@ public class PostController {
         }
     }
 
+    @GetMapping("/getPostById/{postID}")
+    public ResponseEntity<Post> getPostById(@PathVariable String postID) {
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(postRepo.findById(postID).get());
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
 
     @DeleteMapping("/deletePost/{id}")
     public void deletePost(@PathVariable String id) {
@@ -68,4 +77,13 @@ public class PostController {
         }
     }
 
+    @GetMapping("/getPostsByTopic/{topicId}")
+    public ResponseEntity<List<Post>> getPostByTopic(@PathVariable String topicId) {
+        try{
+            List<Post> posts = postRepo.findByTopicId(topicId);
+            return ResponseEntity.status(HttpStatus.OK).body(posts);
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 }
