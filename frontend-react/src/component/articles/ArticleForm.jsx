@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ReactQuill from "react-quill";
 import apiService from "../../service/apiService";
-import "react-quill/dist/quill.snow.css"; // Import CSS cho Quill
+import "react-quill/dist/quill.snow.css";
 
 const ArticleForm = () => {
   const [formData, setFormData] = useState({
     title: "",
-    image: "", // Luôn gửi chuỗi rỗng
+    image: "", // Lưu base64 vào đây
     topicId: "",
     content: "",
     author: "",
   });
+
   const [topics, setTopics] = useState([]);
-  const [preview, setPreview] = useState(null);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [preview, setPreview] = useState(null); // Lưu URL để preview
+  const fileInputRef = useRef(null); // Dùng useRef để reset input file
 
   useEffect(() => {
     const fetchTopics = async () => {
@@ -29,75 +29,97 @@ const ArticleForm = () => {
   }, []);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    // Kiểm tra nếu e là một chuỗi thì đây là nội dung từ ReactQuill
+    if (typeof e === "string") {
+      setFormData((prevState) => ({
+        ...prevState,
+        content: e, // Lưu nội dung vào state
+      }));
+    } else {
+      const { name, value } = e.target;
+      setFormData((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
   };
+  
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
-      setPreview(URL.createObjectURL(selectedFile));
+      // Xoá URL cũ nếu có
+      if (preview) URL.revokeObjectURL(preview);
+
+      // Tạo URL preview tạm thời
+      const objectURL = URL.createObjectURL(selectedFile);
+      setPreview(objectURL);
+
+      // Chuyển ảnh thành base64 để lưu vào database
+      const reader = new FileReader();
+      reader.readAsDataURL(selectedFile);
+      reader.onloadend = () => {
+        setFormData((prevState) => ({
+          ...prevState,
+          image: reader.result, // Lưu base64 vào state
+        }));
+      };
     }
   };
 
-  const handleQuillChange = (value) => {
+  const handleRemoveImage = () => {
+    if (preview) URL.revokeObjectURL(preview); // Giải phóng bộ nhớ
+    setPreview(null);
     setFormData((prevState) => ({
       ...prevState,
-      content: value,
+      image: "", // Xóa base64 trong state
     }));
+
+    // Reset input file
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { title, topicId, content, author } = formData;
+    const { title, topicId, content, author, image } = formData;
 
     if (!title || !topicId || !content || !author) {
-      setError("Please fill in all fields");
-      setTimeout(() => setError(""), 5000);
+      alert("Please fill in all fields");
       return;
     }
 
-    try {
-      const newPost = { ...formData, image: "" }; // Luôn gửi chuỗi rỗng cho image
-      await apiService.postArticle(newPost);
+    console.log("Dữ liệu gửi đi:", formData);
 
-      setSuccess("Blog added successfully!");
-      setTimeout(() => setSuccess(""), 3000);
+    try {
+      await apiService.postArticle(formData);
+      alert("Blog added successfully!");
+
+      // Reset form
+      setFormData({ title: "", image: "", topicId: "", content: "", author: "" });
+      setPreview(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     } catch (error) {
-      setError("An error occurred while submitting the blog");
-      setTimeout(() => setError(""), 5000);
+      alert("An error occurred while submitting the blog");
     }
   };
 
   return (
     <div className="edit-article-container">
       <h2>Create New Blog</h2>
-      {error && <p className="error-message">{error}</p>}
-      {success && <p className="success-message">{success}</p>}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Title</label>
-          <input
-            type="text"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            required
-          />
+          <input type="text" name="title" value={formData.title} onChange={handleChange} required />
         </div>
 
         <div className="form-group">
           <label>Topic</label>
-          <select
-            name="topicId"
-            value={formData.topicId}
-            onChange={handleChange}
-            required
-          >
+          <select name="topicId" value={formData.topicId} onChange={handleChange} required>
             <option value="">Select a topic</option>
             {topics.map((topic) => (
               <option key={topic.topicID} value={topic.topicID}>
@@ -109,34 +131,31 @@ const ArticleForm = () => {
 
         <div className="form-group">
           <label>Content</label>
-          <ReactQuill
-            value={formData.content}
-            onChange={handleQuillChange}
-            theme="snow"
-            required
-          />
+          <ReactQuill value={formData.content} onChange={handleChange} theme="snow" required />
         </div>
 
         <div className="form-group">
-          <label>Image (Not uploaded, only previewed)</label>
+          <label>Image</label>
           <input
             type="file"
+            ref={fileInputRef} // Gán ref để reset input file
             name="image"
             onChange={handleFileChange}
             accept="image/*"
           />
-          {preview && <img src={preview} alt="Image Preview" className="image-preview" />}
+          {preview && (
+            <div className="image-preview-container">
+              <img src={preview} alt="Image Preview" className="image-preview" />
+              <button type="button" className="remove-image-btn" onClick={handleRemoveImage}>
+                Remove Image
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="form-group">
           <label>Author</label>
-          <input
-            type="text"
-            name="author"
-            value={formData.author}
-            onChange={handleChange}
-            required
-          />
+          <input type="text" name="author" value={formData.author} onChange={handleChange} required />
         </div>
 
         <button type="submit">Submit Blog</button>

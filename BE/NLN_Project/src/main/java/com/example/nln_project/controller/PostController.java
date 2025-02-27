@@ -28,9 +28,9 @@ public class PostController {
 
     @PostMapping("/createPost")
     public ResponseEntity createPost(@Valid @RequestBody Post post) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
-//        post.setUserID(userDetails.getId());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
+        post.setUserID(userDetails.getId());
         try{
             Post createdPost = postService.savePost(post);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
@@ -38,7 +38,6 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
 
 
     @DeleteMapping("/deletePost/{id}")

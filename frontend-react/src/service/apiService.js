@@ -85,12 +85,12 @@ export default class ApiService {
 
     static async postArticle(articleData) {
         const response = await axios.post(`${this.BASE_URL}/api/posts/createPost`, articleData, {
-            headers: {
-                "Content-Type": "application/json"
-            }
+            headers: this.getHeader()
         });
         return response.data;
     }
+
+    
 
 
     static async addCommentToArticle(articleId, commentData) {

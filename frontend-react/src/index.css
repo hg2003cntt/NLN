@@ -219,14 +219,19 @@ input {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 .image-preview{
-  max-width: 550px;
+  max-width: 500px;
   margin: 10px auto;
   padding: 10px
+}
+
+.image-preview-container.hidden {
+  display: none;
 }
 
 .form-group select {
   margin-left: 10px;
 }
+
 
 /* Cải thiện modal */
 .modal-content {
