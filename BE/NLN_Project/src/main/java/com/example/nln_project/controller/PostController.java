@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/posts")
@@ -86,4 +88,17 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
+    @PostMapping("/like/{id}")
+    public ResponseEntity<Post> likePost(@PathVariable String id) {
+        Optional<Post> optionalPost = postRepo.findById(id);
+        if (optionalPost.isPresent()) {
+            Post post = optionalPost.get();
+            post.setLikeCount(post.getLikeCount() + 1);
+            postRepo.save(post);
+            return ResponseEntity.ok(post);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
 }

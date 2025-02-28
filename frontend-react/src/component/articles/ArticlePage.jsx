@@ -19,7 +19,7 @@ const ArticlePage = () => {
     }, []);
 
     const handleArticleClick = (id) => {
-        navigate(`/articles/${id}`);
+        navigate(`/article/${id}`);
     };
 
     return (

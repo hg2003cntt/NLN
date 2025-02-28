@@ -69,11 +69,6 @@ export default class ApiService {
 
     /** ARTICLES */
 
-    // static async postArticle(articleData) {
-    //     const response = await axios.post(`${this.BASE_URL}/createPost`, articleData);//, {
-    //       //  headers: this.getHeader()
-    //    //
-    // }
     static async getTopics() {
         const response = await axios.get(`${this.BASE_URL}/api/topics/getAlltopics`, {
             headers: this.getHeader()
@@ -87,6 +82,19 @@ export default class ApiService {
         });
         return response.data;
     }
+
+    static async getPostById(postId) {
+        try {
+            const response = await axios.get(`${this.BASE_URL}/api/posts/getPostById/${postId}`, {
+                headers: this.getHeader(),
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Lỗi khi lấy bài viết:", error);
+            throw error;
+        }
+    }
+    
 
     static async getPostsByTopic(topicId) {
         try {
@@ -108,6 +116,19 @@ export default class ApiService {
             return response.data;
         } catch (error) {
             console.error("Lỗi khi lấy danh sách bài viết:", error);
+            throw error;
+        }
+    }
+
+    static async likeArticle(articleId) {
+        try {
+            console.log("id: ", articleId)
+            const response = await axios.post(`${this.BASE_URL}/api/posts/like/${articleId}`, {
+                headers: this.getHeader(),
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Lỗi khi cập nhật lượt like:", error);
             throw error;
         }
     }

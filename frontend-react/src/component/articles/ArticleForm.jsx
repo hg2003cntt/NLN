@@ -2,8 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import ReactQuill from "react-quill";
 import apiService from "../../service/apiService";
 import "react-quill/dist/quill.snow.css";
+import { useNavigate } from "react-router-dom";
 
 const ArticleForm = () => {
+  const navigate = useNavigate(); 
   const [formData, setFormData] = useState({
     title: "",
     image: "", // Lưu base64 vào đây
@@ -94,7 +96,7 @@ const ArticleForm = () => {
     console.log("Dữ liệu gửi đi:", formData);
 
     try {
-      await apiService.postArticle(formData);
+      const createdPost = await apiService.postArticle(formData);
       alert("Blog added successfully!");
 
       // Reset form
@@ -102,6 +104,8 @@ const ArticleForm = () => {
       setPreview(null);
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
+      
+      navigate(`/article/${createdPost.id}`);
       }
     } catch (error) {
       alert("An error occurred while submitting the blog");
