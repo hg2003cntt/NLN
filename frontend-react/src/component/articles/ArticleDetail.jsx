@@ -25,8 +25,8 @@ const ArticleDetail = () => {
 
   const handleLike = async () => {
     try {
-      const updatedArticle = await apiService.likeArticle(id);
-      setArticle(updatedArticle); // Cập nhật trạng thái bài viết
+      const updatedArticle = await apiService.likeArticle(article.id);
+      setArticle(updatedArticle); // Cập nhật bài viết
     } catch (error) {
       console.error("Lỗi khi thích bài viết:", error);
     }
@@ -53,13 +53,26 @@ const ArticleDetail = () => {
 
   return (
     <div className="article-detail">
-      <h1>{article.title}</h1>
+      <div className="article-header">
+        <h1>{article.title}</h1>
+        
+      </div>
+
       <p className="article-meta">
         Đăng bởi <strong>{article.author}</strong> vào{" "}
         {new Date(article.createdAt).toLocaleDateString("vi-VN")}
       </p>
-      {article.image && <img src={article.image} alt="Bài viết" className="article-image"/>}
-      <div className="article-content" dangerouslySetInnerHTML={{ __html: article.content }} />
+      {article.image && (
+        <img
+          src={article.image}
+          alt="Bài viết"
+          className="article-image-detail"
+        />
+      )}
+      <div
+        className="article-content-detail"
+        dangerouslySetInnerHTML={{ __html: article.content }}
+      />
 
       {/* Hiển thị lượt thích và bình luận */}
       <div className="article-actions">
@@ -79,7 +92,9 @@ const ArticleDetail = () => {
           value={comment}
           onChange={(e) => setComment(e.target.value)}
         />
-        <button className="submit-cmt" type="submit">Gửi</button>
+        <button className="submit-cmt" type="submit">
+          Gửi
+        </button>
       </form>
     </div>
   );

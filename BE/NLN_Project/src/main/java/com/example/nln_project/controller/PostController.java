@@ -1,5 +1,6 @@
 package com.example.nln_project.controller;
 
+import com.example.nln_project.model.Like;
 import com.example.nln_project.model.Post;
 import com.example.nln_project.repository.PostRepo;
 import com.example.nln_project.security.services.AccountDetailsImpl;
@@ -26,6 +27,9 @@ public class PostController {
 
     @Autowired
     private PostRepo postRepo;
+
+    @Autowired
+    private LikeRepo likeRepo;
 
 
     @PostMapping("/createPost")
@@ -89,16 +93,27 @@ public class PostController {
         }
     }
 
-    @PostMapping("/like/{id}")
-    public ResponseEntity<Post> likePost(@PathVariable String id) {
-        Optional<Post> optionalPost = postRepo.findById(id);
-        if (optionalPost.isPresent()) {
-            Post post = optionalPost.get();
-            post.setLikeCount(post.getLikeCount() + 1);
-            postRepo.save(post);
-            return ResponseEntity.ok(post);
+    @PostMapping("/{postId}/like")
+    public ResponseEntity<Post> toggleLike(@PathVariable String postId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
+        String userId = userDetails.getId();
+
+        Optional<Like> existingLike = likeRepo.findByUserIdAndPostId(userId, postId);
+
+        if (existingLike.isPresent()) {
+            likeRepo.deleteByUserIdAndPostId(userId, postId); // Bỏ like
+        } else {
+            likeRepo.save(new Like(userId, postId)); // Thêm like mới
         }
-        return ResponseEntity.notFound().build();
+
+        // Cập nhật số like trong bài viết
+        int likeCount = likeRepo.countByPostId(postId);
+        Post post = postRepo.findById(postId).orElseThrow();
+        post.setLikeCount(likeCount);
+        postRepo.save(post);
+
+        return ResponseEntity.ok(post);
     }
 
 }

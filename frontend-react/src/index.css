@@ -393,7 +393,7 @@ button:hover {
   background-color: #218838;
 }
 
-/*ARTICLE DETAILS PAGE*/
+/*ARTICLE PAGE*/
 
 .article-container {
   padding: 20px;
@@ -442,31 +442,41 @@ button:hover {
   color: #555;
 }
 
-.article-container {
-  max-width: 800px;
+/* ARTICLE DETAILS PAGE */
+.article-detail {
+  max-width: 1200px;
   margin: auto;
-  padding: 20px;
+  margin-top: 20px;
+  padding: 20px 50px;
   border: 1px solid #ddd;
   border-radius: 8px;
   background: #fff;
 }
 
 .article-meta {
-  font-size: 14px;
+  font-size: 18px;
   color: gray;
+  display: block;
+  margin: 10px auto; 
 }
 
-.article-image {
-  max-width: 50%;
-  height: 10%;
-  margin-top: 10px;
+.article-image-detail {
+  display: block;  /* Để loại bỏ hành vi inline mặc định */
+  /* margin: 20px; Căn giữa ngang */
+  max-width: 100%;
+  height: auto;
 }
 
+.article-content-detail{
+  font-size: 20px;
+  display: block;
+  margin: 20px 0px; 
+}
 .article-actions {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 15px;
+  margin: 15px 0px;
 }
 
 .like-button {
@@ -483,7 +493,7 @@ button:hover {
 }
 
 .comment-section {
-  margin-top: 20px;
+  margin: 20px 0px;
 }
 
 .comment-section input {
@@ -505,4 +515,6 @@ button:hover {
 }
 .submit-cmt{
   width: 50px;
+  margin: auto;
+  background: #007bff;
 }

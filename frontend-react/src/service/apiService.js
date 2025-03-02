@@ -122,16 +122,21 @@ export default class ApiService {
 
     static async likeArticle(articleId) {
         try {
-            console.log("id: ", articleId)
-            const response = await axios.post(`${this.BASE_URL}/api/posts/like/${articleId}`, {
-                headers: this.getHeader(),
-            });
+            console.log("id: ", articleId);
+            const response = await axios.post(
+                `${this.BASE_URL}/api/posts/${articleId}/like`,
+                null,  // Không có body nên để null
+                {
+                    headers: this.getHeader(),
+                }
+            );
             return response.data;
         } catch (error) {
             console.error("Lỗi khi cập nhật lượt like:", error);
             throw error;
         }
     }
+    
 
     static async addCommentToArticle(articleId, commentData) {
         const response = await axios.post(`${this.BASE_URL}/articles/${articleId}/comments`, commentData, {
