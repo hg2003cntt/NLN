@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/posts")
 public class PostController {
@@ -36,7 +36,7 @@ public class PostController {
     public ResponseEntity createPost(@Valid @RequestBody Post post) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
-        post.setUserID(userDetails.getId());
+        post.setUserId(userDetails.getId());
         try{
             Post createdPost = postService.savePost(post);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
@@ -56,8 +56,13 @@ public class PostController {
 
 
     @DeleteMapping("/deletePost/{id}")
-    public void deletePost(@PathVariable String id) {
+    public ResponseEntity<?> deletePost(@PathVariable String id) {
+        if (!postRepo.existsById(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Bài viết không tồn tại");
+        }
+
         postRepo.deleteById(id);
+        return ResponseEntity.ok("Bài viết đã được xóa thành công");
     }
 
     @PutMapping("/updatePost")
@@ -98,7 +103,6 @@ public class PostController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
         String userId = userDetails.getId();
-
         Optional<Like> existingLike = likeRepo.findByUserIdAndPostId(userId, postId);
 
         if (existingLike.isPresent()) {

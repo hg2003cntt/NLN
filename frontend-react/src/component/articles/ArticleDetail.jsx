@@ -1,26 +1,41 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import apiService from "../../service/apiService";
-import { FaHeart, FaComment } from "react-icons/fa"; // Import icon thích và comment
+import {
+  FaHeart,
+  FaComment,
+  FaEllipsisV,
+  FaTrash,
+  FaEdit,
+} from "react-icons/fa"; // Import icon
 
 const ArticleDetail = () => {
   const { id } = useParams(); // Lấy ID bài viết từ URL
   const [article, setArticle] = useState(null);
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false); // Trạng thái menu dấu 3 chấm
 
   useEffect(() => {
-    const fetchArticle = async () => {
+    const fetchArticleAndUser = async () => {
       try {
-        const data = await apiService.getPostById(id);
+        const [data, user] = await Promise.all([
+          apiService.getPostById(id),
+          apiService.getUserProfile(),
+        ]);
         setArticle(data);
+        setUser(user);
         setLoading(false);
+        console.log("data:", data);
+        console.log("user:", user);
       } catch (error) {
         console.error("Lỗi khi lấy bài viết:", error);
         setLoading(false);
       }
     };
-    fetchArticle();
+    fetchArticleAndUser();
   }, [id]);
 
   const handleLike = async () => {
@@ -47,6 +62,24 @@ const ArticleDetail = () => {
       console.error("Lỗi khi thêm bình luận:", error);
     }
   };
+  const handleDeletePost = async () => {
+    const confirmDelete = window.confirm(
+      "Bạn có chắc chắn muốn xóa bài viết này?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      await apiService.deleteArticle(article.id);
+      alert("Bài viết đã bị xóa.");
+      navigate(`/articles`); // Quay về trang chính sau khi xóa
+    } catch (error) {
+      console.error("Lỗi khi xóa bài viết:", error);
+    }
+  };
+
+  const handleEditPost = () => {
+    navigate(`/edit/${article.id}`);
+  };
 
   if (loading) return <p>Đang tải...</p>;
   if (!article) return <p>Không tìm thấy bài viết.</p>;
@@ -55,7 +88,29 @@ const ArticleDetail = () => {
     <div className="article-detail">
       <div className="article-header">
         <h1>{article.title}</h1>
-        
+        {(user?.id === article.userId ||
+          user?.roles.some((role) => role.name === "ROLE_ADMIN")) && (
+          <div className="menu-container">
+            <button
+              className="menu-button"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              <FaEllipsisV />
+            </button>
+            {menuOpen && (
+              <div className="menu-dropdown">
+                {user?.roles.some((role) => role.name === "ROLE_USER") && (
+                  <button onClick={handleEditPost}>
+                    <FaEdit /> Chỉnh sửa
+                  </button>
+                )}
+                <button onClick={handleDeletePost}>
+                  <FaTrash /> Xóa bài viết
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <p className="article-meta">

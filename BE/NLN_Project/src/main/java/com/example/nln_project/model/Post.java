@@ -34,7 +34,7 @@ public class Post {
     private Date createdAt;
     private int likeCount;
     private int cmtCount;
-    private String userID;
+    private String userId;
 
     private String topicId;
 

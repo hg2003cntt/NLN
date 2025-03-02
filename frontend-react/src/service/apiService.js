@@ -120,6 +120,21 @@ export default class ApiService {
         }
     }
 
+    
+    static async deleteArticle(id) {
+        try {
+            const response = await axios.delete(`${this.BASE_URL}/api/posts/deletePost/${id}`, {
+                headers: this.getHeader(),
+               // withCredentials: true,
+            });
+            return response.data; // Nhận phản hồi từ API
+        } catch (error) {
+            console.error("Lỗi khi xóa bài viết:", error.response?.data || error.message);
+            throw error;
+        }
+    }
+    
+
     static async likeArticle(articleId) {
         try {
             console.log("id: ", articleId);
