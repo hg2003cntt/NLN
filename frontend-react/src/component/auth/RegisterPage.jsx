@@ -20,42 +20,74 @@ const RegisterPage = () => {
     const currentYear = new Date().getFullYear();
     const birthYear = dateOfBirth ? new Date(dateOfBirth).getFullYear() : 0;
 
+    // Kiểm tra Tên đăng nhập
     if (!username.trim()) {
       newErrors.username = "Tên đăng nhập không được để trống";
     } else if (username.length < 5) {
       newErrors.username = "Tên đăng nhập phải có ít nhất 5 ký tự";
+    } else if (username.length > 20) {
+      newErrors.username = "Tên đăng nhập tối đa 20 ký tự";
+    } else if (!/^[a-z0-9]+$/.test(username)) {
+      newErrors.username = "Tên đăng nhập chỉ được chứa chữ thường và số";
     } else if (/^\d+$/.test(username)) {
       newErrors.username = "Tên đăng nhập không thể chỉ chứa số";
+    } else if ((username.match(/[a-zA-Z]/g) || []).length < 2) {
+      newErrors.username = "Tên đăng nhập phải chứa ít nhất 2 chữ cái";
     }
 
+    // Kiểm tra Họ và Tên
     if (!name.trim()) {
       newErrors.name = "Họ và tên không được để trống";
+    } else if (name.length > 50) {
+      newErrors.name = "Họ và tên tối đa 50 ký tự";
+    } else if (!/^[A-Za-zÀ-ỹ\s]+$/.test(name)) {
+      newErrors.name = "Họ và tên không được chứa số hoặc ký tự đặc biệt";
     } else if (name.split(" ").length < 2) {
-      newErrors.name = "Họ và tên chưa hợp lệ";
+      newErrors.name = "Họ và tên không hợp lệ";
     }
 
+    // Kiểm tra Ngày sinh
     if (!dateOfBirth) {
       newErrors.dateOfBirth = "Ngày sinh không được để trống";
+    } else if (birthYear > currentYear) {
+      newErrors.dateOfBirth = "Ngày sinh không hợp lệ";
     } else if (currentYear - birthYear < 18) {
       newErrors.dateOfBirth = "Bạn phải đủ 18 tuổi trở lên";
+    } else if (currentYear - birthYear > 80) {
+      newErrors.dateOfBirth = "Ngày sinh không hợp lệ";
     }
 
+    // Kiểm tra Mật khẩu
     if (!password) {
       newErrors.password = "Mật khẩu không được để trống";
     } else if (password.length < 8) {
       newErrors.password = "Mật khẩu phải có ít nhất 8 ký tự";
+    } else if (!/[A-Z]/.test(password)) {
+      newErrors.password = "Mật khẩu phải có ít nhất một chữ hoa";
+    } else if (!/[a-z]/.test(password)) {
+      newErrors.password = "Mật khẩu phải có ít nhất một chữ thường";
+    } else if (!/[0-9]/.test(password)) {
+      newErrors.password = "Mật khẩu phải có ít nhất một số";
+    } else if (!/[!@#$%^&*]/.test(password)) {
+      newErrors.password = "Mật khẩu phải có ít nhất một ký tự đặc biệt";
     }
 
     if (password !== confirmPassword) {
       newErrors.confirmPassword = "Mật khẩu xác nhận không khớp";
     }
 
+    // Kiểm tra Email
     if (!email.trim()) {
       newErrors.email = "Email không được để trống";
+    } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
+      newErrors.email = "Email không hợp lệ";
     }
 
+    // Kiểm tra Số điện thoại
     if (!phone.trim()) {
       newErrors.phone = "Số điện thoại không được để trống";
+    } else if (!/^0\d{9}$/.test(phone)) {
+      newErrors.phone = "Số điện thoại không hợp lệ";
     }
 
     setErrors(newErrors);
@@ -63,25 +95,31 @@ const RegisterPage = () => {
   };
 
   const formatName = (name) => {
-    return name
-      .toLowerCase()
-      .replace(/\b\w/g, (char) => char.toUpperCase())
-      .replace(/\s+/g, " ")
-      .trim();
+      return name
+          .normalize("NFC") // Đảm bảo chuẩn Unicode, giữ nguyên dấu tiếng Việt
+          .toLowerCase() // Chuyển toàn bộ về chữ thường
+          .trim()
+          .split(/\s+/) // Chia thành mảng các từ, loại bỏ khoảng trắng thừa
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Viết hoa chữ cái đầu mỗi từ
+          .join(" "); // Ghép lại thành chuỗi với khoảng trắng chuẩn
   };
+
+
 
   const handleChange = (e) => {
-    let value = e.target.value;
-    const fieldName = e.target.name;
+      let value = e.target.value;
+        const fieldName = e.target.name;
 
-    if (fieldName === "username") {
-      value = value.toLowerCase().replace(/\s+/g, "");
-    } else if (fieldName === "name") {
-      value = formatName(value);
-    }
+        if (fieldName === "username") {
+            value = value.toLowerCase().replace(/\s+/g, ""); // Không khoảng trắng trong username
+        } else if (fieldName === "name") {
+            value = formatName(value); // Chuẩn hóa họ và tên trước khi lưu
+        }
 
-    setFormData({ ...formData, [fieldName]: value });
-  };
+        setFormData({ ...formData, [fieldName]: value });
+    };
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
