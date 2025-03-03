@@ -14,10 +14,39 @@ export default class ApiService {
     }
 
     /** AUTH */
-    static async registerUser(registration) {
-        const response = await axios.post(`${this.BASE_URL}/api/auth/register`, registration);
-        return response.data;
-    }
+     static async registerUser(registrationData) {
+         try {
+             const response = await axios.post(`${this.BASE_URL}/api/auth/signup`, registrationData, {
+                 headers: {
+                     "Content-Type": "application/json",
+                 },
+             });
+             return response.data; // Đăng ký thành công
+         } catch (error) {
+             if (error.response && error.response.data) {
+                 // Lấy dữ liệu phản hồi lỗi từ server
+                 const errorData = error.response.data;
+
+                 // Kiểm tra nếu errorData là object và có thuộc tính message
+                 const errorMessage = typeof errorData === "string"
+                     ? errorData
+                     : errorData.message || JSON.stringify(errorData);
+
+                 // Xử lý lỗi cụ thể từ backend
+                 if (errorMessage.toLowerCase().includes("username is already taken")) {
+                     throw new Error("Tên người dùng đã tồn tại, vui lòng chọn tên khác.");
+                 }
+                 if (errorMessage.toLowerCase().includes("email is already in use")) {
+                     throw new Error("Email này đã được đăng ký, vui lòng sử dụng email khác.");
+                 }
+             }
+
+             // Nếu không có thông tin lỗi chi tiết từ backend
+             throw new Error("Đăng ký thất bại, vui lòng thử lại.");
+         }
+     }
+
+
 
     static async loginUser(loginDetails) {
         const response = await axios.post(`${this.BASE_URL}/api/auth/login`, loginDetails);
