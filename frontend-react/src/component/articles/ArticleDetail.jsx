@@ -78,7 +78,7 @@ const ArticleDetail = () => {
   };
 
   const handleEditPost = () => {
-    navigate(`/edit/${article.id}`);
+    navigate(`/editArticle/${article.id}`);
   };
 
   if (loading) return <p>Đang tải...</p>;
@@ -99,7 +99,7 @@ const ArticleDetail = () => {
             </button>
             {menuOpen && (
               <div className="menu-dropdown">
-                {user?.roles.some((role) => role.name === "ROLE_USER") && (
+                {user?.id === article.userId && (
                   <button onClick={handleEditPost}>
                     <FaEdit /> Chỉnh sửa
                   </button>
@@ -114,7 +114,8 @@ const ArticleDetail = () => {
       </div>
 
       <p className="article-meta">
-        Đăng bởi <strong>{article.author}</strong> vào{" "}
+        <strong>Chủ đề:</strong> {article.topicId} | Đăng bởi{" "}
+        <strong>{article.author}</strong> vào{" "}
         {new Date(article.createdAt).toLocaleDateString("vi-VN")}
       </p>
       {article.image && (

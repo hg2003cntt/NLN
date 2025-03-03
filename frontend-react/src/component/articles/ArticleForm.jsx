@@ -99,14 +99,14 @@ const ArticleForm = () => {
       const createdPost = await apiService.postArticle(formData);
       alert("Blog added successfully!");
 
-      // Reset form
-      setFormData({ title: "", image: "", topicId: "", content: "", author: "" });
-      setPreview(null);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
+      // // Reset form
+      // setFormData({ title: "", image: "", topicId: "", content: "", author: "" });
+      // setPreview(null);
+      // if (fileInputRef.current) {
+      //   fileInputRef.current.value = "";
       
-      navigate(`/article/${createdPost.id}`);
-      }
+      setTimeout(() => navigate(`/article/${createdPost.id}`));
+      
     } catch (error) {
       alert("An error occurred while submitting the blog");
     }

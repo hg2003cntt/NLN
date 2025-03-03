@@ -1,119 +1,94 @@
 package com.example.nln_project.security;
 
-
 import com.example.nln_project.security.jwt.AuthEntryPointJwt;
 import com.example.nln_project.security.jwt.AuthTokenFilter;
 import com.example.nln_project.security.services.AccountDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired; // Import for dependency injection
-import org.springframework.context.annotation.Bean; // Import for Spring configuration
-import org.springframework.context.annotation.Configuration; // Import for configuration class
-import org.springframework.security.authentication.AuthenticationManager; // Import for authentication manager
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider; // Import for authentication provider
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration; // Import for authentication configuration
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity; // Import for method security
-import org.springframework.security.config.annotation.web.builders.HttpSecurity; // Import for HTTP security configuration
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer; // Import for HTTP security configuration
-import org.springframework.security.config.http.SessionCreationPolicy; // Import for session creation policies
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder; // Import for password encoding
-import org.springframework.security.crypto.password.PasswordEncoder; // Import for password encoder interface
-import org.springframework.security.web.SecurityFilterChain; // Import for security filter chain
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter; // Import for username/password authentication filter
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+import java.util.List;
 
-/**
- * Security configuration class to set up Spring Security.
- */
-@Configuration // Marks the class as a source of bean definitions
-@EnableMethodSecurity // Enables method-level security annotations
+@Configuration
+@EnableMethodSecurity
 public class WebSecurityConfig {
 
   @Autowired
-  private AccountDetailsServiceImpl userDetailsService; // Injects the user details service for authentication
+  private AccountDetailsServiceImpl userDetailsService;
 
   @Autowired
-  private AuthEntryPointJwt unauthorizedHandler; // Injects the entry point for unauthorized requests
+  private AuthEntryPointJwt unauthorizedHandler;
 
-  /**
-   * Creates a bean for the authentication JWT token filter.
-   *
-   * @return AuthTokenFilter instance
-   */
   @Bean
   public AuthTokenFilter authenticationJwtTokenFilter() {
-    return new AuthTokenFilter(); // Returns a new instance of AuthTokenFilter
+    return new AuthTokenFilter();
   }
 
-  /**
-   * Creates a bean for the DAO authentication provider.
-   *
-   * @return DaoAuthenticationProvider instance
-   */
   @Bean
   public DaoAuthenticationProvider authenticationProvider() {
-    DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(); // Create a new authentication provider
-
-    authProvider.setUserDetailsService(userDetailsService); // Set the user details service
-    authProvider.setPasswordEncoder(passwordEncoder()); // Set the password encoder
-
-    return authProvider; // Return the configured authentication provider
+    DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+    authProvider.setUserDetailsService(userDetailsService);
+    authProvider.setPasswordEncoder(passwordEncoder());
+    return authProvider;
   }
 
-  /**
-   * Creates a bean for the authentication manager.
-   *
-   * @param authConfig Authentication configuration
-   * @return AuthenticationManager instance
-   * @throws Exception if there is an error getting the authentication manager
-   */
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-    return authConfig.getAuthenticationManager(); // Returns the authentication manager from the configuration
+    return authConfig.getAuthenticationManager();
   }
 
-  /**
-   * Creates a bean for the password encoder.
-   *
-   * @return PasswordEncoder instance
-   */
   @Bean
   public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder(); // Returns a new instance of BCryptPasswordEncoder
+    return new BCryptPasswordEncoder();
   }
 
-  /**
-   * Configures the security filter chain for HTTP requests.
-   *
-   * @param http HttpSecurity configuration
-   * @return SecurityFilterChain instance
-   * @throws Exception if there is an error configuring the security filter chain
-   */
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    // Configure CSRF protection, exception handling, session management, and authorization
-    http.csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection
-            .exceptionHandling(exception ->
-                    exception.authenticationEntryPoint(unauthorizedHandler))
-            // Set unauthorized handler
-            .sessionManagement(session ->
-                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            // Set session policy to stateless
+    http
+            .cors(cors -> cors.configurationSource(request -> {
+              CorsConfiguration config = new CorsConfiguration();
+              config.setAllowedOrigins(List.of("http://localhost:3000")); // Cho phép React frontend
+              config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+              config.setAllowedHeaders(List.of("*"));
+              config.setAllowCredentials(true);
+              return config;
+            }))
+            .csrf(AbstractHttpConfigurer::disable)
+            .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                    // Configure authorization for HTTP requests
-                    .requestMatchers("/api/auth/**").permitAll()
-                    // Allow public access to auth endpoints
-                    .requestMatchers("/api/test/s**").permitAll()
-                    .requestMatchers("/api/posts/**").permitAll()
-                    .requestMatchers("/api/topics/**").permitAll()
-                    .requestMatchers("/consultations/**").permitAll()
-                    // Allow public access to test endpoints
-                    .anyRequest().authenticated());
-    // Require authentication for any other request
+                    .requestMatchers("/api/auth/**", "/api/posts/**", "/api/topics/**", "/consultations/**").permitAll()
+                    .anyRequest().authenticated()
+            );
 
-    http.authenticationProvider(authenticationProvider()); // Set the authentication provider
+    http.authenticationProvider(authenticationProvider());
+    http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
-    // Add the JWT token filter before the username/password authentication filter
-    http.addFilterBefore(authenticationJwtTokenFilter(),
-            UsernamePasswordAuthenticationFilter.class);
+    return http.build();
+  }
 
-    return http.build(); // Build and return the security filter chain
+  @Bean
+  public CorsFilter corsFilter() {
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowedOrigins(List.of("http://localhost:3000"));
+    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    config.setAllowedHeaders(List.of("*"));
+    config.setAllowCredentials(true);
+    source.registerCorsConfiguration("/**", config);
+    return new CorsFilter(source);
   }
 }

@@ -29,7 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true") // Allow cross-origin requests for all origins
+//@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true") // Allow cross-origin requests for all origins
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {

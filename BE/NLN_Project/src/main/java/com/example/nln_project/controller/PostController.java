@@ -2,6 +2,7 @@ package com.example.nln_project.controller;
 
 import com.example.nln_project.model.Like;
 import com.example.nln_project.model.Post;
+import com.example.nln_project.repository.LikeRepo;
 import com.example.nln_project.repository.PostRepo;
 import com.example.nln_project.security.services.AccountDetailsImpl;
 import com.example.nln_project.security.services.PostService;
@@ -12,12 +13,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+//@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/posts")
 public class PostController {
@@ -62,17 +62,19 @@ public class PostController {
         }
 
         postRepo.deleteById(id);
+        likeRepo.deleteByPostId(id);
         return ResponseEntity.ok("Bài viết đã được xóa thành công");
     }
 
     @PutMapping("/updatePost")
-    public void updateStudent(@RequestBody Post post) {
+    public void updatePost(@RequestBody Post post) {
         //fetch the object using Id
         Post data = postRepo.findById(post.getId()).orElse(null);
         //check if null and update
         if (data != null) {
             data.setTitle(post.getTitle());
             data.setContent(post.getContent());
+            data.setTopicId(post.getTopicId());
             data.setAuthor(post.getAuthor());
             data.setImage(post.getImage());
             postRepo.save(data);

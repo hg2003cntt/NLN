@@ -119,7 +119,13 @@ export default class ApiService {
             throw error;
         }
     }
-
+    static async updateArticle(articleData){
+        const response = await axios.put(`${this.BASE_URL}/api/posts/updatePost`,articleData, {
+            headers: this.getHeader(),
+            withCredentials: true,
+        });
+        return response.data;
+    }
     
     static async deleteArticle(id) {
         try {

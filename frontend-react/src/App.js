@@ -13,6 +13,7 @@ import AdminPage from './component/admin/AdminPage';
 import { ProtectedRoute, AdminRoute } from './service/guard';
 import ResponsiveComponent from './component/common/ResponsiveWindow';
 import ArticleDetail from './component/articles/ArticleDetail';
+import EditArticleForm from './component/articles/EditArticleForm';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
             <Route path="/add-articles" element={<ArticleForm />} />
             <Route path="/submit-consultation" element={<ConsultationRequestPage />} />
             <Route path="/article/:id" element={<ArticleDetail/>} />
+            <Route path="/editArticle/:id" element={<EditArticleForm/>} />
             {/* Protected Routes */}
             <Route path="/profile" element={<ProtectedRoute element={<ProfilePage />} />} />
 
