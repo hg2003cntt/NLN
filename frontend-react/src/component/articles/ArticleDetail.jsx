@@ -12,6 +12,7 @@ import {
 const ArticleDetail = () => {
   const { id } = useParams(); // Lấy ID bài viết từ URL
   const [article, setArticle] = useState(null);
+  const [topic, setTopic] = useState("");
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
@@ -28,6 +29,11 @@ const ArticleDetail = () => {
         setArticle(data);
         setUser(user);
         setLoading(false);
+        
+        if (data.topicId) {
+          const topicData = await apiService.getTopicById(data.topicId);
+          setTopic(topicData.name); // Giả sử API trả về { name: "Tâm lý học" }
+        }
         console.log("data:", data);
         console.log("user:", user);
       } catch (error) {
@@ -37,6 +43,8 @@ const ArticleDetail = () => {
     };
     fetchArticleAndUser();
   }, [id]);
+
+  
 
   const handleLike = async () => {
     try {
@@ -86,6 +94,12 @@ const ArticleDetail = () => {
 
   return (
     <div className="article-detail">
+      <button
+        className="create-post-btn"
+        onClick={() => navigate("/add-article")}
+      >
+        + Tạo bài viết
+      </button>
       <div className="article-header">
         <h1>{article.title}</h1>
         {(user?.id === article.userId ||
@@ -114,7 +128,7 @@ const ArticleDetail = () => {
       </div>
 
       <p className="article-meta">
-        <strong>Chủ đề:</strong> {article.topicId} | Đăng bởi{" "}
+        <strong>Chủ đề:</strong> {topic} | Đăng bởi{" "}
         <strong>{article.author}</strong> vào{" "}
         {new Date(article.createdAt).toLocaleDateString("vi-VN")}
       </p>

@@ -89,7 +89,7 @@ const ArticleForm = () => {
     const { title, topicId, content, author, image } = formData;
 
     if (!title || !topicId || !content || !author) {
-      alert("Please fill in all fields");
+      alert("Vui lòng không bỏ trống thông tin!");
       return;
     }
 
@@ -97,7 +97,7 @@ const ArticleForm = () => {
 
     try {
       const createdPost = await apiService.postArticle(formData);
-      alert("Blog added successfully!");
+      alert("Thêm bài viết thành công!");
 
       // // Reset form
       // setFormData({ title: "", image: "", topicId: "", content: "", author: "" });
@@ -108,21 +108,21 @@ const ArticleForm = () => {
       setTimeout(() => navigate(`/article/${createdPost.id}`));
       
     } catch (error) {
-      alert("An error occurred while submitting the blog");
+      alert("Lỗi xảy ra khi đăng bài!");
     }
   };
 
   return (
     <div className="edit-article-container">
-      <h2>Create New Blog</h2>
+      <h2>Tạo bài viết</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Title</label>
+          <label>Tiêu đề bài viết</label>
           <input type="text" name="title" value={formData.title} onChange={handleChange} required />
         </div>
 
         <div className="form-group">
-          <label>Topic</label>
+          <label>Chủ đề</label>
           <select name="topicId" value={formData.topicId} onChange={handleChange} required>
             <option value="">Select a topic</option>
             {topics.map((topic) => (
@@ -134,12 +134,12 @@ const ArticleForm = () => {
         </div>
 
         <div className="form-group">
-          <label>Content</label>
+          <label>Nội dung</label>
           <ReactQuill value={formData.content} onChange={handleChange} theme="snow" required />
         </div>
 
         <div className="form-group">
-          <label>Image</label>
+          <label>Ảnh</label>
           <input
             type="file"
             ref={fileInputRef} // Gán ref để reset input file
@@ -151,18 +151,18 @@ const ArticleForm = () => {
             <div className="image-preview-container">
               <img src={preview} alt="Image Preview" className="image-preview" />
               <button type="button" className="remove-image-btn" onClick={handleRemoveImage}>
-                Remove Image
+                Xóa ảnh
               </button>
             </div>
           )}
         </div>
 
         <div className="form-group">
-          <label>Author</label>
+          <label>Tác giả</label>
           <input type="text" name="author" value={formData.author} onChange={handleChange} required />
         </div>
 
-        <button type="submit">Submit Blog</button>
+        <button type="submit">Đăng bài</button>
       </form>
     </div>
   );

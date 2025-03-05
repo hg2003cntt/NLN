@@ -105,6 +105,18 @@ export default class ApiService {
         return response.data;
     }
 
+    static async getTopicById(topicId) {
+        try {
+            const response = await axios.get(`${this.BASE_URL}/api/topics/getTopicById/${topicId}`, {
+                headers: this.getHeader(),
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Lỗi khi lấy chủ đề theo id:", error);
+            throw error;
+        }
+    }
+
     static async postArticle(articleData) {
         const response = await axios.post(`${this.BASE_URL}/api/posts/createPost`, articleData, {
             headers: this.getHeader()

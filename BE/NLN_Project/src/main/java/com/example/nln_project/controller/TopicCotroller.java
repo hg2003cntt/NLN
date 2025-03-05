@@ -24,10 +24,14 @@ public class TopicCotroller {
     @Autowired
     PostRepo postRepo;
 
-//    @GetMapping("/topics")
-//    public List<Topic> getAllTopics() {
-//        return topicRepo.findAll();  // Trả về danh sách chủ đề
-//    }
+    @GetMapping("/getTopicById/{topicId}")
+    public ResponseEntity<Topic> getTopicById (@PathVariable("topicId") String topicId) {
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(topicRepo.findById(topicId).get());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
     @GetMapping("/getAlltopics")
     public List<Map<String, String>> getAllTopics() {
         return topicRepo.findAll().stream()

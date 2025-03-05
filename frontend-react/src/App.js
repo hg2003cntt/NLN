@@ -28,7 +28,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/articles" element={<ArticlePage />} />
-            <Route path="/add-articles" element={<ArticleForm />} />
+            <Route path="/add-article" element={<ArticleForm />} />
             <Route path="/submit-consultation" element={<ConsultationRequestPage />} />
             <Route path="/article/:id" element={<ArticleDetail/>} />
             <Route path="/editArticle/:id" element={<EditArticleForm/>} />

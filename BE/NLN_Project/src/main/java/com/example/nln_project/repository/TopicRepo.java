@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface TopicRepo extends MongoRepository<Topic, String> {
     Boolean existsByName(String name);
+
+    void findById(int id);
 }

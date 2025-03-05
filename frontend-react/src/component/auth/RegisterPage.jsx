@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import ApiService from "../../service/apiService";
+import { Navigate } from "react-router-dom";
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -124,11 +125,10 @@ const RegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-
+    console.log(formData);
     try {
       const response = await ApiService.registerUser(formData);
       alert("Đăng ký thành công!");
-      console.log(response);
     } catch (error) {
       alert(error.message || "Lỗi đăng ký");
     }
