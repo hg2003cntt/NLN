@@ -734,3 +734,35 @@ button:hover {
 .logout {
   margin-top: 20px;
 }
+
+.comment-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.comment-content {
+  flex-grow: 1;
+}
+
+.delete-btn {
+  background: red;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: auto; /* Giữ kích thước nhỏ */
+  min-width: 80px; /* Đảm bảo không quá nhỏ */
+}
+
+.delete-btn:hover {
+  background: darkred;
+}
+

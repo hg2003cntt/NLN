@@ -85,6 +85,7 @@ const EditArticleForm = () => {
     
         try {
             const response = await ApiService.updateArticle(updatedData);
+            if(response)
             alert("Bài viết đã được cập nhật!");
             navigate(`/article/${id}`);
         } catch (error) {

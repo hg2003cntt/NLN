@@ -13,7 +13,8 @@ const ArticleDetail = () => {
   const { id } = useParams(); // Lấy ID bài viết từ URL
   const [article, setArticle] = useState(null);
   const [topic, setTopic] = useState("");
-  const [comment, setComment] = useState("");
+  const [comment, setComments] = useState([]);
+  const [newComment, setNewComment] = useState(""); // Tạo state riêng cho input
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
@@ -42,6 +43,18 @@ const ArticleDetail = () => {
       }
     };
     fetchArticleAndUser();
+
+    const fetchComments = async () => {
+      try {
+          const response = await apiService.getCommentsByPost(id);
+          console.log("Danh sách bình luận:", response);
+          setComments(response || []); // Đảm bảo setComment là mảng
+      } catch (error) {
+          console.error("Lỗi khi lấy comment:", error);
+          setComments([]); // Nếu lỗi, gán mảng rỗng để tránh lỗi .map()
+      }
+  };
+  fetchComments();
   }, [id]);
 
   
@@ -57,19 +70,41 @@ const ArticleDetail = () => {
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
-    if (!comment.trim()) return;
+    if (!newComment.trim()) return; // Kiểm tra nếu input rỗng thì không gửi
+  
+    try {
+        const newCmt = await apiService.addComment(id, { content: newComment });
+
+        const user = JSON.parse(localStorage.getItem("user")); // Lấy thông tin user từ localStorage
+        const authorName = user?.name || "Bạn"; // Nếu có username thì dùng, nếu không thì để là "Bạn"
+      
+        const formattedComment = {
+            ...newCmt,
+            authorName, // Hiển thị ngay tên người bình luận
+            formattedTime: "Vừa xong" // Hiển thị ngay thời gian bình luận
+        };
+
+        setComments((prevComments) => [formattedComment, ...prevComments]); // Thêm bình luận mới vào danh sách
+        setArticle((prev) => ({ ...prev, cmtCount: prev.cmtCount + 1 })); // Tăng số lượng bình luận
+        setNewComment(""); // Reset input sau khi gửi
+    } catch (error) {
+        console.error("Lỗi khi thêm bình luận:", error);
+    }
+};
+
+  const handleDeleteComment = async (commentId) => {
+    const confirmDelete = window.confirm("Bạn có chắc chắn muốn xóa bình luận này?");
+    if (!confirmDelete) return;
 
     try {
-      const newComment = await apiService.addComment(id, { content: comment });
-      setArticle((prev) => ({
-        ...prev,
-        cmtCount: prev.cmtCount + 1, // Tăng số lượng bình luận hiển thị
-      }));
-      setComment(""); // Reset ô nhập bình luận
+      await apiService.deleteComment(commentId);
+      setComments(comment.filter((c) => c.id !== commentId));
+      setArticle((prev) => ({ ...prev, cmtCount: prev.cmtCount - 1 }));
     } catch (error) {
-      console.error("Lỗi khi thêm bình luận:", error);
+      console.error("Lỗi khi xóa bình luận:", error);
     }
   };
+
   const handleDeletePost = async () => {
     const confirmDelete = window.confirm(
       "Bạn có chắc chắn muốn xóa bài viết này?"
@@ -149,19 +184,37 @@ const ArticleDetail = () => {
         <button onClick={handleLike} className="like-button">
           <FaHeart color="red" /> {article.likeCount} Thích
         </button>
-        <span className="comment-count">
-          <FaComment /> {article.cmtCount} Bình luận
-        </span>
       </div>
+
+      <h3 >{article.cmtCount}<FaComment />Bình luận</h3>
+      <ul>
+        {comment.map((c) => (
+          <li key={c.id} className="comment-item">
+            <div className="comment-content">
+              <strong>{c.authorName}:</strong> {c.content}
+            </div>
+            <div className="comment-meta">
+              <small>{c.formattedTime}</small>
+            </div>
+            {(user?.id === c.userId || user?.roles?.includes("ROLE_ADMIN")) && (
+              <button onClick={() => handleDeleteComment(c.id)} className="delete-btn">
+                <FaTrash /> Xóa
+              </button>
+            )}
+          </li>
+        ))}
+      </ul>
+
 
       {/* Ô nhập bình luận */}
       <form onSubmit={handleCommentSubmit} className="comment-section">
         <input
           type="text"
           placeholder="Viết bình luận..."
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
         />
+
         <button className="submit-cmt" type="submit">
           Gửi
         </button>

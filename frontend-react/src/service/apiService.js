@@ -1,4 +1,8 @@
 import axios from "axios";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime); // Hỗ trợ hiển thị thời gian tương đối (VD: "2 giờ trước")
 
 export default class ApiService {
 
@@ -199,13 +203,62 @@ export default class ApiService {
         }
     }
     
-
-    static async addCommentToArticle(articleId, commentData) {
-        const response = await axios.post(`${this.BASE_URL}/articles/${articleId}/comments`, commentData, {
-            headers: this.getHeader(),
-        });
-        return response.data;
+    /** COMMENTS */
+    static async addComment(articleId, commentData) {
+        try {
+            const response = await axios.post(
+                `${this.BASE_URL}/api/posts/${articleId}/comments`,
+                commentData,
+                {
+                    headers: this.getHeader(),
+                }
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Lỗi khi thêm comment:", error.response?.data || error.message);
+            throw error;
+        }
     }
+
+    static async getCommentsByPost(articleId) {
+        try {
+            const response = await axios.get(
+                `${this.BASE_URL}/api/posts/${articleId}/comments`,
+                { headers: this.getHeader() }
+            );
+            return response.data.map(comment => ({
+                ...comment,
+                authorName: comment.name || "Ẩn danh", // Chỉ lấy trực tiếp từ comment.username
+                formattedTime: dayjs(comment.createdAt).fromNow(), // Hiển thị "X phút trước"
+            }));
+        } catch (error) {
+            console.error("Lỗi khi lấy danh sách comment:", error.response?.data || error.message);
+            throw error;
+        }
+    }
+    
+
+    static async deleteComment(commentId) {
+        try {
+            const response = await axios.delete(
+                `${this.BASE_URL}/api/posts/comments/${commentId}}`,
+                {
+                    headers: this.getHeader(),
+                }
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Lỗi khi xóa comment:", error.response?.data || error.message);
+            throw error;
+        }
+    }
+
+    // static async addCommentToArticle(articleId, commentData) {
+    //     const response = await axios.post(`${this.BASE_URL}/articles/${articleId}/comments`, commentData, {
+    //         headers: this.getHeader(),
+    //     });
+    //     return response.data;
+    // }
 
      /** CONSULTATION - API ĐĂNG KÝ TƯ VẤN */
         static async submitConsultationRequest(consultationData) {

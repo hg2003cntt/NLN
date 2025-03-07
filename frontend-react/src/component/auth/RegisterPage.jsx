@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import ApiService from "../../service/apiService";
-import { Navigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +12,11 @@ const RegisterPage = () => {
     email: "",
     phone: "",
   });
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/login";
+
 
   const [errors, setErrors] = useState({});
 
@@ -128,9 +133,12 @@ const RegisterPage = () => {
     console.log(formData);
     try {
       const response = await ApiService.registerUser(formData);
+      if (response) {
+        navigate(from, { replace: true });
+    }
       alert("Đăng ký thành công!");
     } catch (error) {
-      alert(error.message || "Lỗi đăng ký");
+      alert(error.response?.data?.message || "Đăng nhập thất bại. Vui lòng thử lại!");
     }
   };
 

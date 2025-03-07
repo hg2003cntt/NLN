@@ -1,9 +1,12 @@
 package com.example.nln_project.controller;
 
 import com.example.nln_project.model.Like;
+import com.example.nln_project.model.Comment;
 import com.example.nln_project.model.Post;
+import com.example.nln_project.repository.CommentRepo;
 import com.example.nln_project.repository.LikeRepo;
 import com.example.nln_project.repository.PostRepo;
+
 import com.example.nln_project.security.services.AccountDetailsImpl;
 import com.example.nln_project.security.services.PostService;
 import jakarta.validation.Valid;
@@ -30,6 +33,9 @@ public class PostController {
 
     @Autowired
     private LikeRepo likeRepo;
+
+    @Autowired
+    private CommentRepo commentRepo;
 
 
     @PostMapping("/createPost")
@@ -63,6 +69,8 @@ public class PostController {
 
         postRepo.deleteById(id);
         likeRepo.deleteByPostId(id);
+        commentRepo.deleteByPostId(id);
+
         return ResponseEntity.ok("Bài viết đã được xóa thành công");
     }
 
@@ -122,4 +130,52 @@ public class PostController {
         return ResponseEntity.ok(post);
     }
 
+    // Thêm bình luận vào bài viết
+    @PostMapping("/{postId}/comments")
+    public ResponseEntity<Comment> addComment(@PathVariable String postId, @Valid @RequestBody Comment comment) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
+        
+        String userId = userDetails.getId();
+        String name = userDetails.getName();
+
+        comment.setUserId(userId);
+        comment.setName(name);
+        comment.setPostId(postId);
+        comment.setCreatedAt(System.currentTimeMillis());
+
+        Comment savedComment = commentRepo.save(comment);
+
+        // Cập nhật số lượng bình luận của bài viết
+        Post post = postRepo.findById(postId).orElseThrow();
+        post.setCmtCount(post.getCmtCount() + 1);
+        postRepo.save(post);
+
+        return ResponseEntity.ok(savedComment);
+    }
+
+
+    // Lấy danh sách bình luận của bài viết
+    @GetMapping("/{postId}/comments")
+    public ResponseEntity<List<Comment>> getComments(@PathVariable String postId) {
+        return ResponseEntity.ok(commentRepo.findByPostId(postId));
+    }
+
+    // Xóa bình luận (chỉ admin hoặc chủ comment mới được xóa)
+    @DeleteMapping("/comments/{commentId}")
+    public ResponseEntity<String> deleteComment(@PathVariable String commentId) {
+        Optional<Comment> comment = commentRepo.findById(commentId);
+        if (comment.isPresent()) {
+            commentRepo.deleteById(commentId);
+
+            // Giảm số lượng bình luận của bài viết
+            Post post = postRepo.findById(comment.get().getPostId()).orElseThrow();
+            post.setCmtCount(Math.max(0, post.getCmtCount() - 1)); // Đảm bảo không âm
+            postRepo.save(post);
+
+            return ResponseEntity.ok("Bình luận đã được xóa");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Bình luận không tồn tại");
+        }
+    }
 }
