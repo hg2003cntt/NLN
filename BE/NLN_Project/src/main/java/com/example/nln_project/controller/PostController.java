@@ -165,6 +165,7 @@ public class PostController {
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<String> deleteComment(@PathVariable String commentId) {
         Optional<Comment> comment = commentRepo.findById(commentId);
+        System.out.print(commentId);
         if (comment.isPresent()) {
             commentRepo.deleteById(commentId);
 

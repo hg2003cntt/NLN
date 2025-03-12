@@ -95,6 +95,7 @@ const ArticleDetail = () => {
   const handleDeleteComment = async (commentId) => {
     const confirmDelete = window.confirm("Bạn có chắc chắn muốn xóa bình luận này?");
     if (!confirmDelete) return;
+    console.log("id cmt:",commentId)
 
     try {
       await apiService.deleteComment(commentId);

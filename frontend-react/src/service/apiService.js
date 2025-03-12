@@ -102,8 +102,15 @@ export default class ApiService {
 
    /*topic*/
 
-    static async getTopics() {
+    static async getAllTopics() {
         const response = await axios.get(`${this.BASE_URL}/api/topics/getAlltopics`, {
+            headers: this.getHeader()
+        });
+        return response.data;
+    }
+
+    static async getTopicStatistics() {
+        const response = await axios.get(`${this.BASE_URL}/api/topics/statistics`, {
             headers: this.getHeader()
         });
         return response.data;

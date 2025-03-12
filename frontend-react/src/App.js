@@ -14,8 +14,8 @@ import { ProtectedRoute, AdminRoute } from "./service/guard";
 import ResponsiveComponent from "./component/common/ResponsiveWindow";
 import ArticleDetail from "./component/articles/ArticleDetail";
 import EditArticleForm from "./component/articles/EditArticleForm";
-import ConsultationList from "./component/admin/ConsultationList";
-import TopicManagement from "./component/admin/TopicManagement";
+import ConsultationList from "./component/admin/consultation/ConsultationList";
+import TopicManagement from "./component/admin//topic/TopicManagement";
 
 function App() {
   return (
