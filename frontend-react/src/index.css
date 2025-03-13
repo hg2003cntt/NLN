@@ -881,14 +881,14 @@ button:hover {
 /*trang topic*/
 .topic-container {
   width: 100%;
-margin: 20px auto;
-padding: 20px;
-background: white;
-/* border-radius: 10px;
-box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); */
-/* text-align: center; */
-display: flex;
-flex-direction: row;
+  margin: 10px 20px;
+  padding: 0px;
+  background: white;
+  /* border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); */
+  text-align: center;
+  display: flex;
+  flex-direction: row;
 }
 
 .topic-manage {
@@ -900,45 +900,12 @@ flex-direction: row;
   background: #fff;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
-
-.topic-chart-container {
-  flex: 2;
-  width: 100%;
-  min-width: 800px;
-  padding: 30px;
-  border: 2px solid #ddd; /* Viền */
-  border-radius: 10px;
-  background: #fff;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  display: flex;
-  /* align-items: center; */
-  text-align: center;
-}
-.chart-title {
-  width: 100%;
-  text-align: center;
-  margin-bottom: 20px; /* Tạo khoảng cách giữa tiêu đề và biểu đồ */
-}
-
-.chart-title h1 {
-  margin-bottom: 50px; /* Xóa margin mặc định */
-  
-  font-weight: bold;
-}
-
-.chart-pie {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
-
 /* Nhóm nhập liệu */
 .topic-input-group {
 display: flex;
 justify-content: center;
 gap: 10px;
-margin-bottom: 20px;
+margin: 20px 0px;
 }
 
 .topic-input {
@@ -983,7 +950,7 @@ overflow: hidden;
 }
 
 .topic-table th, .topic-table td {
-padding: 15px;
+padding: 10px;
 border: 1px solid #ddd;
 text-align: center;
 font-size: 18px;
@@ -997,15 +964,15 @@ color: #2c3e50;
 
 /* Nút xóa */
 .topic-delete-btn {
-background: #e74c3c;
-color: white;
-border: none;
-padding: 10px 20px;
-font-size: 16px;
-font-weight: bold;
-border-radius: 5px;
-cursor: pointer;
-transition: 0.3s;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin-left: 5px; /* Để nút "Sửa" và "Xóa" không sát nhau */
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  width: 60px;
 }
 
 .topic-delete-btn:hover {
@@ -1054,5 +1021,117 @@ background: #c0392b;
    padding: 8px 15px;
    font-size: 14px;
 }
+}
+.topic-edit-btn {
+  background-color: #ffc107; /* Màu vàng */
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  margin-bottom: 5px; /* Để nút "Sửa" và "Xóa" không sát nhau */
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  width: 60px;
+}
+
+.topic-edit-btn:hover {
+  background-color: #e0a800;
+}
+
+.topic-save-btn {
+  background-color: #28a745; /* Màu xanh lá */
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  margin-right: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  width: 60px;
+}
+
+.topic-save-btn:hover {
+  background-color: #218838;
+}
+
+.topic-cancel-btn {
+  background-color: #dc3545; /* Màu đỏ */
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  width: 60px;
+}
+
+.topic-cancel-btn:hover {
+  background-color: #c82333;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px; /* Tạo khoảng cách giữa các nút */
+  margin-top: 10px;
+}
+
+.pagination button {
+  background-color: #28a745; /* Màu xanh */
+  color: white;
+  border: none;
+  padding: 8px;
+  margin: 10px;
+  width: auto;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.pagination button:disabled {
+  background-color: #ccc; /* Màu xám khi bị disable */
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-weight: bold;
+  min-width: 80px; /* Đảm bảo có đủ khoảng trống cho số trang */
+  text-align: center;
+}
+
+/*chart*/
+
+.topic-chart-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Căn giữa nội dung theo chiều ngang */
+  width: 60%;
+  min-width: none;
+  padding: 25px;
+  border-radius: 10px;
+  border: 2px solid #ddd; /* Viền */
+  background: #fff;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.chart-title {
+  text-align: center;
+  width: 100%;
+  margin-bottom: 50px; /* Giữ khoảng cách với biểu đồ */
+}
+
+.chart-title h1 {
+  margin: 0; /* Xóa margin mặc định */
+  font-weight: bold;
+}
+
+.chart-pie {
+  margin: 20px 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Đảm bảo biểu đồ căn giữa theo cả hai chiều */
+  width: 100%;
+  min-width: 800px; /* Đảm bảo biểu đồ không bị thu nhỏ quá mức */
 }
 

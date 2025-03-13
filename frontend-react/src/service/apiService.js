@@ -102,7 +102,7 @@ export default class ApiService {
 
    /*topic*/
 
-    static async getAllTopics() {
+    static async getTopics() {
         const response = await axios.get(`${this.BASE_URL}/api/topics/getAlltopics`, {
             headers: this.getHeader()
         });
@@ -141,6 +141,14 @@ export default class ApiService {
             throw error;
         }
     }
+
+    static async updateTopic(topicId, updatedData) {
+        const response = await axios.put(`${this.BASE_URL}/api/topics/updateTopic/${topicId}`, updatedData, {
+            headers: this.getHeader()
+        });
+        return response.data;
+    }
+    
 
     static async deleteTopic(id) {
         try {

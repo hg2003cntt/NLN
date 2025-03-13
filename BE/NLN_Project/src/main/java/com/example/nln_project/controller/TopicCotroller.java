@@ -10,10 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 //@CrossOrigin(origins = "*", maxAge = 3600)
@@ -79,8 +76,23 @@ public class TopicCotroller {
                     return map;
                 })
                 .collect(Collectors.toList());
-
+    
         return ResponseEntity.ok(statistics);
+    }
+
+    @PutMapping("/updateTopic/{id}")
+    public ResponseEntity<?> updateTopic(@PathVariable String id, @RequestBody Topic updatedTopic) {
+        Optional<Topic> topicOptional = topicRepo.findById(id);
+
+        if (topicOptional.isPresent()) {
+            Topic existingTopic = topicOptional.get();
+            existingTopic.setName(updatedTopic.getName()); // Cập nhật tên chủ đề
+
+            topicRepo.save(existingTopic);
+            return ResponseEntity.ok(existingTopic);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Chủ đề không tồn tại");
+        }
     }
 
 
