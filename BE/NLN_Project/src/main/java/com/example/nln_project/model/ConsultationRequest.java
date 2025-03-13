@@ -33,4 +33,6 @@ public class ConsultationRequest {
     private String availableTimeSlots; // Bắt buộc phải có khung giờ tư vấn
 
     private String userId; // Liên kết với tài khoản đã đăng nhập
+
+    private String status;
 }

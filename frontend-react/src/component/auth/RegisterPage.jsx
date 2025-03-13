@@ -138,7 +138,7 @@ const RegisterPage = () => {
     }
       alert("Đăng ký thành công!");
     } catch (error) {
-      alert(error.response?.data?.message || "Đăng nhập thất bại. Vui lòng thử lại!");
+      alert(error.response?.data?.message || "Đăng ký thất bại. Vui lòng thử lại!");
     }
   };
 
