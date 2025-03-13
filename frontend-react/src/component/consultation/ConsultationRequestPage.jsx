@@ -100,9 +100,11 @@ const ConsultationModal = ({ showModal, closeModal }) => {
                             <label htmlFor="availableTimeSlots" className="consultation-label">Khung giờ tư vấn</label>
                             <select id="availableTimeSlots" name="availableTimeSlots" value={formData.availableTimeSlots} onChange={handleChange}>
                                 <option value="">Chọn khung giờ tư vấn :</option>
-                                <option value="09:00 - 10:00">09:00 - 10:00</option>
-                                <option value="10:00 - 11:00">10:00 - 11:00</option>
-                                <option value="14:00 - 15:00">14:00 - 15:00</option>
+                                <option value="08:30 - 10:00">08:30 - 10:00</option>
+                                <option value="10:30 - 12:00">10:30 - 12:00</option>
+                                <option value="14:30 - 16:00">14:30 - 16:00</option>
+                                <option value="16:30 - 18:00">16:30 - 18:00</option>
+                                <option value="18:30 - 20:00">18:30 - 20:00</option>
                             </select>
                             {errors.availableTimeSlots && <p className="error-text">{errors.availableTimeSlots}</p>}
                         </div>

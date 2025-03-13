@@ -21,6 +21,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -128,7 +129,7 @@ public class AuthController {
         accountRepo.save(account);
         return ResponseEntity.ok(new MessageResponse("Successfully registered!"));
     }
-    
+
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUserInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -139,12 +140,13 @@ public class AuthController {
         }
 
         AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
-        Account user = accountRepo.findByUsername(userDetails.getUsername()).orElse(null);
+        Account user = accountRepo.findByUsername(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        if (user.getAvatar() == null) {
+            user.setAvatar(""); // Có thể để `null` hoặc ảnh mặc định
         }
 
         return ResponseEntity.ok(user);
     }
 }
+
