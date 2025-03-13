@@ -133,7 +133,7 @@ export default class ApiService {
 
    /*topic*/
 
-    static async getAllTopics() {
+    static async getTopics() {
         const response = await axios.get(`${this.BASE_URL}/api/topics/getAlltopics`, {
             headers: this.getHeader()
         });

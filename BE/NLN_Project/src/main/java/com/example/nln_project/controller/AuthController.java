@@ -114,10 +114,15 @@ public class AuthController {
                     .body(new MessageResponse("Error: Email is already in use!"));
         }
 
+        String defaultAvatar = "https://www.w3schools.com/w3images/avatar3.png\n";
+
         // Create a new user's account
         Account account = new Account(signupRequest.getUsername(), encoder.encode(signupRequest.getPassword()), signupRequest.getName(),
                 signupRequest.getDateOfBirth(), signupRequest.getEmail(), signupRequest.getPhone()
         );
+
+        account.setAvatar(defaultAvatar);
+
         System.out.println(account.getUsername());
         Set<Role> roles = new HashSet<>();
 

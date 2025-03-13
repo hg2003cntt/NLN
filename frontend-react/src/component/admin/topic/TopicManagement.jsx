@@ -12,7 +12,7 @@ const TopicManagement = () => {
 
     const fetchTopics = async () => {
         try {
-            const data = await ApiService.getAllTopics();
+            const data = await ApiService.getTopics();
             setTopics(data);
         } catch (error) {
             console.error("Lỗi khi tải danh sách chủ đề:", error);
