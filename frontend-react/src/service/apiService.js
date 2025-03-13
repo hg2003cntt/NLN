@@ -77,6 +77,37 @@ export default class ApiService {
                 throw error;
             }
         }
+        static async uploadUserAvatar(data) {
+            const response = await axios.post(
+                `${this.BASE_URL}/api/user/upload-avatar`,
+                data,
+                {
+                    headers: this.getHeader(),
+                }
+            );
+            return response.data;
+        }
+        static async updateUserProfile(data) {
+            const response = await axios.put(
+                `${this.BASE_URL}/api/user/update-profile`,
+                data,
+                {
+                    headers: this.getHeader(),
+                }
+            );
+            return response.data;
+        }
+        static async updateUserPassword(data) {
+                    const response = await axios.put(
+                        `${this.BASE_URL}/api/user/update-password`,
+                        data,
+                        {
+                            headers: this.getHeader(),
+                        }
+                    );
+                    return response.data;
+                }
+
 
     static async getUser(userId) {
         const response = await axios.get(`${this.BASE_URL}/users/get-by-id/${userId}`, {
