@@ -21,6 +21,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -113,10 +114,15 @@ public class AuthController {
                     .body(new MessageResponse("Error: Email is already in use!"));
         }
 
+        String defaultAvatar = "https://www.w3schools.com/w3images/avatar3.png\n";
+
         // Create a new user's account
         Account account = new Account(signupRequest.getUsername(), encoder.encode(signupRequest.getPassword()), signupRequest.getName(),
                 signupRequest.getDateOfBirth(), signupRequest.getEmail(), signupRequest.getPhone()
         );
+
+        account.setAvatar(defaultAvatar);
+
         System.out.println(account.getUsername());
         Set<Role> roles = new HashSet<>();
 
@@ -128,7 +134,7 @@ public class AuthController {
         accountRepo.save(account);
         return ResponseEntity.ok(new MessageResponse("Successfully registered!"));
     }
-    
+
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUserInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -139,12 +145,13 @@ public class AuthController {
         }
 
         AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
-        Account user = accountRepo.findByUsername(userDetails.getUsername()).orElse(null);
+        Account user = accountRepo.findByUsername(userDetails.getUsername()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        if (user.getAvatar() == null) {
+            user.setAvatar(""); // Có thể để `null` hoặc ảnh mặc định
         }
 
         return ResponseEntity.ok(user);
     }
 }
+

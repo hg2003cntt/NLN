@@ -765,6 +765,252 @@ button:hover {
 .delete-btn:hover {
   background: darkred;
 }
+ /* 🟢 Tổng thể Profile */
+ .profile-container {
+     min-height: 100vh;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     background: linear-gradient(to right, #f8f9fa, #e9ecef); /* Nền nhẹ nhàng */
+     padding: 20px;
+ }
+
+ /* 🔵 Card Profile */
+ .profile-card {
+     display: flex;
+     flex-direction: row; /* Avatar & form nằm ngang */
+     background: #fff;
+     border-radius: 16px;
+     box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+     padding: 30px;
+     width: 90%;
+     max-width: 850px; /* Kích thước phù hợp */
+     align-items: center;
+     justify-content: space-between;
+     gap: 30px; /* Khoảng cách giữa avatar và thông tin */
+ }
+
+ /* 🟠 Avatar bên trái */
+ .profile-avatar-section {
+     flex: 0.4;
+     display: flex;
+     flex-direction: column;
+     justify-content: center;
+     align-items: center;
+     gap: 15px; /* Khoảng cách giữa avatar và nút */
+ }
+
+ .profile-avatar {
+     width: 180px;
+     height: 180px;
+     border-radius: 50%;
+     border: 4px solid #4facfe;
+     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+     transition: transform 0.3s ease-in-out;
+ }
+
+ .profile-avatar:hover {
+     transform: scale(1.05);
+ }
+
+ /* 🟡 Nút tải ảnh */
+ .upload-avatar-label {
+     background: #4facfe;
+     color: white;
+     padding: 8px 12px;
+     border-radius: 6px;
+     font-size: 14px;
+     cursor: pointer;
+     text-align: center;
+     display: inline-block;
+     transition: background 0.3s ease-in-out;
+ }
+
+ .upload-avatar-label:hover {
+     background: #3a8dd5;
+ }
+
+ /* Ẩn input file nhưng vẫn hoạt động */
+ .profile-avatar-section input[type="file"] {
+     display: none;
+ }
+
+ /* 🟢 Nút cập nhật avatar */
+ .upload-btn {
+     padding: 10px;
+     font-size: 16px;
+     font-weight: bold;
+     background: #28a745;
+     color: white;
+     border: none;
+     border-radius: 6px;
+     cursor: pointer;
+     transition: background 0.3s ease-in-out;
+ }
+
+ .upload-btn:hover {
+     background: #218838;
+ }
+
+ /* 🟣 Thông tin bên phải */
+ .profile-info {
+     flex: 1;
+     display: flex;
+     flex-direction: column;
+     justify-content: center;
+     padding-left: 30px;
+ }
+
+ .profile-title {
+     font-size: 26px;
+     font-weight: bold;
+     color: #333;
+     margin-bottom: 20px;
+     text-transform: uppercase;
+ }
+
+ /* 🟡 Form nhập thông tin */
+ .profile-form {
+     width: 100%;
+     display: flex;
+     flex-direction: column;
+     gap: 14px;
+ }
+
+ .profile-form label {
+     font-size: 16px;
+     font-weight: bold;
+     color: #444;
+ }
+
+ .profile-form input {
+     width: 100%;
+     padding: 12px;
+     border-radius: 8px;
+     border: 1px solid #ddd;
+     background: #f8f8f8;
+     font-size: 16px;
+     transition: all 0.3s ease-in-out;
+ }
+
+ /* 🟢 Nút Chỉnh sửa & Lưu */
+ .edit-btn, .save-btn {
+     margin-top: 15px;
+     padding: 10px;
+     font-size: 16px;
+     font-weight: bold;
+     border: none;
+     border-radius: 6px;
+     cursor: pointer;
+     transition: background 0.3s ease-in-out;
+ }
+
+ .edit-btn {
+     background: #4facfe;
+     color: white;
+ }
+
+ .edit-btn:hover {
+     background: #3a8dd5;
+ }
+
+ .save-btn {
+     background: #28a745;
+     color: white;
+ }
+
+ .save-btn:hover {
+     background: #218838;
+ }
+
+ /* 🟡 Hiệu ứng khi focus vào input */
+ .profile-form input:focus {
+     border: 1px solid #4facfe;
+     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+     outline: none;
+ }
+
+ /* 📱 Responsive */
+ @media (max-width: 768px) {
+     .profile-card {
+         flex-direction: column; /* Chuyển sang dọc trên mobile */
+         padding: 20px;
+     }
+
+     .profile-avatar-section {
+         flex-direction: column;
+     }
+
+     .profile-info {
+         padding-left: 0;
+         text-align: center;
+     }
+ }
+/* Modal overlay cho đổi mật khẩu */
+.modal-change-password .modal-overlay {
+    background: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Modal content cho đổi mật khẩu */
+.modal-change-password .modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 100%;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Các button trong modal đổi mật khẩu */
+.modal-change-password button.update-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.modal-change-password button.cancel-btn {
+    background-color: #f44336;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.modal-change-password button.update-btn:hover,
+.modal-change-password button.cancel-btn:hover {
+    opacity: 0.8;
+}
+
+/* Các input trong modal đổi mật khẩu */
+.modal-change-password input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.modal-change-password .error-message {
+    color: red;
+    font-size: 14px;
+}
 
 /*ConsultationList page*/
 /* Tổng thể */

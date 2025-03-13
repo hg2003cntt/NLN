@@ -14,7 +14,6 @@ const TopicManagement = () => {
   useEffect(() => {
     fetchTopics();
   }, []);
-
   const fetchTopics = async () => {
     try {
       const data = await ApiService.getTopics();
