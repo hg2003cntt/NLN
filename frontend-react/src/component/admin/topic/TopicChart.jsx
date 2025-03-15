@@ -37,7 +37,7 @@ const TopicChart = ({ fetchChartData }) => {
         <h1>Tỷ lệ chủ đề được sử dụng cho các bài viết</h1>
       </div>
       <div className="chart-pie">
-        <ResponsiveContainer width="100%" height={500}>
+        <ResponsiveContainer width="100%" height={380}>
           <PieChart>
             <Pie
               data={chartData}
@@ -45,7 +45,7 @@ const TopicChart = ({ fetchChartData }) => {
               nameKey="name"
               cx="50%"
               cy="50%"
-              outerRadius={250}
+              outerRadius={180}
             >
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.color} />

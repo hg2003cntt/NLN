@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import TopicChart from "./TopicChart";
 import ApiService from "../../../service/apiService";
 
-const ITEMS_PER_PAGE = 6; // Số chủ đề mỗi trang
+const ITEMS_PER_PAGE = 5; // Số chủ đề mỗi trang
 
 const TopicManagement = () => {
   const [topics, setTopics] = useState([]);
@@ -41,6 +41,7 @@ const TopicManagement = () => {
 
     try {
       await ApiService.createTopic({ name: newTopic });
+      
       await fetchTopics();
       setNewTopic("");
       await fetchChartData();
@@ -84,13 +85,15 @@ const TopicManagement = () => {
     try {
       await ApiService.deleteTopic(topicID);
       setTopics(topics.filter((topic) => topic.topicID !== topicID));
+      
       await fetchChartData();
+      alert("Xóa chủ đề thành công!");
     } catch (error) {
       console.error("Lỗi khi xóa chủ đề:", error);
     }
   };
 
-  // ✅ Tính toán phân trang chỉ trong topic-manage
+  // Tính toán phân trang chỉ trong topic-manage
   const totalPages = Math.ceil(topics.length / ITEMS_PER_PAGE);
   const paginatedTopics = topics.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,

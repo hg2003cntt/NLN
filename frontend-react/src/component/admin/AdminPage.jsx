@@ -13,7 +13,7 @@ function AdminPage() {
     <div className="admin-container">
       {/* Sidebar */}
       <aside className="admin-sidebar">
-        <h1 className="admin-title">Admin Panel</h1>
+        <h1 className="admin-title">Trang quản trị</h1>
         <ul className="admin-nav">
           <li>
             <NavLink to="/admin/customers" className={({ isActive }) => (isActive ? "active" : "")}>

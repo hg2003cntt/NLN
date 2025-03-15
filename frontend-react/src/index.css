@@ -681,6 +681,7 @@ button:hover {
 
 .admin-sidebar {
   width: 300px;
+  flex: 0 0 300px;
   background-color: #1a747a;
   color: white;
   padding: 20px;
@@ -1017,7 +1018,7 @@ button:hover {
 .consultation-container {
   display: flex;
   flex-direction: row;
-  margin: 20px;
+  margin: 10px;
 }
 
 .content-wrapper {
@@ -1032,10 +1033,12 @@ button:hover {
 }
 .filter {
   flex: 1; /* Chiếm 1 phần của không gian */
+  width: fit-content;
+  height: fit-content; 
   margin-left: 0px;
   margin-top: 60px;
   padding: 30px;
-  font-size: 20px;
+  font-size: 14px;
   background: #fff;
   border-radius: 8px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
@@ -1046,7 +1049,8 @@ button:hover {
   margin-top: 20px;
   margin-right: 30px;
   overflow-x: auto;
-  font-size: 18px;
+  font-size: 14px;
+
 }
 
 .consultation-table {
@@ -1059,8 +1063,8 @@ button:hover {
 }
 
 .consultation-table th, .consultation-table td {
-  padding: 20px;
-  text-align: left;
+  padding: 10px;
+  text-align: center;
   border: 1px solid #ddd;
 }
 
@@ -1082,7 +1086,7 @@ button:hover {
   border-radius: 5px;
   background-color: white;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .status-dropdown:focus {
@@ -1102,21 +1106,22 @@ button:hover {
 
 .filter-container input, .filter-container select {
   padding: 10px;
-  margin: 10px 0px;
+  margin: 5px 0px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 18px;
+  font-size: 14px;
 
 }
 
 .filter-container button {
   padding: 10px;
-  margin: 10px 0;
+  margin: 5px 0;
   background: #007bff;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 14px;
 }
 
 .filter-container button:hover {
@@ -1127,7 +1132,7 @@ button:hover {
 /*trang topic*/
 .topic-container {
   width: 100%;
-  margin: 10px 20px;
+  margin: 10px;
   padding: 0px;
   background: white;
   /* border-radius: 10px;
@@ -1138,7 +1143,7 @@ button:hover {
 }
 
 .topic-manage {
-  flex: 3;
+  flex: 1;
   padding: 30px 50px;
   margin-right: 40px;
   border: 2px solid #ddd; /* Viền */
@@ -1347,37 +1352,45 @@ background: #c0392b;
 }
 
 /*chart*/
-
 .topic-chart-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Căn giữa nội dung theo chiều ngang */
-  width: 60%;
-  min-width: none;
-  padding: 25px;
-  border-radius: 10px;
-  border: 2px solid #ddd; /* Viền */
-  background: #fff;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.chart-title {
-  text-align: center;
+  flex: 2;
   width: 100%;
-  margin-bottom: 50px; /* Giữ khoảng cách với biểu đồ */
+  max-width: 50%; /* Điều chỉnh lại kích thước */
+  padding: 30px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #fff;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.chart-title h1 {
-  margin: 0; /* Xóa margin mặc định */
-  font-weight: bold;
+.chart-title{
+  margin: 0px 50px;
 }
 
 .chart-pie {
-  margin: 20px 0px;
+  margin-top: 30px;
   display: flex;
   justify-content: center;
-  align-items: center; /* Đảm bảo biểu đồ căn giữa theo cả hai chiều */
+  align-items: center;
   width: 100%;
-  min-width: 800px; /* Đảm bảo biểu đồ không bị thu nhỏ quá mức */
+  max-width: 100%; /* Đảm bảo biểu đồ không bị tràn */
+  min-width: unset; /* Xóa min-width cố định */
+  height: auto;
 }
 
+/* Đảm bảo biểu đồ hiển thị tốt trên thiết bị nhỏ */
+@media (max-width: 1024px) {
+  .topic-chart-container {
+    max-width: 60%;
+  }
+}
+
+@media (max-width: 768px) {
+  .topic-chart-container {
+    max-width: 90%;
+  }
+
+  .chart-pie {
+    width: 100%;
+  }
+}

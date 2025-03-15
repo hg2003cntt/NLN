@@ -5,18 +5,43 @@ import "react-quill/dist/quill.snow.css";
 import { useNavigate } from "react-router-dom";
 
 const ArticleForm = () => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
-    image: "", // Lưu base64 vào đây
+    image: "",
     topicId: "",
     content: "",
     author: "",
   });
 
   const [topics, setTopics] = useState([]);
-  const [preview, setPreview] = useState(null); // Lưu URL để preview
-  const fileInputRef = useRef(null); // Dùng useRef để reset input file
+  const [preview, setPreview] = useState(null);
+  const fileInputRef = useRef(null); // Ref để reset file input
+  const quillRef = useRef(null); // Ref trực tiếp cho ReactQuill
+
+  // Thay thế DOMNodeInserted bằng MutationObserver
+  useEffect(() => {
+    const targetNode = document.getElementById("react-quill-container");
+    if (!targetNode) {
+      console.error("Không tìm thấy phần tử cần theo dõi!");
+      return;
+    }
+
+    const config = { childList: true, subtree: true };
+
+    const callback = (mutationsList) => {
+      mutationsList.forEach((mutation) => {
+        if (mutation.type === "childList") {
+          console.log("Node con đã được thêm hoặc xóa.");
+        }
+      });
+    };
+
+    const observer = new MutationObserver(callback);
+    observer.observe(targetNode, config);
+
+    return () => observer.disconnect(); // Dọn dẹp observer khi component bị unmount
+  }, []);
 
   useEffect(() => {
     const fetchTopics = async () => {
@@ -31,11 +56,10 @@ const ArticleForm = () => {
   }, []);
 
   const handleChange = (e) => {
-    // Kiểm tra nếu e là một chuỗi thì đây là nội dung từ ReactQuill
     if (typeof e === "string") {
       setFormData((prevState) => ({
         ...prevState,
-        content: e, // Lưu nội dung vào state
+        content: e, // Nội dung từ ReactQuill
       }));
     } else {
       const { name, value } = e.target;
@@ -45,39 +69,34 @@ const ArticleForm = () => {
       }));
     }
   };
-  
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
-      // Xoá URL cũ nếu có
       if (preview) URL.revokeObjectURL(preview);
 
-      // Tạo URL preview tạm thời
       const objectURL = URL.createObjectURL(selectedFile);
       setPreview(objectURL);
 
-      // Chuyển ảnh thành base64 để lưu vào database
       const reader = new FileReader();
       reader.readAsDataURL(selectedFile);
       reader.onloadend = () => {
         setFormData((prevState) => ({
           ...prevState,
-          image: reader.result, // Lưu base64 vào state
+          image: reader.result,
         }));
       };
     }
   };
 
   const handleRemoveImage = () => {
-    if (preview) URL.revokeObjectURL(preview); // Giải phóng bộ nhớ
+    if (preview) URL.revokeObjectURL(preview);
     setPreview(null);
     setFormData((prevState) => ({
       ...prevState,
-      image: "", // Xóa base64 trong state
+      image: "",
     }));
 
-    // Reset input file
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -86,7 +105,7 @@ const ArticleForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { title, topicId, content, author, image } = formData;
+    const { title, topicId, content, author } = formData;
 
     if (!title || !topicId || !content || !author) {
       alert("Vui lòng không bỏ trống thông tin!");
@@ -98,15 +117,7 @@ const ArticleForm = () => {
     try {
       const createdPost = await apiService.postArticle(formData);
       alert("Thêm bài viết thành công!");
-
-      // // Reset form
-      // setFormData({ title: "", image: "", topicId: "", content: "", author: "" });
-      // setPreview(null);
-      // if (fileInputRef.current) {
-      //   fileInputRef.current.value = "";
-      
       setTimeout(() => navigate(`/article/${createdPost.id}`));
-      
     } catch (error) {
       alert("Lỗi xảy ra khi đăng bài!");
     }
@@ -135,14 +146,22 @@ const ArticleForm = () => {
 
         <div className="form-group">
           <label>Nội dung</label>
-          <ReactQuill value={formData.content} onChange={handleChange} theme="snow" required />
+          <div id="react-quill-container">
+            <ReactQuill
+              ref={quillRef} // Gán ref trực tiếp để tránh cảnh báo findDOMNode
+              value={formData.content}
+              onChange={handleChange}
+              theme="snow"
+              required
+            />
+          </div>
         </div>
 
         <div className="form-group">
           <label>Ảnh</label>
           <input
             type="file"
-            ref={fileInputRef} // Gán ref để reset input file
+            ref={fileInputRef}
             name="image"
             onChange={handleFileChange}
             accept="image/*"

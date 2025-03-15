@@ -4,6 +4,14 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+const originalWarn = console.warn;
+console.warn = (message, ...args) => {
+  if (message.includes("findDOMNode")) {
+    return; // Bỏ qua cảnh báo liên quan đến findDOMNode
+  }
+  originalWarn(message, ...args);
+};
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>

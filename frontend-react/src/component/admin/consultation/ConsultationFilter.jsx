@@ -24,7 +24,7 @@ const ConsultationFilter = ({ onFilterChange }) => {
 
   return (
     <div className="filter-container">
-      <h1>Lọc lịch tư vấn</h1>
+      <h2>Lọc lịch tư vấn</h2>
       <input
         type="text"
         name="fullName"
