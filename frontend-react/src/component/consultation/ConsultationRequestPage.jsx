@@ -6,6 +6,7 @@ const ConsultationModal = ({ showModal, closeModal }) => {
         fullName: "",
         dateOfBirth: "",
         phoneNumber: "",
+        consultationDate: "",
         availableTimeSlots: "",
         description: "",
     });
@@ -48,6 +49,7 @@ const ConsultationModal = ({ showModal, closeModal }) => {
         setErrors({});
 
         const newErrors = {};
+        if (!formData.consultationDate) newErrors.consultationDate = "Vui lòng chọn ngày tư vấn!";
         if (!formData.availableTimeSlots) newErrors.availableTimeSlots = "Vui lòng chọn khung giờ tư vấn!";
         if (!formData.description) newErrors.description = "Vui lòng nhập mô tả!";
 
@@ -66,6 +68,9 @@ const ConsultationModal = ({ showModal, closeModal }) => {
                 alert("Đăng ký thất bại, vui lòng thử lại!");
             });
     };
+
+    // Lấy ngày hôm nay dưới dạng YYYY-MM-DD để làm giá trị `min` trong input date
+    const today = new Date().toISOString().split("T")[0];
 
     return (
         <div className="modal-overlay">
@@ -93,6 +98,20 @@ const ConsultationModal = ({ showModal, closeModal }) => {
                         <div className="consultation-form-group">
                             <label htmlFor="phoneNumber" className="consultation-label">Số điện thoại :</label>
                             <input id="phoneNumber" type="text" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} />
+                        </div>
+
+                        {/* Ngày tư vấn */}
+                        <div className="consultation-form-group">
+                            <label htmlFor="consultationDate" className="consultation-label">Ngày tư vấn :</label>
+                            <input
+                                id="consultationDate"
+                                type="date"
+                                name="consultationDate"
+                                value={formData.consultationDate}
+                                onChange={handleChange}
+                                min={today} // Chỉ cho phép chọn từ hôm nay trở đi
+                            />
+                            {errors.consultationDate && <p className="error-text">{errors.consultationDate}</p>}
                         </div>
 
                         {/* Khung giờ tư vấn */}
