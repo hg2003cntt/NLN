@@ -12,6 +12,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,7 +46,16 @@ public class ConsultationController {
                 return ResponseEntity.badRequest().body("Vui lòng nhập mô tả vấn đề!");
             }
 
-            // Thiết lập thông tin từ tài khoản người dùng
+            if (consultationRequest.getConsultationDate() == null) {
+                return ResponseEntity.badRequest().body("Vui lòng chọn ngày tư vấn!");
+            }
+
+            // Kiểm tra ngày tư vấn không phải quá khứ
+            if (consultationRequest.getConsultationDate().isBefore(LocalDate.now())) {
+                return ResponseEntity.badRequest().body("Ngày tư vấn không hợp lệ!");
+            }
+
+            // Thiết lập thông tin user
             consultationRequest.setFullName(userDetails.getName());
             consultationRequest.setDateOfBirth(userDetails.getDateOfBirth());
             consultationRequest.setPhoneNumber(userDetails.getPhone());
