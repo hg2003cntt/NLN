@@ -10,32 +10,35 @@ const COLORS = [
   "#9C27B0",
   "#E91E63",
 ];
+
 const generateRandomColor = () => {
-  return `#${Math.floor(Math.random() * 16777215).toString(16)}`; // Random hex color
+  return `#${Math.floor(Math.random() * 16777215).toString(16)}`; // Tạo màu ngẫu nhiên
 };
 
 const TopicChart = ({ fetchChartData }) => {
   const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
-    updateChart();
-  }, [fetchChartData]);
+    const fetchData = async () => {
+      try {
+        const data = await fetchChartData();
+        const formattedData = data.map((topic, index) => ({
+          name: topic.name,
+          value: topic.value,
+          color: COLORS[index % COLORS.length] || generateRandomColor(),
+        }));
+        setChartData(formattedData);
+      } catch (error) {
+        console.error("Lỗi khi tải dữ liệu biểu đồ:", error);
+      }
+    };
 
-  const updateChart = async () => {
-    const data = await fetchChartData();
-    const formattedData = data.map((topic, index) => ({
-      name: topic.name,
-      value: topic.value,
-      color: COLORS[index % COLORS.length] || generateRandomColor(),
-    }));
-    setChartData(formattedData);
-  };
+    fetchData();
+  }, [fetchChartData]);
 
   return (
     <div className="topic-chart">
-      <div className="chart-title">
-        <h1>Tỷ lệ chủ đề được sử dụng cho các bài viết</h1>
-      </div>
+      <h1 className="chart-title">Tỷ lệ chủ đề được sử dụng cho các bài viết</h1>
       <div className="chart-pie">
         <ResponsiveContainer width="100%" height={380}>
           <PieChart>

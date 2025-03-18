@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./component/common/navbar";
-import Footer from "./component/common/footer";
+import { PsychologyCareFooter } from './component/common/footer';
 import LoginPage from "./component/auth/LoginPage";
 import RegisterPage from "./component/auth/RegisterPage";
 import HomePage from "./component/home/HomePage";
@@ -16,6 +16,7 @@ import ArticleDetail from "./component/articles/ArticleDetail";
 import EditArticleForm from "./component/articles/EditArticleForm";
 import ConsultationList from "./component/admin/consultation/ConsultationList";
 import TopicManagement from "./component/admin//topic/TopicManagement";
+import CustomerManagement from "./component/admin/customer/CustomerManage";
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
               element={<AdminRoute element={<AdminPage />} />}
             >
               <Route index element={<h2>Chào mừng đến trang Admin</h2>} />
+              <Route path="customers" element={<CustomerManagement />} />
               <Route path="consultations" element={<ConsultationList />} />
               <Route path="topics" element={<TopicManagement />} />
             </Route>
@@ -56,7 +58,7 @@ function App() {
             <Route path="*" element={<Navigate to="/login" />} />
           </Routes>
         </div>
-        <Footer />
+        <PsychologyCareFooter />
       </div>
     </BrowserRouter>
   );

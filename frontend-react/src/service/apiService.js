@@ -468,6 +468,23 @@ export default class ApiService {
             }
         }
         
+
+        /** CUSTOMER MANAGEMENT */
+
+        static async searchCustomerByPhone(phone) {
+            const response = await axios.get(`${this.BASE_URL}/consultations/admin/search?phone=${phone}`, {
+                headers: this.getHeader(),
+            });
+            return response.data;
+        }
+
+        static async updateCustomerPhone(id, newPhone) {
+            const response = await axios.put(`${this.BASE_URL}/consultations/${id}/update-phone`,
+                newPhone, 
+                { headers: this.getHeader() }
+            );
+            return response.data;
+        }
         
 
     /** AUTHENTICATION CHECKER */

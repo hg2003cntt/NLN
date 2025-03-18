@@ -168,7 +168,7 @@ const ArticleForm = () => {
           />
           {preview && (
             <div className="image-preview-container">
-              <img src={preview} alt="Image Preview" className="image-preview" />
+              <img src={preview} alt="Preview" className="image-preview" />
               <button type="button" className="remove-image-btn" onClick={handleRemoveImage}>
                 Xóa ảnh
               </button>
