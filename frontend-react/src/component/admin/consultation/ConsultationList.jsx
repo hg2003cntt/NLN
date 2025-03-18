@@ -43,6 +43,21 @@ const ConsultationList = () => {
     setCurrentPage(0); // Reset trang khi lọc
   };
 
+  const handleStatusChange = async (id, newStatus) => {
+    try{
+      await ApiService.updateConsultationStatus(id,newStatus);
+      setConsultations((prev) =>
+        prev.map((c) => (c.id===id ? {...c, status: newStatus}: c))
+      );
+      setFilteredConsultations((prev) => 
+        prev.map((c)=> (c.id === id ? {...c, status: newStatus}:c))
+      );
+    }catch (error){
+      console.error("Lỗi khi cập nhật trạng thái:", error);
+      alert("Cập nhật trạng thái thất bại!");
+    }
+  }
+
   // Lấy dữ liệu của trang hiện tại
   const paginatedConsultations = filteredConsultations.slice(
     currentPage * pageSize,
@@ -67,6 +82,7 @@ const ConsultationList = () => {
                     <th>Tên khách hàng</th>
                     <th>Số điện thoại</th>
                     <th>Ngày sinh</th>
+                    <th>Ngày tư vấn</th>
                     <th>Khung giờ tư vấn</th>
                     <th>Trạng thái</th>
                   </tr>
@@ -79,13 +95,14 @@ const ConsultationList = () => {
                       <td>{item.fullName}</td>
                       <td>{item.phoneNumber}</td>
                       <td>{item.dateOfBirth}</td>
+                      <td>{item.consultationDate}</td>
                       <td>{item.availableTimeSlots}</td>
                       <td>
                         <select
                           className="status-dropdown"
                           value={item.status}
                           onChange={(e) =>
-                            console.log(`Đổi trạng thái ${e.target.value}`)
+                            handleStatusChange(item.id, e.target.value)
                           }
                         >
                           <option value="Chưa liên hệ">Chưa liên hệ</option>

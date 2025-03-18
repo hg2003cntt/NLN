@@ -2,10 +2,15 @@ import React, { useState, useEffect } from "react";
 import ApiService from "../../service/apiService";
 
 const ConsultationModal = ({ showModal, closeModal }) => {
-    const [formData, setFormData] = useState({
+    // Lưu dữ liệu từ API
+    const [userInfo, setUserInfo] = useState({
         fullName: "",
         dateOfBirth: "",
         phoneNumber: "",
+    });
+
+    // Lưu dữ liệu từ form (các trường người dùng nhập)
+    const [formData, setFormData] = useState({
         consultationDate: "",
         availableTimeSlots: "",
         description: "",
@@ -16,15 +21,22 @@ const ConsultationModal = ({ showModal, closeModal }) => {
 
     useEffect(() => {
         if (showModal) {
+            setLoading(true);
             ApiService.getUserProfile()
                 .then(response => {
                     console.log("Dữ liệu từ API:", response);
-                    setFormData(prevData => ({
-                        ...prevData,
+                    setUserInfo({
                         fullName: response.name || "",
                         dateOfBirth: response.dateOfBirth ? response.dateOfBirth.split("T")[0] : "",
                         phoneNumber: response.phone || "",
-                    }));
+                    });
+
+                    // Reset form khi mở modal
+                    setFormData({
+                        consultationDate: "",
+                        availableTimeSlots: "",
+                        description: "",
+                    });
                 })
                 .catch(error => {
                     console.error("Lỗi khi lấy thông tin người dùng:", error);
@@ -58,10 +70,18 @@ const ConsultationModal = ({ showModal, closeModal }) => {
             return;
         }
 
-        ApiService.submitConsultationRequest(formData)
+        ApiService.submitConsultationRequest({ ...userInfo, ...formData })
             .then(() => {
                 alert("Đăng ký tư vấn thành công!");
-                closeModal();
+
+                // Reset chỉ các trường user nhập, giữ nguyên dữ liệu API
+                setFormData({
+                    consultationDate: "",
+                    availableTimeSlots: "",
+                    description: "",
+                });
+
+                closeModal(); // Đóng modal
             })
             .catch(error => {
                 console.error("Lỗi khi đăng ký tư vấn:", error);
@@ -85,19 +105,19 @@ const ConsultationModal = ({ showModal, closeModal }) => {
                         {/* Họ và tên */}
                         <div className="consultation-form-group">
                             <label htmlFor="fullName" className="consultation-label">Họ và tên :</label>
-                            <input id="fullName" type="text" name="fullName" value={formData.fullName} disabled />
+                            <input id="fullName" type="text" value={userInfo.fullName} disabled />
                         </div>
 
                         {/* Ngày tháng năm sinh */}
                         <div className="consultation-form-group">
                             <label htmlFor="dateOfBirth" className="consultation-label">Ngày tháng năm sinh :</label>
-                            <input id="dateOfBirth" type="date" name="dateOfBirth" value={formData.dateOfBirth} disabled />
+                            <input id="dateOfBirth" type="date" value={userInfo.dateOfBirth} disabled />
                         </div>
 
                         {/* Số điện thoại (cho phép chỉnh sửa) */}
                         <div className="consultation-form-group">
                             <label htmlFor="phoneNumber" className="consultation-label">Số điện thoại :</label>
-                            <input id="phoneNumber" type="text" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} />
+                            <input id="phoneNumber" type="text" value={userInfo.phoneNumber} disabled />
                         </div>
 
                         {/* Ngày tư vấn */}

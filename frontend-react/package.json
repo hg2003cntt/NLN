@@ -20,6 +20,10 @@
     "react-quill": "^2.0.0",
     "react-router-dom": "^7.1.5",
     "react-scripts": "^5.0.1",
+    "react-slick": "^0.30.3",
+    "react-sticky": "^6.0.3",
+    "recharts": "^2.15.1",
+    "slick-carousel": "^1.8.1",
     "web-vitals": "^2.1.0"
   },
   "scripts": {
