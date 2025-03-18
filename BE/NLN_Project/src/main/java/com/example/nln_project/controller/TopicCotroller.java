@@ -10,8 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 //@CrossOrigin(origins = "*", maxAge = 3600)
@@ -44,6 +43,7 @@ public class TopicCotroller {
     @PostMapping("/createTopic")
     public ResponseEntity<?>createTopic(@RequestBody Topic topic) {
         if (!topicRepo.existsByName(topic.getName())) {
+            System.out.println(topic.getName());
         return new ResponseEntity<>(topicRepo.save(topic), HttpStatus.CREATED);
         }else return ResponseEntity.badRequest().body(new MessageResponse("Topic already exists"));
     }
@@ -64,5 +64,38 @@ public class TopicCotroller {
 
         return ResponseEntity.ok("Topic and related posts deleted successfully");
     }
+
+    @GetMapping("/statistics")
+    public ResponseEntity<List<Map<String, Object>>> getTopicStatistics() {
+        List<Map<String, Object>> statistics = topicRepo.findAll().stream()
+                .map(topic -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("topicID", topic.getId());
+                    map.put("name", topic.getName());
+                    map.put("postCount", postRepo.countPostsByTopicId(topic.getId())); // Đếm số bài viết theo chủ đề
+                    return map;
+                })
+                .collect(Collectors.toList());
+    
+        return ResponseEntity.ok(statistics);
+    }
+
+    @PutMapping("/updateTopic/{id}")
+    public ResponseEntity<?> updateTopic(@PathVariable String id, @RequestBody Topic updatedTopic) {
+        Optional<Topic> topicOptional = topicRepo.findById(id);
+
+        if (topicOptional.isPresent()) {
+            Topic existingTopic = topicOptional.get();
+            existingTopic.setName(updatedTopic.getName()); // Cập nhật tên chủ đề
+
+            topicRepo.save(existingTopic);
+            return ResponseEntity.ok(existingTopic);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Chủ đề không tồn tại");
+        }
+    }
+
+
+
 
 }

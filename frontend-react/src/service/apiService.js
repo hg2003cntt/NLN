@@ -77,6 +77,37 @@ export default class ApiService {
                 throw error;
             }
         }
+        static async uploadUserAvatar(data) {
+            const response = await axios.post(
+                `${this.BASE_URL}/api/user/upload-avatar`,
+                data,
+                {
+                    headers: this.getHeader(),
+                }
+            );
+            return response.data;
+        }
+        static async updateUserProfile(data) {
+            const response = await axios.put(
+                `${this.BASE_URL}/api/user/update-profile`,
+                data,
+                {
+                    headers: this.getHeader(),
+                }
+            );
+            return response.data;
+        }
+        static async updateUserPassword(data) {
+                    const response = await axios.put(
+                        `${this.BASE_URL}/api/user/update-password`,
+                        data,
+                        {
+                            headers: this.getHeader(),
+                        }
+                    );
+                    return response.data;
+                }
+
 
     static async getUser(userId) {
         const response = await axios.get(`${this.BASE_URL}/users/get-by-id/${userId}`, {
@@ -100,10 +131,17 @@ export default class ApiService {
     }
 
 
-    /** ARTICLES */
+   /*topic*/
 
     static async getTopics() {
         const response = await axios.get(`${this.BASE_URL}/api/topics/getAlltopics`, {
+            headers: this.getHeader()
+        });
+        return response.data;
+    }
+
+    static async getTopicStatistics() {
+        const response = await axios.get(`${this.BASE_URL}/api/topics/statistics`, {
             headers: this.getHeader()
         });
         return response.data;
@@ -121,9 +159,45 @@ export default class ApiService {
         }
     }
 
+    static async createTopic(topic) {
+        try {
+            const response = await axios.post(
+                `${this.BASE_URL}/api/topics/createTopic`,
+                topic,
+                { headers: this.getHeader() }
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Lỗi khi tạo chủ đề:", error.response?.data || error.message);
+            throw error;
+        }
+    }
+
+    static async updateTopic(topicId, updatedData) {
+        const response = await axios.put(`${this.BASE_URL}/api/topics/updateTopic/${topicId}`, updatedData, {
+            headers: this.getHeader()
+        });
+        return response.data;
+    }
+    
+
+    static async deleteTopic(id) {
+        try {
+            const response = await axios.delete(
+                `${this.BASE_URL}/api/topics/deleteTopic/${id}`,
+                { headers: this.getHeader() }
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Lỗi khi xóa chủ đề:", error.response?.data || error.message);
+            throw error;
+        }
+    }
+     /** ARTICLES */
+
     static async postArticle(articleData) {
         const response = await axios.post(`${this.BASE_URL}/api/posts/createPost`, articleData, {
-            headers: this.getHeader()
+            headers: this.getHeader(),
         });
         return response.data;
     }
@@ -367,6 +441,34 @@ export default class ApiService {
             });
             return response.data;
         }
+
+        static async getAllConsultationRequests() {
+            try {
+                const response = await axios.get(`${this.BASE_URL}/consultations/getAllRequests`, {
+                    headers: this.getHeader(),
+                });
+                return response.data;
+            } catch (error) {
+                console.error("Lỗi khi lấy danh sách yêu cầu tư vấn:", error.response?.data || error.message);
+                throw error;
+            }
+        }
+
+        static async updateConsultationStatus(id, newStatus) {
+            try {
+                const response = await axios.put(
+                    `${this.BASE_URL}/consultations/${id}/status`,
+                    { status: newStatus },
+                    { headers: this.getHeader() }
+                );
+                return response.data;
+            } catch (error) {
+                console.error("Lỗi khi cập nhật trạng thái tư vấn:", error.response?.data || error.message);
+                throw error;
+            }
+        }
+        
+        
 
     /** AUTHENTICATION CHECKER */
     static logout() {

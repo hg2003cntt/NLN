@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import {
   FaUsers,
   FaCalendarAlt,
@@ -13,40 +13,39 @@ function AdminPage() {
     <div className="admin-container">
       {/* Sidebar */}
       <aside className="admin-sidebar">
-        <h1 className="admin-title">Admin Panel</h1>
+        <h1 className="admin-title">Trang quản trị</h1>
         <ul className="admin-nav">
           <li>
-            <NavLink to="/admin/customers" activeClassName="active">
+            <NavLink to="/admin/customers" className={({ isActive }) => (isActive ? "active" : "")}>
               <FaUsers className="icon" /> Khách Hàng
             </NavLink>
           </li>
           <li>
-            <NavLink to="/admin/consultations" activeClassName="active">
+            <NavLink to="/admin/consultations" className={({ isActive }) => (isActive ? "active" : "")}>
               <FaCalendarAlt className="icon" /> Lịch Tư Vấn
             </NavLink>
           </li>
           <li>
-            <NavLink to="/admin/articles" activeClassName="active">
+            <NavLink to="/admin/articles" className={({ isActive }) => (isActive ? "active" : "")}>
               <FaFileAlt className="icon" /> Bài Viết
             </NavLink>
           </li>
           <li>
-            <NavLink to="/admin/topics" activeClassName="active">
+            <NavLink to="/admin/topics" className={({ isActive }) => (isActive ? "active" : "")}>
               <FaNewspaper className="icon" /> Chủ Đề Bài Viết
             </NavLink>
           </li>
           <li className="logout">
-            <NavLink to="/logout">
+            <NavLink to="/logout" className={({ isActive }) => (isActive ? "active" : "")}>
               <FaSignOutAlt className="icon" /> Đăng Xuất
             </NavLink>
           </li>
         </ul>
       </aside>
 
-      {/* Main Content */}
+      {/* Main Content - Hiển thị nội dung trang con */}
       <main className="admin-content">
-        <h1>Admin Dashboard</h1>
-        <p>Nội dung sẽ hiển thị ở đây.</p>
+        <Outlet />
       </main>
     </div>
   );

@@ -32,5 +32,10 @@ public class ConsultationRequest {
     @NotBlank
     private String availableTimeSlots; // Bắt buộc phải có khung giờ tư vấn
 
+    @NotNull
+    private LocalDate consultationDate;
+
     private String userId; // Liên kết với tài khoản đã đăng nhập
+
+    private String status;
 }

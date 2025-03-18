@@ -49,6 +49,8 @@ public class Account {
     @NotBlank
     private String phone;
 
+    private String avatar;
+
     @DBRef //Khác với signup request/Khóa ngoaai
     private Set<Role> roles = new HashSet<>();
 
@@ -59,6 +61,7 @@ public class Account {
         this.dateOfBirth = dateOfBirth;
         this.email = email;
         this.phone = phone;
+        this.avatar = null;
     }
 
 }

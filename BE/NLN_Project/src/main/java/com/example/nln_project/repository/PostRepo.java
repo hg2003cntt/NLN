@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface PostRepo extends MongoRepository<Post, String> {
     void deleteByTopicId(String topicId);
-
+    Integer countPostsByTopicId(String topicId);
     List<Post> findByTopicId(String topicId);
 
     List<Post> findByTitleContainingIgnoreCase(String title);

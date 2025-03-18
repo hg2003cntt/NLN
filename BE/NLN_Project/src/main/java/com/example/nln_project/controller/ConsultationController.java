@@ -4,13 +4,18 @@ import com.example.nln_project.model.ConsultationRequest;
 import com.example.nln_project.security.services.AccountDetailsImpl;
 import com.example.nln_project.repository.ConsultationRequestRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
+
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 //@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RestController
@@ -41,11 +46,21 @@ public class ConsultationController {
                 return ResponseEntity.badRequest().body("Vui lòng nhập mô tả vấn đề!");
             }
 
-            // Thiết lập thông tin từ tài khoản người dùng
+            if (consultationRequest.getConsultationDate() == null) {
+                return ResponseEntity.badRequest().body("Vui lòng chọn ngày tư vấn!");
+            }
+
+            // Kiểm tra ngày tư vấn không phải quá khứ
+            if (consultationRequest.getConsultationDate().isBefore(LocalDate.now())) {
+                return ResponseEntity.badRequest().body("Ngày tư vấn không hợp lệ!");
+            }
+
+            // Thiết lập thông tin user
             consultationRequest.setFullName(userDetails.getName());
             consultationRequest.setDateOfBirth(userDetails.getDateOfBirth());
             consultationRequest.setPhoneNumber(userDetails.getPhone());
             consultationRequest.setUserId(userDetails.getId());
+            consultationRequest.setStatus("Chưa liên hệ");
 
             // Lưu vào cơ sở dữ liệu
             consultationRequestRepo.save(consultationRequest);
@@ -69,4 +84,29 @@ public class ConsultationController {
 
         return ResponseEntity.ok(requests);
     }
+
+    //@PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/getAllRequests")
+    public ResponseEntity<?> getAllRequest() {
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(consultationRequestRepo.findAll());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+
+    }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<?> updateConsultationStatus(@PathVariable String id, @RequestBody ConsultationRequest request) {
+        Optional<ConsultationRequest> consultationOpt = consultationRequestRepo.findById(id);
+        if (!consultationOpt.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        ConsultationRequest consultation = consultationOpt.get();
+        consultation.setStatus(request.getStatus());
+        consultationRequestRepo.save(consultation);
+        return ResponseEntity.ok(consultation);
+    }
+
 }

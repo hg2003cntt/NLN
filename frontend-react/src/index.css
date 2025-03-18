@@ -681,6 +681,7 @@ button:hover {
 
 .admin-sidebar {
   width: 300px;
+  flex: 0 0 300px;
   background-color: #1a747a;
   color: white;
   padding: 20px;
@@ -802,4 +803,631 @@ button:hover {
   font-size: 14px;
   color: #555;
 }
+ /* 🟢 Tổng thể Profile */
+ .profile-container {
+     min-height: 100vh;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     background: linear-gradient(to right, #f8f9fa, #e9ecef); /* Nền nhẹ nhàng */
+     padding: 20px;
+ }
 
+ /* 🔵 Card Profile */
+ .profile-card {
+     display: flex;
+     flex-direction: row; /* Avatar & form nằm ngang */
+     background: #fff;
+     border-radius: 16px;
+     box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+     padding: 30px;
+     width: 90%;
+     max-width: 850px; /* Kích thước phù hợp */
+     align-items: center;
+     justify-content: space-between;
+     gap: 30px; /* Khoảng cách giữa avatar và thông tin */
+ }
+
+ /* 🟠 Avatar bên trái */
+ .profile-avatar-section {
+     flex: 0.4;
+     display: flex;
+     flex-direction: column;
+     justify-content: center;
+     align-items: center;
+     gap: 15px; /* Khoảng cách giữa avatar và nút */
+ }
+
+ .profile-avatar {
+     width: 180px;
+     height: 180px;
+     border-radius: 50%;
+     border: 4px solid #4facfe;
+     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+     transition: transform 0.3s ease-in-out;
+ }
+
+ .profile-avatar:hover {
+     transform: scale(1.05);
+ }
+
+ /* 🟡 Nút tải ảnh */
+ .upload-avatar-label {
+     background: #4facfe;
+     color: white;
+     padding: 8px 12px;
+     border-radius: 6px;
+     font-size: 14px;
+     cursor: pointer;
+     text-align: center;
+     display: inline-block;
+     transition: background 0.3s ease-in-out;
+ }
+
+ .upload-avatar-label:hover {
+     background: #3a8dd5;
+ }
+
+ /* Ẩn input file nhưng vẫn hoạt động */
+ .profile-avatar-section input[type="file"] {
+     display: none;
+ }
+
+ /* 🟢 Nút cập nhật avatar */
+ .upload-btn {
+     padding: 10px;
+     font-size: 16px;
+     font-weight: bold;
+     background: #28a745;
+     color: white;
+     border: none;
+     border-radius: 6px;
+     cursor: pointer;
+     transition: background 0.3s ease-in-out;
+ }
+
+ .upload-btn:hover {
+     background: #218838;
+ }
+
+ /* 🟣 Thông tin bên phải */
+ .profile-info {
+     flex: 1;
+     display: flex;
+     flex-direction: column;
+     justify-content: center;
+     padding-left: 30px;
+ }
+
+ .profile-title {
+     font-size: 26px;
+     font-weight: bold;
+     color: #333;
+     margin-bottom: 20px;
+     text-transform: uppercase;
+ }
+
+ /* 🟡 Form nhập thông tin */
+ .profile-form {
+     width: 100%;
+     display: flex;
+     flex-direction: column;
+     gap: 14px;
+ }
+
+ .profile-form label {
+     font-size: 16px;
+     font-weight: bold;
+     color: #444;
+ }
+
+ .profile-form input {
+     width: 100%;
+     padding: 12px;
+     border-radius: 8px;
+     border: 1px solid #ddd;
+     background: #f8f8f8;
+     font-size: 16px;
+     transition: all 0.3s ease-in-out;
+ }
+
+ /* 🟢 Nút Chỉnh sửa & Lưu */
+ .edit-btn, .save-btn {
+     margin-top: 15px;
+     padding: 10px;
+     font-size: 16px;
+     font-weight: bold;
+     border: none;
+     border-radius: 6px;
+     cursor: pointer;
+     transition: background 0.3s ease-in-out;
+ }
+
+ .edit-btn {
+     background: #4facfe;
+     color: white;
+ }
+
+ .edit-btn:hover {
+     background: #3a8dd5;
+ }
+
+ .save-btn {
+     background: #28a745;
+     color: white;
+ }
+
+ .save-btn:hover {
+     background: #218838;
+ }
+
+ /* 🟡 Hiệu ứng khi focus vào input */
+ .profile-form input:focus {
+     border: 1px solid #4facfe;
+     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+     outline: none;
+ }
+
+ /* 📱 Responsive */
+ @media (max-width: 768px) {
+     .profile-card {
+         flex-direction: column; /* Chuyển sang dọc trên mobile */
+         padding: 20px;
+     }
+
+     .profile-avatar-section {
+         flex-direction: column;
+     }
+
+     .profile-info {
+         padding-left: 0;
+         text-align: center;
+     }
+ }
+/* Modal overlay cho đổi mật khẩu */
+.modal-change-password .modal-overlay {
+    background: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Modal content cho đổi mật khẩu */
+.modal-change-password .modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    max-width: 100%;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Các button trong modal đổi mật khẩu */
+.modal-change-password button.update-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.modal-change-password button.cancel-btn {
+    background-color: #f44336;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.modal-change-password button.update-btn:hover,
+.modal-change-password button.cancel-btn:hover {
+    opacity: 0.8;
+}
+
+/* Các input trong modal đổi mật khẩu */
+.modal-change-password input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.modal-change-password .error-message {
+    color: red;
+    font-size: 14px;
+}
+
+/*ConsultationList page*/
+/* Tổng thể */
+.consultation-container {
+  display: flex;
+  flex-direction: row;
+  margin: 10px;
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.table-section {
+  flex: 3; /* Chiếm 3 phần của không gian */
+}
+.filter {
+  flex: 1; /* Chiếm 1 phần của không gian */
+  width: fit-content;
+  height: fit-content; 
+  margin-left: 0px;
+  margin-top: 60px;
+  padding: 30px;
+  font-size: 14px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+.table-container {
+  margin-top: 20px;
+  margin-right: 30px;
+  overflow-x: auto;
+  font-size: 14px;
+
+}
+
+.consultation-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.consultation-table th, .consultation-table td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.consultation-table th {
+  background: #007bff;
+  color: white;
+  font-weight: bold;
+}
+
+.consultation-table tr:hover {
+  background: #f1f1f1;
+}
+
+
+/* Trạng thái */
+.status-dropdown {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: white;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.status-dropdown:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Bộ lọc */
+.filter-container {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+ 
+}
+
+.filter-container input, .filter-container select {
+  padding: 10px;
+  margin: 5px 0px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+
+}
+
+.filter-container button {
+  padding: 10px;
+  margin: 5px 0;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.filter-container button:hover {
+  background: #0056b3;
+}
+
+
+/*trang topic*/
+.topic-container {
+  width: 100%;
+  margin: 10px;
+  padding: 0px;
+  background: white;
+  /* border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); */
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+}
+
+.topic-manage {
+  flex: 1;
+  padding: 30px 50px;
+  margin-right: 40px;
+  border: 2px solid #ddd; /* Viền */
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+/* Nhóm nhập liệu */
+.topic-input-group {
+display: flex;
+justify-content: center;
+gap: 10px;
+margin: 20px 0px;
+}
+
+.topic-input {
+padding: 10px;
+width: 100%;
+border: 1px solid #ccc;
+border-radius: 5px;
+font-size: 16px;
+transition: 0.3s;
+}
+
+.topic-input:focus {
+border-color: #3498db;
+outline: none;
+}
+
+/* Nút thêm chủ đề */
+.topic-add-btn {
+padding: 10px 20px;
+background: #27ae60;
+color: white;
+border: none;
+border-radius: 5px;
+font-size: 16px;
+font-weight: bold;
+cursor: pointer;
+transition: 0.3s;
+}
+
+.topic-add-btn:hover {
+background: #218c53;
+}
+
+/* Bảng danh sách chủ đề */
+.topic-table {
+width: 100%;
+border-collapse: collapse;
+margin-top: 10px;
+background: white;
+border-radius: 5px;
+overflow: hidden;
+}
+
+.topic-table th, .topic-table td {
+padding: 10px;
+border: 1px solid #ddd;
+text-align: center;
+font-size: 18px;
+white-space: nowrap; /* Tránh xuống dòng */
+}
+
+.topic-table th {
+background: #f4f4f4;
+color: #2c3e50;
+}
+
+/* Nút xóa */
+.topic-delete-btn {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin-left: 5px; /* Để nút "Sửa" và "Xóa" không sát nhau */
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  width: 60px;
+}
+
+.topic-delete-btn:hover {
+background: #c0392b;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+.topic-container {
+   width: 90%;
+}
+
+.topic-input {
+   width: 60%;
+}
+
+.topic-table th, .topic-table td {
+   font-size: 16px;
+   padding: 12px;
+}
+}
+
+@media (max-width: 768px) {
+.topic-container {
+   width: 95%;
+}
+
+.topic-input-group {
+   flex-direction: column;
+   align-items: center;
+}
+
+.topic-input {
+   width: 90%;
+}
+
+.topic-table {
+   font-size: 14px;
+}
+
+.topic-table th, .topic-table td {
+   padding: 10px;
+}
+
+.topic-delete-btn {
+   padding: 8px 15px;
+   font-size: 14px;
+}
+}
+.topic-edit-btn {
+  background-color: #ffc107; /* Màu vàng */
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  margin-bottom: 5px; /* Để nút "Sửa" và "Xóa" không sát nhau */
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  width: 60px;
+}
+
+.topic-edit-btn:hover {
+  background-color: #e0a800;
+}
+
+.topic-save-btn {
+  background-color: #28a745; /* Màu xanh lá */
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  margin-right: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  width: 60px;
+}
+
+.topic-save-btn:hover {
+  background-color: #218838;
+}
+
+.topic-cancel-btn {
+  background-color: #dc3545; /* Màu đỏ */
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  width: 60px;
+}
+
+.topic-cancel-btn:hover {
+  background-color: #c82333;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px; /* Tạo khoảng cách giữa các nút */
+  margin-top: 10px;
+}
+
+.pagination button {
+  background-color: #28a745; /* Màu xanh */
+  color: white;
+  border: none;
+  padding: 8px;
+  margin: 10px;
+  width: auto;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.pagination button:disabled {
+  background-color: #ccc; /* Màu xám khi bị disable */
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-weight: bold;
+  min-width: 80px; /* Đảm bảo có đủ khoảng trống cho số trang */
+  text-align: center;
+}
+
+/*chart*/
+.topic-chart-container {
+  flex: 2;
+  width: 100%;
+  max-width: 50%; /* Điều chỉnh lại kích thước */
+  padding: 30px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #fff;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.chart-title{
+  margin: 0px 50px;
+}
+
+.chart-pie {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 100%; /* Đảm bảo biểu đồ không bị tràn */
+  min-width: unset; /* Xóa min-width cố định */
+  height: auto;
+}
+
+/* Đảm bảo biểu đồ hiển thị tốt trên thiết bị nhỏ */
+@media (max-width: 1024px) {
+  .topic-chart-container {
+    max-width: 60%;
+  }
+}
+
+@media (max-width: 768px) {
+  .topic-chart-container {
+    max-width: 90%;
+  }
+
+  .chart-pie {
+    width: 100%;
+  }
+}
