@@ -16,6 +16,7 @@ import ArticleDetail from "./component/articles/ArticleDetail";
 import EditArticleForm from "./component/articles/EditArticleForm";
 import ConsultationList from "./component/admin/consultation/ConsultationList";
 import TopicManagement from "./component/admin//topic/TopicManagement";
+import CustomerManagement from "./component/admin/customer/CustomerManage";
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
               element={<AdminRoute element={<AdminPage />} />}
             >
               <Route index element={<h2>Chào mừng đến trang Admin</h2>} />
+              <Route path="customers" element={<CustomerManagement />} />
               <Route path="consultations" element={<ConsultationList />} />
               <Route path="topics" element={<TopicManagement />} />
             </Route>

@@ -1,5 +1,6 @@
 package com.example.nln_project.controller;
 
+import com.example.nln_project.dto.UpdateCustomerPhone;
 import com.example.nln_project.model.ConsultationRequest;
 import com.example.nln_project.security.services.AccountDetailsImpl;
 import com.example.nln_project.repository.ConsultationRequestRepo;
@@ -107,6 +108,40 @@ public class ConsultationController {
         consultation.setStatus(request.getStatus());
         consultationRequestRepo.save(consultation);
         return ResponseEntity.ok(consultation);
+    }
+
+    // Tìm kiếm khách hàng theo số điện thoại
+    @GetMapping("/admin/search")
+    public ResponseEntity<?> searchCustomerByPhone(@RequestParam String phone) {
+        try {
+            List<ConsultationRequest> customers = consultationRequestRepo.findAll()
+                    .stream()
+                    .filter(c -> c.getPhoneNumber().equals(phone))
+                    .toList();
+
+            if (customers.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy khách hàng!");
+            }
+
+            return ResponseEntity.ok(customers);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi tìm kiếm khách hàng!");
+        }
+    }
+
+    // Cập nhật số điện thoại khách hàng
+    @PutMapping("/{id}/update-phone")
+    public ResponseEntity<?> updateCustomerPhone(@PathVariable String id, @RequestBody UpdateCustomerPhone request) {
+        Optional<ConsultationRequest> consultationOpt = consultationRequestRepo.findById(id);
+        if (!consultationOpt.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy khách hàng!");
+        }
+
+        ConsultationRequest customer = consultationOpt.get();
+        customer.setPhoneNumber(request.getPhone()); // ✅ Lưu đúng số điện thoại
+        consultationRequestRepo.save(customer);
+
+        return ResponseEntity.ok("Cập nhật số điện thoại thành công!");
     }
 
 }
