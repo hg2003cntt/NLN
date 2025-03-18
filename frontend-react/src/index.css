@@ -737,32 +737,69 @@ button:hover {
 
 .comment-item {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 10px;
   border-bottom: 1px solid #ddd;
+  width: 100%;
 }
 
 .comment-content {
-  flex-grow: 1;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }
 
-.delete-btn {
-  background: red;
+.comment-meta {
+  font-size: 12px;
+  color: #777;
+}
+
+.comment-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 5px; /* Để nút Phản hồi xuống dưới */
+}
+
+.reply-btn {
+  background-color: green;
   color: white;
   border: none;
   cursor: pointer;
-  padding: 5px 10px;
+  padding: 5px 8px;
   border-radius: 4px;
-  font-size: 14px;
-  display: flex;
+  font-size: 12px;
+  display: inline-flex;
   align-items: center;
-  gap: 5px;
-  width: auto; /* Giữ kích thước nhỏ */
-  min-width: 80px; /* Đảm bảo không quá nhỏ */
 }
 
-.delete-btn:hover {
-  background: darkred;
+.reply-btn:hover {
+  background: darkgreen;
+}
+
+.reply-section {
+  margin-left: 20px;
+  display: flex;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.reply-section input {
+  flex-grow: 1;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.reply-list {
+  margin-left: 30px;
+  border-left: 2px solid #ddd;
+  padding-left: 10px;
+  margin-top: 5px;
+}
+
+.reply-item {
+  font-size: 14px;
+  color: #555;
 }
 

@@ -20,6 +20,10 @@ const ArticleDetail = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false); // Trạng thái menu dấu 3 chấm
 
+  const [replyingTo, setReplyingTo] = useState(null); // ID của comment đang được trả lời
+  const [replies, setReplies] = useState({}); // Lưu trữ phản hồi của từng bình luận
+
+
   useEffect(() => {
     const fetchArticleAndUser = async () => {
       try {
@@ -53,9 +57,9 @@ const ArticleDetail = () => {
           console.error("Lỗi khi lấy comment:", error);
           setComments([]); // Nếu lỗi, gán mảng rỗng để tránh lỗi .map()
       }
-  };
-  fetchComments();
-  }, [id]);
+    };
+    fetchComments();
+    }, [id]);
 
   
 
@@ -104,6 +108,37 @@ const ArticleDetail = () => {
       console.error("Lỗi khi xóa bình luận:", error);
     }
   };
+
+  const handleReplySubmit = async (e, postId, parentId) => {
+    e.preventDefault();
+    if (!newComment.trim()) return;
+
+    try {
+        const payload = { content: newComment, parentId }; // Đảm bảo parentId được gửi
+        const newReply = await apiService.replyToComment(postId, payload);
+
+        const user = JSON.parse(localStorage.getItem("user"));
+        const authorName = user?.name || "Bạn";
+
+        const formattedReply = {
+            ...newReply,
+            authorName,
+            formattedTime: "Vừa xong"
+        };
+
+        setReplies((prev) => ({
+            ...prev,
+            [parentId]: [...(prev[parentId] || []), formattedReply]
+        }));
+
+        setNewComment("");
+        setReplyingTo(null);
+    } catch (error) {
+        console.error("Lỗi khi thêm phản hồi:", error);
+    }
+  };
+
+
 
   const handleDeletePost = async () => {
     const confirmDelete = window.confirm(
@@ -191,22 +226,55 @@ const ArticleDetail = () => {
         {comment.map((c) => (
           <li key={c.id} className="comment-item">
             <div className="comment-content">
-              <strong>{c.authorName}:</strong> {c.content}
+              <div>
+                <strong>{c.authorName}:</strong> {c.content}
+                <div className="comment-meta">
+                  <small>{c.formattedTime}</small>
+                </div>
+              </div>
             </div>
-            <div className="comment-meta">
-              <small>{c.formattedTime}</small>
-            </div>
-            {(user?.id === c.userId || user?.roles?.includes("ROLE_ADMIN")) && (
-              <button onClick={() => handleDeleteComment(c.id)} className="delete-btn">
-                <FaTrash /> Xóa
+
+            {/* Các nút hành động (Phản hồi, Xóa) */}
+            <div className="comment-actions">
+              <button onClick={() => setReplyingTo(c.id)} className="reply-btn">
+                Phản hồi
               </button>
+              {(user?.id === c.userId || user?.roles?.includes("ROLE_ADMIN")) && (
+                <button onClick={() => handleDeleteComment(c.id)} className="delete-btn">
+                  Xóa
+                </button>
+              )}
+            </div>
+
+            {/* Form nhập phản hồi */}
+            {replyingTo === c.id && (
+              <form onSubmit={(e) => handleReplySubmit(e, c.id)} className="reply-section">
+                <input
+                  type="text"
+                  placeholder="Viết phản hồi..."
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                />
+                <button type="submit">Gửi</button>
+              </form>
+            )}
+
+            {/* Danh sách phản hồi */}
+            {replies[c.id] && replies[c.id].length > 0 && (
+              <ul className="reply-list">
+                {replies[c.id].map((reply) => (
+                  <li key={reply.id} className="reply-item">
+                    <strong>{reply.authorName}:</strong> {reply.content}
+                    <small>{reply.formattedTime}</small>
+                  </li>
+                ))}
+              </ul>
             )}
           </li>
         ))}
       </ul>
 
-
-      {/* Ô nhập bình luận */}
+    {/* Ô nhập bình luận */}
       <form onSubmit={handleCommentSubmit} className="comment-section">
         <input
           type="text"
@@ -214,7 +282,6 @@ const ArticleDetail = () => {
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
         />
-
         <button className="submit-cmt" type="submit">
           Gửi
         </button>

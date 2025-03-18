@@ -23,4 +23,15 @@ public class PostServiceImpl implements PostService {
     public List<Post> getAllPosts(){
         return postRepo.findAll();
     }
+    public List<Post> findByTopicId(String topicId) {
+        return postRepo.findByTopicId(topicId);
+    }
+
+    public List<Post> findByTitleContainingIgnoreCase(String title) {
+        return postRepo.findByTitleContainingIgnoreCase(title);
+    }
+
+    public List<Post> findByTopicIdAndTitleContainingIgnoreCase(String topicId, String title) {
+        return postRepo.findByTopicIdAndTitleContainingIgnoreCase(topicId, title);
+    }
 }

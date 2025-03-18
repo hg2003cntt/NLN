@@ -35,11 +35,11 @@ function Navbar() {
     }, []);
 
     const handleSearch = () => {
-        if (selectedTopic) {
-            navigate(`/articles?topic=${selectedTopic}`);
-        } else if (searchKeyword) {
-            navigate(`/articles?search=${searchKeyword}`);
-        }
+        const params = new URLSearchParams();
+        if (selectedTopic) params.append("topic", selectedTopic);
+        if (searchKeyword) params.append("search", searchKeyword);
+        
+        navigate(`/articles?${params.toString()}`);
     };
 
     return (

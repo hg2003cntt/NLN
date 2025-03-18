@@ -1,22 +1,34 @@
 import React, { useEffect, useState } from "react";
 import ApiService from "../../service/apiService";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const ArticlePage = () => {
     const [articles, setArticles] = useState([]);
     const navigate = useNavigate();
+    const location = useLocation();
+
 
     useEffect(() => {
         const fetchArticles = async () => {
+            const params = new URLSearchParams(location.search);
+            const topic = params.get("topic");
+            const searchKeyword = params.get("search");
+
             try {
-                const response = await ApiService.getAllPosts();
+                let response;
+                if (topic || searchKeyword) {
+                    response = await ApiService.searchPosts(topic, searchKeyword);
+                } else {
+                    response = await ApiService.getAllPosts();
+                }
                 setArticles(response);
             } catch (error) {
                 console.error("Lỗi khi lấy danh sách bài viết:", error);
             }
         };
+
         fetchArticles();
-    }, []);
+    }, [location.search]);
 
     const handleArticleClick = (id) => {
         navigate(`/article/${id}`);

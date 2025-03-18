@@ -108,6 +108,27 @@ public class PostController {
         }
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<Post>> searchPosts(
+            @RequestParam(required = false) String topic,
+            @RequestParam(required = false) String search) {
+        try {
+            List<Post> posts;
+            if (topic != null && search != null) {
+                posts = postService.findByTopicIdAndTitleContainingIgnoreCase(topic, search);
+            } else if (topic != null) {
+                posts = postService.findByTopicId(topic);
+            } else if (search != null) {
+                posts = postService.findByTitleContainingIgnoreCase(search);
+            } else {
+                posts = postService.getAllPosts();
+            }
+            return ResponseEntity.ok(posts);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
     @PostMapping("/{postId}/like")
     public ResponseEntity<Post> toggleLike(@PathVariable String postId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -178,4 +199,26 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Bình luận không tồn tại");
         }
     }
+
+    // @PostMapping("/{postId}/reply")
+    // public ResponseEntity<Comment> replyToComment(@PathVariable String postId, @RequestBody Comment reply) {
+    //     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    //     AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
+
+    //     reply.setUserId(userDetails.getId());
+    //     reply.setName(userDetails.getName());
+    //     reply.setPostId(postId);
+    //     reply.setCreatedAt(System.currentTimeMillis());
+
+    //     // Nếu phản hồi có parentId thì lưu vào comment cha
+    //     if (reply.getParentId() != null) {
+    //         Optional<Comment> parentComment = commentRepo.findById(reply.getParentId());
+    //         if (parentComment.isEmpty()) {
+    //             return ResponseEntity.badRequest().body(null);
+    //         }
+    //     }
+
+    //     Comment savedReply = commentRepo.save(reply);
+    //     return ResponseEntity.ok(savedReply);
+    // }
 }

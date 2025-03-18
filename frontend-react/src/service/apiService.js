@@ -152,6 +152,23 @@ export default class ApiService {
             throw error;
         }
     }
+
+    static async searchPosts(topic, keyword) {
+        try {
+            const params = new URLSearchParams();
+            if (topic) params.append("topic", topic);
+            if (keyword) params.append("search", keyword);
+    
+            const response = await axios.get(`${this.BASE_URL}/api/posts/search?${params.toString()}`, {
+                headers: this.getHeader(),
+            });
+    
+            return response.data;
+        } catch (error) {
+            console.error("Lỗi khi tìm kiếm bài viết:", error);
+            throw error;
+        }
+    }
     
     static async getAllPosts() {
         try {
@@ -226,10 +243,16 @@ export default class ApiService {
                 `${this.BASE_URL}/api/posts/${articleId}/comments`,
                 { headers: this.getHeader() }
             );
+    
             return response.data.map(comment => ({
                 ...comment,
-                authorName: comment.name || "Ẩn danh", // Chỉ lấy trực tiếp từ comment.username
-                formattedTime: dayjs(comment.createdAt).fromNow(), // Hiển thị "X phút trước"
+                authorName: comment.user?.name || "Ẩn danh",
+                formattedTime: dayjs(comment.createdAt).fromNow(),
+                replies: comment.replies?.map(reply => ({
+                    ...reply,
+                    authorName: reply.user?.name || "Ẩn danh",
+                    formattedTime: dayjs(reply.createdAt).fromNow(),
+                })) || [],
             }));
         } catch (error) {
             console.error("Lỗi khi lấy danh sách comment:", error.response?.data || error.message);
@@ -237,11 +260,11 @@ export default class ApiService {
         }
     }
     
-
+    /** Xóa bình luận */
     static async deleteComment(commentId) {
         try {
             const response = await axios.delete(
-                `${this.BASE_URL}/api/posts/comments/${commentId}}`,
+                `${this.BASE_URL}/api/posts/comments/${commentId}`, // Xóa dấu `}` thừa
                 {
                     headers: this.getHeader(),
                 }
@@ -253,14 +276,61 @@ export default class ApiService {
         }
     }
 
-    // static async addCommentToArticle(articleId, commentData) {
-    //     const response = await axios.post(`${this.BASE_URL}/articles/${articleId}/comments`, commentData, {
-    //         headers: this.getHeader(),
-    //     });
-    //     return response.data;
-    // }
+    static async replyToComment(articleId, parentId, replyContent) {
+        try {
+            const payload = { content: replyContent };
+            if (parentId !== undefined) payload.parentId = parentId; // Chỉ thêm nếu có
+    
+            const response = await axios.post(
+                `${this.BASE_URL}/api/posts/${articleId}/reply`,
+                payload,
+                { headers: this.getHeader() }
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Lỗi khi gửi phản hồi:", error.response?.data || error.message);
+            throw error;
+        }
+    }
+    
+    
 
-     /** CONSULTATION - API ĐĂNG KÝ TƯ VẤN */
+    static async getCommentsWithReplies(articleId) {
+        try {
+            const response = await axios.get(
+                `${this.BASE_URL}/api/posts/${articleId}/commentsWithReplies`,
+                { headers: this.getHeader() }
+            );
+            return response.data.map(comment => ({
+                ...comment,
+                formattedTime: dayjs(comment.createdAt).fromNow(),
+                replies: comment.replies?.map(reply => ({
+                    ...reply,
+                    formattedTime: dayjs(reply.createdAt).fromNow(),
+                })) || [],
+            }));
+        } catch (error) {
+            console.error("Lỗi khi lấy danh sách bình luận kèm phản hồi:", error.response?.data || error.message);
+            throw error;
+        }
+    }
+
+    static async deleteReply(commentId) {
+        try {
+            const response = await axios.delete(
+                `${this.BASE_URL}/api/posts/comments/${commentId}`,
+                { headers: this.getHeader() }
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Lỗi khi xóa phản hồi:", error.response?.data || error.message);
+            throw error;
+        }
+    }
+    
+    
+    
+
         static async submitConsultationRequest(consultationData) {
             try {
                 const formattedData = {
