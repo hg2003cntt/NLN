@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./component/common/navbar";
-import Footer from "./component/common/footer";
+import { PsychologyCareFooter } from './component/common/footer';
 import LoginPage from "./component/auth/LoginPage";
 import RegisterPage from "./component/auth/RegisterPage";
 import HomePage from "./component/home/HomePage";
@@ -58,7 +58,7 @@ function App() {
             <Route path="*" element={<Navigate to="/login" />} />
           </Routes>
         </div>
-        <Footer />
+        <PsychologyCareFooter />
       </div>
     </BrowserRouter>
   );
