@@ -1074,7 +1074,7 @@ button:hover {
   width: fit-content;
   height: fit-content; 
   margin-left: 0px;
-  margin-top: 60px;
+  margin-top: 75px;
   padding: 30px;
   font-size: 14px;
   background: #fff;
@@ -1088,11 +1088,12 @@ button:hover {
   margin-right: 30px;
   overflow-x: auto;
   font-size: 13px;
-
+  min-height: 500px;
 }
 
 .consultation-table {
-  width: 100%;
+  width: 100%; 
+  min-width: 900px; 
   border-collapse: collapse;
   background: #fff;
   border-radius: 8px;
@@ -1139,12 +1140,12 @@ button:hover {
   display: flex;
   flex-direction: column;
   gap: 10px;
- 
+
 }
 
 .filter-container input, .filter-container select {
   padding: 10px;
-  margin: 5px 0px;
+  margin: 7px 0px;
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 14px;

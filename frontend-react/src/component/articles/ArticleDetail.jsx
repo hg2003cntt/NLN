@@ -115,8 +115,8 @@ const ArticleDetail = () => {
     if (!newComment.trim()) return;
 
     try {
-        const payload = { content: newComment, parentId }; // Đảm bảo parentId được gửi
-        const newReply = await apiService.replyToComment(postId, payload);
+        // Gọi API gửi phản hồi
+        const newReply = await apiService.replyToComment(postId, parentId, newComment);
 
         const user = JSON.parse(localStorage.getItem("user"));
         const authorName = user?.name || "Bạn";
@@ -127,17 +127,19 @@ const ArticleDetail = () => {
             formattedTime: "Vừa xong"
         };
 
+        // Cập nhật danh sách phản hồi cho bình luận cha
         setReplies((prev) => ({
             ...prev,
             [parentId]: [...(prev[parentId] || []), formattedReply]
         }));
 
-        setNewComment("");
-        setReplyingTo(null);
+        setNewComment(""); // Reset input
+        setReplyingTo(null); // Ẩn ô nhập phản hồi
     } catch (error) {
         console.error("Lỗi khi thêm phản hồi:", error);
     }
-  };
+};
+
 
 
 
@@ -249,7 +251,7 @@ const ArticleDetail = () => {
 
             {/* Form nhập phản hồi */}
             {replyingTo === c.id && (
-              <form onSubmit={(e) => handleReplySubmit(e, c.id)} className="reply-section">
+              <form onSubmit={(e) => handleReplySubmit(e, article.id, c.id)} className="reply-section">
                 <input
                   type="text"
                   placeholder="Viết phản hồi..."

@@ -215,25 +215,46 @@ public class PostController {
     }
 
 
-    // @PostMapping("/{postId}/reply")
-    // public ResponseEntity<Comment> replyToComment(@PathVariable String postId, @RequestBody Comment reply) {
-    //     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    //     AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
+//     @PostMapping("/{postId}/reply")
+//     public ResponseEntity<Comment> replyToComment(@PathVariable String postId, @RequestBody Comment reply) {
+//         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//         AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
+//
+//         reply.setUserId(userDetails.getId());
+//         reply.setName(userDetails.getName());
+//         reply.setPostId(postId);
+//         reply.setCreatedAt(System.currentTimeMillis());
+//
+//         // Nếu phản hồi có parentId thì lưu vào comment cha
+//         if (reply.getParentId() != null) {
+//             Optional<Comment> parentComment = commentRepo.findById(reply.getParentId());
+//             if (parentComment.isEmpty()) {
+//                 return ResponseEntity.badRequest().body(null);
+//             }
+//         }
+//
+//         Comment savedReply = commentRepo.save(reply);
+//         return ResponseEntity.ok(savedReply);
+//     }
+    @PostMapping("/{postId}/reply")
+    public ResponseEntity<Comment> replyToComment(@PathVariable String postId, @RequestBody Comment reply) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
 
-    //     reply.setUserId(userDetails.getId());
-    //     reply.setName(userDetails.getName());
-    //     reply.setPostId(postId);
-    //     reply.setCreatedAt(System.currentTimeMillis());
+        reply.setUserId(userDetails.getId());
+        reply.setName(userDetails.getName());
+        reply.setPostId(postId);
+        reply.setCreatedAt(System.currentTimeMillis());
 
-    //     // Nếu phản hồi có parentId thì lưu vào comment cha
-    //     if (reply.getParentId() != null) {
-    //         Optional<Comment> parentComment = commentRepo.findById(reply.getParentId());
-    //         if (parentComment.isEmpty()) {
-    //             return ResponseEntity.badRequest().body(null);
-    //         }
-    //     }
+        // Kiểm tra nếu có parentId thì đảm bảo comment cha tồn tại
+        if (reply.getParentId() != null && !reply.getParentId().isEmpty()) {
+            Optional<Comment> parentComment = commentRepo.findById(reply.getParentId());
+            if (parentComment.isEmpty()) {
+                return ResponseEntity.badRequest().body(null);
+            }
+        }
 
-    //     Comment savedReply = commentRepo.save(reply);
-    //     return ResponseEntity.ok(savedReply);
-    // }
+        Comment savedReply = commentRepo.save(reply);
+        return ResponseEntity.ok(savedReply);
+    }
 }

@@ -36,7 +36,10 @@ const ConsultationList = () => {
         (filters.phoneNumber
           ? item.phoneNumber.includes(filters.phoneNumber)
           : true) &&
-        (filters.status ? item.status === filters.status : true)
+        (filters.status ? item.status === filters.status : true) &&
+        (filters.consultationDate
+          ? item.consultationDate === filters.consultationDate
+          : true)
       );
     });
     setFilteredConsultations(filteredData);
@@ -44,19 +47,19 @@ const ConsultationList = () => {
   };
 
   const handleStatusChange = async (id, newStatus) => {
-    try{
-      await ApiService.updateConsultationStatus(id,newStatus);
+    try {
+      await ApiService.updateConsultationStatus(id, newStatus);
       setConsultations((prev) =>
-        prev.map((c) => (c.id===id ? {...c, status: newStatus}: c))
+        prev.map((c) => (c.id === id ? { ...c, status: newStatus } : c))
       );
-      setFilteredConsultations((prev) => 
-        prev.map((c)=> (c.id === id ? {...c, status: newStatus}:c))
+      setFilteredConsultations((prev) =>
+        prev.map((c) => (c.id === id ? { ...c, status: newStatus } : c))
       );
-    }catch (error){
+    } catch (error) {
       console.error("Lỗi khi cập nhật trạng thái:", error);
       alert("Cập nhật trạng thái thất bại!");
     }
-  }
+  };
 
   // Lấy dữ liệu của trang hiện tại
   const paginatedConsultations = filteredConsultations.slice(
@@ -88,31 +91,37 @@ const ConsultationList = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {paginatedConsultations.map((item, index) => (
-                    <tr key={item.id}>
-                      <td>{currentPage * pageSize + index + 1}</td>
-                      <td>{item.userId}</td>
-                      <td>{item.fullName}</td>
-                      <td>{item.phoneNumber}</td>
-                      <td>{item.dateOfBirth}</td>
-                      <td>{item.consultationDate}</td>
-                      <td>{item.availableTimeSlots}</td>
-                      <td>
-                        <select
-                          className="status-dropdown"
-                          value={item.status}
-                          onChange={(e) =>
-                            handleStatusChange(item.id, e.target.value)
-                          }
-                        >
-                          <option value="Chưa liên hệ">Chưa liên hệ</option>
-                          <option value="Đã liên hệ">Đã liên hệ</option>
-                          <option value="Hoàn thành">Hoàn thành</option>
-                          <option value="Hủy bỏ">Hủy bỏ</option>
-                        </select>
-                      </td>
+                  {paginatedConsultations.length > 0 ? (
+                    paginatedConsultations.map((item, index) => (
+                      <tr key={item.id}>
+                        <td>{currentPage * pageSize + index + 1}</td>
+                        <td>{item.userId}</td>
+                        <td>{item.fullName}</td>
+                        <td>{item.phoneNumber}</td>
+                        <td>{item.dateOfBirth}</td>
+                        <td>{item.consultationDate}</td>
+                        <td>{item.availableTimeSlots}</td>
+                        <td>
+                          <select
+                            className="status-dropdown"
+                            value={item.status}
+                            onChange={(e) =>
+                              handleStatusChange(item.id, e.target.value)
+                            }
+                          >
+                            <option value="Chưa liên hệ">Chưa liên hệ</option>
+                            <option value="Đã liên hệ">Đã liên hệ</option>
+                            <option value="Hoàn thành">Hoàn thành</option>
+                            <option value="Hủy bỏ">Hủy bỏ</option>
+                          </select>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr className="empty-row">
+                      <td colSpan="8">Không có dữ liệu</td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
@@ -126,17 +135,22 @@ const ConsultationList = () => {
                 {"<"} Trước
               </button>
               <span>
-                Trang {currentPage + 1} / {Math.ceil(filteredConsultations.length / pageSize)}
+                Trang {currentPage + 1} /{" "}
+                {Math.ceil(filteredConsultations.length / pageSize)}
               </span>
               <button
                 onClick={() =>
                   setCurrentPage((prev) =>
-                    prev < Math.ceil(filteredConsultations.length / pageSize) - 1
+                    prev <
+                    Math.ceil(filteredConsultations.length / pageSize) - 1
                       ? prev + 1
                       : prev
                   )
                 }
-                disabled={currentPage >= Math.ceil(filteredConsultations.length / pageSize) - 1}
+                disabled={
+                  currentPage >=
+                  Math.ceil(filteredConsultations.length / pageSize) - 1
+                }
               >
                 Sau {">"}
               </button>

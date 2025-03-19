@@ -5,6 +5,7 @@ const ConsultationFilter = ({ onFilterChange }) => {
     fullName: "",
     phoneNumber: "",
     status: "",
+    consultationDate: "", // Thêm trường ngày tư vấn
   });
 
   const handleChange = (e) => {
@@ -13,14 +14,14 @@ const ConsultationFilter = ({ onFilterChange }) => {
   };
 
   const applyFilters = () => {
+    console.log("Bộ lọc áp dụng:", filters); // Kiểm tra dữ liệu bộ lọc
     onFilterChange(filters);
   };
 
   const removeFilters = () => {
-    setFilters({ fullName: "", phoneNumber: "", status: "" }); // Đặt lại state
-    onFilterChange({ fullName: "", phoneNumber: "", status: "" }); // Cập nhật danh sách
+    setFilters({ fullName: "", phoneNumber: "", status: "", consultationDate: "" }); // Reset tất cả bộ lọc
+    onFilterChange({ fullName: "", phoneNumber: "", status: "", consultationDate: "" });
   };
-  
 
   return (
     <div className="filter-container">
@@ -39,6 +40,13 @@ const ConsultationFilter = ({ onFilterChange }) => {
         value={filters.phoneNumber}
         onChange={handleChange}
       />
+      {/* Thêm chọn ngày tư vấn */}
+      <input
+        type="date"
+        name="consultationDate"
+        value={filters.consultationDate}
+        onChange={handleChange}
+      />
       <select name="status" value={filters.status} onChange={handleChange}>
         <option value="">Tất cả trạng thái</option>
         <option value="Chưa liên hệ">Chưa liên hệ</option>
@@ -46,6 +54,9 @@ const ConsultationFilter = ({ onFilterChange }) => {
         <option value="Hoàn thành">Hoàn thành</option>
         <option value="Hủy bỏ">Hủy bỏ</option>
       </select>
+      
+      
+
       <button onClick={applyFilters}>Lọc</button>
       <button onClick={removeFilters}>Xóa Bộ Lọc</button>
     </div>

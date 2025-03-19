@@ -16,12 +16,15 @@ public class Comment {
     private String postId;
     private String content;
     private Long createdAt;
+    private String parentId;
 
-    public Comment(String userId, String name, String postId, String content) {
+
+    public Comment(String userId, String name, String postId, String content, String parentId) {
         this.userId = userId;
         this.name = name;
         this.postId = postId;
         this.content = content;
+        this.parentId = parentId;
         this.createdAt = System.currentTimeMillis();
     }
 }

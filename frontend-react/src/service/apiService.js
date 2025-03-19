@@ -360,20 +360,26 @@ export default class ApiService {
 
     static async replyToComment(articleId, parentId, replyContent) {
         try {
-            const payload = { content: replyContent };
-            if (parentId !== undefined) payload.parentId = parentId; // Chỉ thêm nếu có
+            const payload = {
+                postId: articleId,  // Thêm postId để backend nhận đúng dữ liệu
+                content: replyContent
+            };
+    
+            if (parentId) payload.parentId = parentId; // Chỉ thêm nếu có giá trị hợp lệ
     
             const response = await axios.post(
                 `${this.BASE_URL}/api/posts/${articleId}/reply`,
                 payload,
                 { headers: this.getHeader() }
             );
+    
             return response.data;
         } catch (error) {
             console.error("Lỗi khi gửi phản hồi:", error.response?.data || error.message);
             throw error;
         }
     }
+    
     
     
 
