@@ -262,6 +262,14 @@ export default class ApiService {
         });
         return response.data;
     }
+
+    static async getUserPosts(){
+            const response = await axios.get(`${this.BASE_URL}/api/posts/getPostsByUser`, {
+                headers: this.getHeader(),
+                withCredentials: true,
+            });
+            return response.data;
+        }
     
     static async deleteArticle(id) {
         try {
@@ -435,9 +443,9 @@ export default class ApiService {
 
         /** CONSULTATION - API LẤY DANH SÁCH TƯ VẤN */
         static async getUserConsultations() {
-            const response = await axios.get(`${this.BASE_URL}/api/consultations/myrequests`, {
+            const response = await axios.get(`${this.BASE_URL}/consultations/myrequests`, {
                 headers: this.getHeader(),
-                withCredentials: true,
+                //withCredentials: true,
             });
             return response.data;
         }
