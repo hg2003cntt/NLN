@@ -10,6 +10,7 @@ public interface PostRepo extends MongoRepository<Post, String> {
     void deleteByTopicId(String topicId);
     Integer countPostsByTopicId(String topicId);
     List<Post> findByTopicId(String topicId);
+    List<Post> findByUserId(String userId);
 
     List<Post> findByTitleContainingIgnoreCase(String title);
 

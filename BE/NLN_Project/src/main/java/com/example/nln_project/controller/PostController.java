@@ -200,6 +200,20 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Bình luận không tồn tại");
         }
     }
+    @GetMapping("/getPostsByUser")
+    public ResponseEntity<List<Post>> getPostsByUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
+        String userId = userDetails.getId();
+
+        try {
+            List<Post> posts = postService.getPostsByUserId(userId);
+            return ResponseEntity.ok(posts);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
 
     // @PostMapping("/{postId}/reply")
     // public ResponseEntity<Comment> replyToComment(@PathVariable String postId, @RequestBody Comment reply) {
