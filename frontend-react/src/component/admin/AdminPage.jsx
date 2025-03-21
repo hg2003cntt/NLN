@@ -1,5 +1,7 @@
 import React from "react";
 import { NavLink, Outlet } from "react-router-dom";
+import ApiService from "../../service/apiService";
+import { useNavigate } from "react-router-dom";
 import {
   FaUsers,
   FaCalendarAlt,
@@ -9,6 +11,13 @@ import {
 } from "react-icons/fa";
 
 function AdminPage() {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    if (window.confirm("Bạn có chắc chắn muốn đăng xuất?")) {
+      ApiService.logout();
+      navigate("/home");
+    }
+  };
   return (
     <div className="admin-container">
       {/* Sidebar */}
@@ -16,29 +25,49 @@ function AdminPage() {
         <h1 className="admin-title">Trang quản trị</h1>
         <ul className="admin-nav">
           <li>
-            <NavLink to="/admin/customers" className={({ isActive }) => (isActive ? "active" : "")}>
+            <NavLink
+              to="/profile"
+              className={({ isActive }) => (isActive ? "active" : "")}
+            >
+              <FaUsers className="icon" /> Thông tin cá nhân
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/admin/customers"
+              className={({ isActive }) => (isActive ? "active" : "")}
+            >
               <FaUsers className="icon" /> Khách Hàng
             </NavLink>
           </li>
           <li>
-            <NavLink to="/admin/consultations" className={({ isActive }) => (isActive ? "active" : "")}>
+            <NavLink
+              to="/admin/consultations"
+              className={({ isActive }) => (isActive ? "active" : "")}
+            >
               <FaCalendarAlt className="icon" /> Lịch Tư Vấn
             </NavLink>
           </li>
           <li>
-            <NavLink to="/admin/articles" className={({ isActive }) => (isActive ? "active" : "")}>
+            <NavLink
+              to="/admin/articles"
+              className={({ isActive }) => (isActive ? "active" : "")}
+            >
               <FaFileAlt className="icon" /> Bài Viết
             </NavLink>
           </li>
           <li>
-            <NavLink to="/admin/topics" className={({ isActive }) => (isActive ? "active" : "")}>
+            <NavLink
+              to="/admin/topics"
+              className={({ isActive }) => (isActive ? "active" : "")}
+            >
               <FaNewspaper className="icon" /> Chủ Đề Bài Viết
             </NavLink>
           </li>
-          <li className="logout">
-            <NavLink to="/logout" className={({ isActive }) => (isActive ? "active" : "")}>
-              <FaSignOutAlt className="icon" /> Đăng Xuất
-            </NavLink>
+          <li onClick={handleLogout}>
+          <NavLink>
+            <FaSignOutAlt className="icon" /> Đăng xuất
+             </NavLink>
           </li>
         </ul>
       </aside>
