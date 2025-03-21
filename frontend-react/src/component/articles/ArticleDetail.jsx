@@ -21,7 +21,9 @@ const ArticleDetail = () => {
   const [menuOpen, setMenuOpen] = useState(false); // Trạng thái menu dấu 3 chấm
 
   const [replyingTo, setReplyingTo] = useState(null); // ID của comment đang được trả lời
-  const [replies, setReplies] = useState({}); // Lưu trữ phản hồi của từng bình luận
+  const [replyText, setReplyText] = useState({});
+  const [commentCount, setCommentCount] = useState(0);
+
 
 
   useEffect(() => {
@@ -31,9 +33,12 @@ const ArticleDetail = () => {
           apiService.getPostById(id),
           apiService.getUserProfile(),
         ]);
+
         setArticle(data);
         setUser(user);
         setLoading(false);
+        setCommentCount(data.cmtCount || 0); // Cập nhật số lượng bình luận từ backend
+
         
         if (data.topicId) {
           const topicData = await apiService.getTopicById(data.topicId);
@@ -74,27 +79,28 @@ const ArticleDetail = () => {
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
-    if (!newComment.trim()) return; // Kiểm tra nếu input rỗng thì không gửi
-  
+    if (!newComment.trim()) return;
+
     try {
-        const newCmt = await apiService.addComment(id, { content: newComment });
+      const newCmt = await apiService.addComment(id, { content: newComment });
 
-        const user = JSON.parse(localStorage.getItem("user")); // Lấy thông tin user từ localStorage
-        const authorName = user?.name || "Bạn"; // Nếu có username thì dùng, nếu không thì để là "Bạn"
-      
-        const formattedComment = {
-            ...newCmt,
-            authorName, // Hiển thị ngay tên người bình luận
-            formattedTime: "Vừa xong" // Hiển thị ngay thời gian bình luận
-        };
+      const user = JSON.parse(localStorage.getItem("user"));
 
-        setComments((prevComments) => [formattedComment, ...prevComments]); // Thêm bình luận mới vào danh sách
-        setArticle((prev) => ({ ...prev, cmtCount: prev.cmtCount + 1 })); // Tăng số lượng bình luận
-        setNewComment(""); // Reset input sau khi gửi
+      const formattedComment = {
+        ...newCmt,
+        authorName: user?.name || "Bạn",
+        avatar: user?.avatar || "/default-avatar.png",
+        formattedTime: "Vừa xong",
+        replies: [],
+      };
+
+      setComments((prevComments) => [formattedComment, ...prevComments]);
+      setCommentCount(commentCount); // Cập nhật số lượng bình luận
+      setNewComment("");
     } catch (error) {
-        console.error("Lỗi khi thêm bình luận:", error);
+      console.error("Lỗi khi thêm bình luận:", error);
     }
-};
+  };
 
   const handleDeleteComment = async (commentId) => {
     const confirmDelete = window.confirm("Bạn có chắc chắn muốn xóa bình luận này?");
@@ -104,7 +110,7 @@ const ArticleDetail = () => {
     try {
       await apiService.deleteComment(commentId);
       setComments(comment.filter((c) => c.id !== commentId));
-      setArticle((prev) => ({ ...prev, cmtCount: prev.cmtCount - 1 }));
+      setCommentCount(commentCount); // Cập nhật số lượng bình luận
     } catch (error) {
       console.error("Lỗi khi xóa bình luận:", error);
     }
@@ -112,34 +118,34 @@ const ArticleDetail = () => {
 
   const handleReplySubmit = async (e, postId, parentId) => {
     e.preventDefault();
-    if (!newComment.trim()) return;
+    if (!replyText[parentId]?.trim()) return;
 
     try {
-        // Gọi API gửi phản hồi
-        const newReply = await apiService.replyToComment(postId, parentId, newComment);
+      const newReply = await apiService.replyToComment(postId, parentId, replyText[parentId]);
 
-        const user = JSON.parse(localStorage.getItem("user"));
-        const authorName = user?.name || "Bạn";
+      const user = JSON.parse(localStorage.getItem("user"));
 
-        const formattedReply = {
-            ...newReply,
-            authorName,
-            formattedTime: "Vừa xong"
-        };
+      const formattedReply = {
+        ...newReply,
+        authorName: user?.name || "Bạn",
+        avatar: user?.avatar || "/default-avatar.png",
+        formattedTime: "Vừa xong",
+      };
 
-        // Cập nhật danh sách phản hồi cho bình luận cha
-        setReplies((prev) => ({
-            ...prev,
-            [parentId]: [...(prev[parentId] || []), formattedReply]
-        }));
+      // Cập nhật danh sách bình luận
+      setComments((prev) =>
+        prev.map((c) =>
+          c.id === parentId ? { ...c, replies: [...c.replies, formattedReply] } : c
+        )
+      );
 
-        setNewComment(""); // Reset input
-        setReplyingTo(null); // Ẩn ô nhập phản hồi
+      // Reset ô nhập phản hồi cho comment này
+      setReplyText((prev) => ({ ...prev, [parentId]: "" }));
+      setReplyingTo(null);
     } catch (error) {
-        console.error("Lỗi khi thêm phản hồi:", error);
+      console.error("Lỗi khi thêm phản hồi:", error);
     }
 };
-
 
 
 
@@ -164,7 +170,7 @@ const ArticleDetail = () => {
 
   if (loading) return <p>Đang tải...</p>;
   if (!article) return <p>Không tìm thấy bài viết.</p>;
-
+  
   return (
     <div className="article-detail">
       <button
@@ -224,55 +230,50 @@ const ArticleDetail = () => {
         </button>
       </div>
 
-      <h3 >{article.cmtCount}<FaComment />Bình luận</h3>
+      <h3 >{commentCount}<FaComment />Bình luận</h3>
       <ul>
         {comment.map((c) => (
           <li key={c.id} className="comment-item">
+            <img src={c.avatar} alt="avatar" className="comment-avatar" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '50%' }} />
             <div className="comment-content">
-              <div>
-                <strong>{c.authorName}:</strong> {c.content}
-                <div className="comment-meta">
-                  <small>{c.formattedTime}</small>
-                </div>
+              <strong>{c.authorName}:</strong> {c.content}
+              <div className="comment-meta">
+                <small>{c.formattedTime}</small>
               </div>
             </div>
 
-            {/* Các nút hành động (Phản hồi, Xóa) */}
             <div className="comment-actions">
               <button onClick={() => setReplyingTo(c.id)} className="reply-btn">
                 Phản hồi
               </button>
-              {(user?.id === c.userId || user?.roles?.includes("ROLE_ADMIN")) && (
+              {(user?.id === c.userId || user?.roles.includes("ROLE_ADMIN")) && (
                 <button onClick={() => handleDeleteComment(c.id)} className="delete-btn">
                   Xóa
                 </button>
               )}
             </div>
 
-            {/* Form nhập phản hồi */}
             {replyingTo === c.id && (
               <form onSubmit={(e) => handleReplySubmit(e, article.id, c.id)} className="reply-section">
                 <input
                   type="text"
                   placeholder="Viết phản hồi..."
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
+                  value={replyText[c.id] || ""}
+                  onChange={(e) => setReplyText((prev) => ({ ...prev, [c.id]: e.target.value }))}
                 />
                 <button type="submit">Gửi</button>
               </form>
             )}
 
-            {/* Danh sách phản hồi */}
-            {replies[c.id] && replies[c.id].length > 0 && (
-              <ul className="reply-list">
-                {replies[c.id].map((reply) => (
-                  <li key={reply.id} className="reply-item">
-                    <strong>{reply.authorName}:</strong> {reply.content}
-                    <small>{reply.formattedTime}</small>
-                  </li>
-                ))}
-              </ul>
-            )}
+            <ul className="reply-list">
+              {c.replies.map((reply) => (
+                <li key={reply.id} className="reply-item">
+                  <img src={reply.avatar} alt="avatar" className="reply-avatar" />
+                  <strong>{reply.authorName}:</strong> {reply.content}
+                  <small>{reply.formattedTime}</small>
+                </li>
+              ))}
+            </ul>
           </li>
         ))}
       </ul>

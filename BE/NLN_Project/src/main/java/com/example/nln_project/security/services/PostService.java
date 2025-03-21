@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface PostService {
     Post savePost(Post post);
+    long countComments(String postId);
     List<Post> getAllPosts();
     List<Post> getPostsByUserId(String userId);
 

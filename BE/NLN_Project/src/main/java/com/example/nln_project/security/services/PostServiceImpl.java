@@ -1,7 +1,11 @@
 package com.example.nln_project.security.services;
 
 import com.example.nln_project.model.Post;
+import com.example.nln_project.model.Comment;
+
 import com.example.nln_project.repository.PostRepo;
+import com.example.nln_project.repository.CommentRepo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +17,10 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private PostRepo postRepo;
 
+    @Autowired  
+    private CommentRepo commentRepo;
+
+
     public Post savePost(Post post){
         post.setLikeCount(0);
         post.setCmtCount(0);
@@ -20,6 +28,35 @@ public class PostServiceImpl implements PostService {
 
         return postRepo.save(post);
     }
+
+    public long countComments(String postId) {
+        List<Comment> comments = commentRepo.findByPostId(postId);
+        long totalComments = comments.size(); // Tính số bình luận cha
+    
+        for (Comment comment : comments) {
+            totalComments += countReplies(comment);
+        }
+    
+        return totalComments;
+    }
+    
+    // ✅ Đếm cả bình luận cha lẫn con đúng cách
+    private long countReplies(Comment comment) {
+        if (comment == null) return 0;
+    
+        List<Comment> replies = commentRepo.findByParentId(comment.getId());
+        long count = replies.size(); // Đếm số bình luận con trực tiếp
+    
+        for (Comment reply : replies) {
+            count += countReplies(reply); // Đếm thêm bình luận con cấp tiếp theo
+        }
+    
+        return count;
+    }
+    
+    
+    
+
     public List<Post> getAllPosts(){
         return postRepo.findAll();
     }

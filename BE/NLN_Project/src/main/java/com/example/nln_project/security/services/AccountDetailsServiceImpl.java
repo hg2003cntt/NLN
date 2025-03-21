@@ -2,37 +2,37 @@ package com.example.nln_project.security.services;
 
 import com.example.nln_project.model.Account;
 import com.example.nln_project.repository.AccountRepo;
-import org.springframework.beans.factory.annotation.Autowired; // Import for dependency injection
-import org.springframework.security.core.userdetails.UserDetails; // Import UserDetails interface
-import org.springframework.security.core.userdetails.UserDetailsService; // Import UserDetailsService interface
-import org.springframework.security.core.userdetails.UsernameNotFoundException; // Import for handling user not found
-import org.springframework.stereotype.Service; // Import for service annotation
-import org.springframework.transaction.annotation.Transactional; // Import for transaction management
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Implementation of UserDetailsService to load user-specific data.
  */
-@Service // Indicates that this class is a service component
+@Service
 public class AccountDetailsServiceImpl implements UserDetailsService {
 
-	@Autowired // Automatically injects UserRepository bean
-	AccountRepo accountRepo;
+    @Autowired
+    AccountRepo accountRepo;
 
-	/**
-	 * Loads user details by username.
-	 *
-	 * @param username The username of the user.
-	 * @return UserDetails containing user information.
-	 * @throws UsernameNotFoundException if the user is not found.
-	 */
-	@Override
-	@Transactional // Ensures that the method is transactional
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		// Attempt to find the user by username
-		Account account = accountRepo.findByUsername(username)
-				.orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+    /**
+     * Loads user details by username, email, or phone.
+     *
+     * @param identifier Username, Email, or Phone of the user.
+     * @return UserDetails containing user information.
+     * @throws UsernameNotFoundException if the user is not found.
+     */
+    @Override
+    @Transactional
+    public UserDetails loadUserByUsername(String identifier) throws UsernameNotFoundException {
+        Account account = accountRepo.findByUsername(identifier)
+                .or(() -> accountRepo.findByEmail(identifier))
+                .or(() -> accountRepo.findByPhone(identifier))
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with identifier: " + identifier));
 
-		// Return AccountDetails implementation for the found user
-		return AccountDetailsImpl.build(account);
-	}
+        return AccountDetailsImpl.build(account);
+    }
 }

@@ -59,7 +59,7 @@ export default class ApiService {
 
     /** USERS */
     static async getAllUsers() {
-        const response = await axios.get(`${this.BASE_URL}/users/all`, {
+        const response = await axios.get(`${this.BASE_URL}/api/admin/users`, {
             headers: this.getHeader(),
         });
         return response.data;
@@ -107,21 +107,6 @@ export default class ApiService {
                     );
                     return response.data;
                 }
-
-
-    static async getUser(userId) {
-        const response = await axios.get(`${this.BASE_URL}/users/get-by-id/${userId}`, {
-            headers: this.getHeader(),
-        });
-        return response.data;
-    }
-
-    static async getUserBookings(userId) {
-        const response = await axios.get(`${this.BASE_URL}/users/get-user-bookings/${userId}`, {
-            headers: this.getHeader(),
-        });
-        return response.data;
-    }
 
     static async deleteUser(userId) {
         const response = await axios.delete(`${this.BASE_URL}/users/delete/${userId}`, {
@@ -326,19 +311,23 @@ export default class ApiService {
                 { headers: this.getHeader() }
             );
     
-            return response.data.map(comment => ({
+            const comments = Array.isArray(response.data) ? response.data : []; // Đảm bảo `comments` luôn là mảng
+    
+            return comments.map(comment => ({
                 ...comment,
-                authorName: comment.user?.name || "Ẩn danh",
-                formattedTime: dayjs(comment.createdAt).fromNow(),
-                replies: comment.replies?.map(reply => ({
+                authorName: comment.name ?? "Ẩn danh",
+                avatar: comment.avatar ?? "/default-avatar.png", // Hiển thị avatar
+                formattedTime: comment.createdAt ? dayjs(comment.createdAt).fromNow() : "Không xác định",
+                replies: Array.isArray(comment.replies) ? comment.replies.map(reply => ({
                     ...reply,
-                    authorName: reply.user?.name || "Ẩn danh",
-                    formattedTime: dayjs(reply.createdAt).fromNow(),
-                })) || [],
+                    authorName: reply.name ?? "Ẩn danh",
+                    avatar: reply.avatar ?? "/default-avatar.png", // Hiển thị avatar cho reply
+                    formattedTime: reply.createdAt ? dayjs(reply.createdAt).fromNow() : "Không xác định",
+                })) : []
             }));
         } catch (error) {
             console.error("Lỗi khi lấy danh sách comment:", error.response?.data || error.message);
-            throw error;
+            return []; // Trả về mảng rỗng nếu có lỗi
         }
     }
     
@@ -485,18 +474,32 @@ export default class ApiService {
 
         /** CUSTOMER MANAGEMENT */
 
-        static async searchCustomerByPhone(phone) {
-            const response = await axios.get(`${this.BASE_URL}/consultations/admin/search?phone=${phone}`, {
+        static async searchUserByPhone(phone) {
+            const response = await axios.get(`${this.BASE_URL}/api/admin/user/search?phone=${phone}`, {
                 headers: this.getHeader(),
             });
             return response.data;
         }
 
-        static async updateCustomerPhone(id, newPhone) {
-            const response = await axios.put(`${this.BASE_URL}/consultations/${id}/update-phone`,
-                newPhone, 
+        static async updateUserAccount(id, updatedData) {
+            const response = await axios.put(`${this.BASE_URL}/api/admin/update-account/${id}`,
+                updatedData,
                 { headers: this.getHeader() }
             );
+            return response.data;
+        }
+
+        static async deleteUserAccount(id) {
+            const response = await axios.delete(`${this.BASE_URL}/api/admin/delete-account/${id}`, {
+                headers: this.getHeader(),
+            });
+            return response.data;
+        }
+
+        static async createUserAccount(userData) {
+            const response = await axios.post(`${this.BASE_URL}/api/admin/create-user`, userData, {
+                headers: this.getHeader(),
+            });
             return response.data;
         }
         
