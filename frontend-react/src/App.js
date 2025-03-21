@@ -19,6 +19,7 @@ import TopicManagement from "./component/admin//topic/TopicManagement";
 import CustomerManagement from "./component/admin/customer/CustomerManage";
 import MyPostsPage from "./component/profile/MyPostsPage";
 import MyRequestPage from "./component/profile/MyRequestPage";
+import ContactPage from "./component/contact/ContactPage";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
             <Route path="/add-article" element={<ArticleForm />} />
             <Route path="/my-requests" element={<MyRequestPage />} />
             <Route path="/my-posts" element={<MyPostsPage />} />
+            <Route path="/contact" element={<ContactPage/>} />
             <Route
               path="/submit-consultation"
               element={<ConsultationRequestPage />}

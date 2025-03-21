@@ -46,6 +46,9 @@ const TopicManagement = () => {
       setNewTopic("");
       await fetchChartData();
       alert("Thêm chủ đề thành công!");
+
+      // Phát sự kiện cập nhật
+      window.dispatchEvent(new Event("topicUpdated"));
     } catch (error) {
       console.error("Lỗi khi thêm chủ đề:", error);
       alert("Lỗi khi thêm chủ đề. Vui lòng thử lại!");
@@ -76,6 +79,9 @@ const TopicManagement = () => {
       setEditName("");
       await fetchChartData();
       alert("Chủ đề đã được cập nhật thành công!");
+
+      // Phát sự kiện cập nhật
+      window.dispatchEvent(new Event("topicUpdated"));
     } catch (error) {
       alert("Lỗi khi cập nhật chủ đề. Vui lòng thử lại!");
     }
@@ -88,6 +94,9 @@ const TopicManagement = () => {
       
       await fetchChartData();
       alert("Xóa chủ đề thành công!");
+
+      // Phát sự kiện cập nhật
+      window.dispatchEvent(new Event("topicUpdated"));
     } catch (error) {
       console.error("Lỗi khi xóa chủ đề:", error);
     }
