@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ApiService from "../../service/apiService";
 import { useNavigate, useLocation } from "react-router-dom";
+import defaultImage from "../articles/default-image.jpg";
 
 const ArticlePage = () => {
     const [articles, setArticles] = useState([]);
@@ -43,7 +44,7 @@ const ArticlePage = () => {
                 <div className="article-grid">
                     {articles.map((article) => (
                         <div key={article.id} className="article-card" onClick={() => handleArticleClick(article.id)}>
-                            <img src={article.image || "/default-image.jpg"} alt={article.title} className="article-image" />
+                            <img src={article.image || defaultImage } alt={article.title} className="article-image" />
                             <div className="article-content">
                                 <h3 className="article-title">{article.title}</h3>
                                 <p className="article-description">{article.description}</p>

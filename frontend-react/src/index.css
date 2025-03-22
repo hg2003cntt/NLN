@@ -474,13 +474,26 @@ button:hover {
 }
 .article-actions {
   display: flex;
+  align-items: center; /* Căn giữa theo chiều dọc */
+  gap: 15px; /* Khoảng cách giữa các phần tử */
+  
+}
+
+.article-like {
+  display: flex;
   align-items: center;
-  gap: 10px;
-  margin: 15px 0px;
+  color: gray;
+}
+.article-cmt {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 18px;
+  color: gray;
 }
 
 .like-button {
-  width: 100px;
+  width: 120px;
   background: #007bff;
   color: white;
   border: none;
@@ -490,6 +503,7 @@ button:hover {
   align-items: center;
   gap: 5px;
   border-radius: 4px;
+  font-size: 18px;
 }
 
 .comment-section {
@@ -504,15 +518,103 @@ button:hover {
   margin-bottom: 10px;
 }
 
+/*comment*/
 .comment-list {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .comment-item {
-  padding: 10px;
-  border-bottom: 1px solid #eee;
+  position: relative;
+  padding-left: 0px;
+
 }
+
+.comment-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-left: 0px;
+  font-size: 18px;
+}
+
+/* Đường kẻ dọc phân cấp */
+.replies {
+  margin-top: 10px;
+  padding-left: 10px;
+  position: relative;
+  border-left: 2px solid #ccc; /* Thêm border-left */
+  margin-left: 10px; /* Giúp căn chỉnh đẹp hơn */
+}
+
+/* Ẩn đường kẻ khi chỉ có 1 bình luận con */
+.replies:only-child {
+  border-left: none;
+}
+
+/* Định dạng avatar */
+.comment-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.comment-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.comment-actions {
+  display: flex;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.comment-actions button {
+  border: none;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+  width: 80px; /* Cố định chiều rộng */
+  height: 30px; /* Cố định chiều cao */
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Màu của từng nút */
+.btn-reply {
+  background-color: #28a745; /* Xanh lá */
+  color: white;
+}
+
+.btn-reply:hover {
+  background-color: #218838;
+}
+
+.btn-delete {
+  background-color: #dc3545; /* Đỏ */
+  color: white;
+}
+
+.btn-delete:hover {
+  background-color: #c82333;
+}
+
+.btn-submit {
+  background-color: #007bff; /* Xanh dương */
+  color: white;
+  width: 50px;
+}
+
+.btn-submit:hover {
+  background-color: #0056b3;
+}
+
+
 .submit-cmt{
   width: 50px;
   margin: auto;
@@ -737,73 +839,9 @@ button:hover {
   margin-top: 20px;
 }
 
-.comment-item {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-  width: 100%;
-}
 
-.comment-content {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-}
 
-.comment-meta {
-  font-size: 12px;
-  color: #777;
-}
 
-.comment-actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 5px; /* Để nút Phản hồi xuống dưới */
-}
-
-.reply-btn {
-  background-color: green;
-  color: white;
-  border: none;
-  cursor: pointer;
-  padding: 5px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  display: inline-flex;
-  align-items: center;
-}
-
-.reply-btn:hover {
-  background: darkgreen;
-}
-
-.reply-section {
-  margin-left: 20px;
-  display: flex;
-  gap: 5px;
-  margin-top: 5px;
-}
-
-.reply-section input {
-  flex-grow: 1;
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.reply-list {
-  margin-left: 30px;
-  border-left: 2px solid #ddd;
-  padding-left: 10px;
-  margin-top: 5px;
-}
-
-.reply-item {
-  font-size: 14px;
-  color: #555;
-}
  /* Tổng thể Profile */
  .profile-container {
      min-height: 100vh;

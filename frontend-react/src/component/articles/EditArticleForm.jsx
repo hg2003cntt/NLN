@@ -96,17 +96,17 @@ const EditArticleForm = () => {
 
     return (
         <div className="edit-article-container">
-            <h2>Edit Blog</h2>
+            <h2>Chỉnh sửa bài viết</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                    <label>Title</label>
+                    <label>Tiêu đề</label>
                     <input type="text" name="title" value={formData.title} onChange={handleChange} required />
                 </div>
 
                 <div className="form-group">
-                    <label>Topic</label>
+                    <label>Chủ đề</label>
                     <select name="topicId" value={formData.topicId} onChange={handleChange} required>
-                        <option value="">Select a topic</option>
+                        <option value="">Chọn 1 chủ đề</option>
                         {topics.map((topic) => (
                             <option key={topic.topicID} value={topic.topicID}>
                                 {topic.name}
@@ -116,12 +116,12 @@ const EditArticleForm = () => {
                 </div>
 
                 <div className="form-group">
-                    <label>Content</label>
+                    <label>Nội dung</label>
                     <ReactQuill value={formData.content} onChange={handleChange} theme="snow" required />
                 </div>
 
                 <div className="form-group">
-                    <label>Image</label>
+                    <label>Ảnh</label>
                     <input
                         type="file"
                         ref={fileInputRef}
@@ -133,18 +133,18 @@ const EditArticleForm = () => {
                         <div className="image-preview-container">
                             <img src={preview} alt="Preview" className="image-preview" />
                             <button type="button" className="remove-image-btn" onClick={handleRemoveImage}>
-                                Remove Image
+                                Xóa ảnh
                             </button>
                         </div>
                     )}
                 </div>
 
                 <div className="form-group">
-                    <label>Author</label>
+                    <label>Tác giả</label>
                     <input type="text" name="author" value={formData.author} onChange={handleChange} required />
                 </div>
 
-                <button type="submit">Update Blog</button>
+                <button type="submit">Đăng bài</button>
             </form>
         </div>
     );

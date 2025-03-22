@@ -179,29 +179,6 @@ public class PostController {
         return ResponseEntity.ok(post);
     }
 
-    // Thêm bình luận vào bài viết
-    // @PostMapping("/{postId}/comments")
-    // public ResponseEntity<Comment> addComment(@PathVariable String postId, @Valid @RequestBody Comment comment) {
-    //     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    //     AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
-        
-    //     String userId = userDetails.getId();
-    //     String name = userDetails.getName();
-
-    //     comment.setUserId(userId);
-    //     comment.setName(name);
-    //     comment.setPostId(postId);
-    //     comment.setCreatedAt(System.currentTimeMillis());
-
-    //     Comment savedComment = commentRepo.save(comment);
-
-    //     // Cập nhật số lượng bình luận của bài viết
-    //     Post post = postRepo.findById(postId).orElseThrow();
-    //     post.setCmtCount(post.getCmtCount() + 1);
-    //     postRepo.save(post);
-
-    //     return ResponseEntity.ok(savedComment);
-    // }
 
     @PostMapping("/{postId}/comments")
     public ResponseEntity<Comment> addComment(@PathVariable String postId, @Valid @RequestBody Comment comment) {
@@ -232,21 +209,6 @@ public class PostController {
         return ResponseEntity.ok(savedComment);
     }
 
-
-    // @GetMapping("/{postId}/comments")
-    // public ResponseEntity<List<Comment>> getComments(@PathVariable String postId) {
-    //     List<Comment> comments = commentRepo.findByPostId(postId);
-        
-    //     for (Comment comment : comments) {
-    //         if (comment.getName() == null || comment.getName().isEmpty()) {
-    //             Account user = accountRepo.findById(comment.getUserId()).orElse(null);
-    //             comment.setName(user != null ? user.getName() : "Ẩn danh");
-    //         }
-    //     }
-
-    //     return ResponseEntity.ok(comments);
-    // }
-
     @GetMapping("/{postId}/comments")
     public ResponseEntity<List<Comment>> getComments(@PathVariable String postId) {
         List<Comment> comments = commentRepo.findByPostId(postId);
@@ -254,11 +216,12 @@ public class PostController {
 
         // Lấy tất cả các comment và map theo ID
         for (Comment comment : comments) {
-            if (comment.getName() == null || comment.getName().isEmpty()) {
-                Account user = accountRepo.findById(comment.getUserId()).orElse(null);
-                comment.setName(user != null ? user.getName() : "Ẩn danh");
-                comment.setAvatar(user != null ? user.getAvatar() : null);
-            }
+
+            Account user = accountRepo.findById(comment.getUserId()).orElse(null);
+            comment.setName(user != null ? user.getName() : "Ẩn danh");
+            comment.setAvatar(user != null ? user.getAvatar() : null);
+
+
             commentMap.put(comment.getId(), comment);
         }
 
@@ -277,25 +240,6 @@ public class PostController {
 
         return ResponseEntity.ok(rootComments);
     }
-
-    // Xóa bình luận (chỉ admin hoặc chủ comment mới được xóa)
-    // @DeleteMapping("/comments/{commentId}")
-    // public ResponseEntity<String> deleteComment(@PathVariable String commentId) {
-    //     Optional<Comment> comment = commentRepo.findById(commentId);
-    //     System.out.print(commentId);
-    //     if (comment.isPresent()) {
-    //         commentRepo.deleteById(commentId);
-
-    //         // Giảm số lượng bình luận của bài viết
-    //         Post post = postRepo.findById(comment.get().getPostId()).orElseThrow();
-    //         post.setCmtCount(Math.max(0, post.getCmtCount() - 1)); // Đảm bảo không âm
-    //         postRepo.save(post);
-
-    //         return ResponseEntity.ok("Bình luận đã được xóa");
-    //     } else {
-    //         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Bình luận không tồn tại");
-    //     }
-    // }
 
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<String> deleteComment(@PathVariable String commentId) {
@@ -343,27 +287,6 @@ public class PostController {
     }
 
 
-//     @PostMapping("/{postId}/reply")
-//     public ResponseEntity<Comment> replyToComment(@PathVariable String postId, @RequestBody Comment reply) {
-//         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//         AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
-//
-//         reply.setUserId(userDetails.getId());
-//         reply.setName(userDetails.getName());
-//         reply.setPostId(postId);
-//         reply.setCreatedAt(System.currentTimeMillis());
-//
-//         // Nếu phản hồi có parentId thì lưu vào comment cha
-//         if (reply.getParentId() != null) {
-//             Optional<Comment> parentComment = commentRepo.findById(reply.getParentId());
-//             if (parentComment.isEmpty()) {
-//                 return ResponseEntity.badRequest().body(null);
-//             }
-//         }
-//
-//         Comment savedReply = commentRepo.save(reply);
-//         return ResponseEntity.ok(savedReply);
-//     }
     @PostMapping("/{postId}/reply")
     public ResponseEntity<Comment> replyToComment(@PathVariable String postId, @RequestBody Comment reply) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -384,7 +307,7 @@ public class PostController {
 
         // ✅ Cập nhật tổng số bình luận cho bài viết
         Post post = postRepo.findById(postId).orElseThrow();
-        postService.countComments(postId); 
+        postService.countComments(postId);
         postRepo.save(post);
 
 

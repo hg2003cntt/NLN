@@ -30,13 +30,24 @@ public class PostServiceImpl implements PostService {
     }
 
     public long countComments(String postId) {
-        List<Comment> comments = commentRepo.findByPostId(postId);
-        long totalComments = comments.size(); // Tính số bình luận cha
-    
-        for (Comment comment : comments) {
-            totalComments += countReplies(comment);
+        // Chỉ lấy bình luận cha (parentId == null)
+        List<Comment> parentComments = commentRepo.findByPostId(postId)
+                .stream()
+                .filter(comment -> comment.getParentId() == null || comment.getParentId().isEmpty())
+                .toList();
+
+        long totalComments = parentComments.size(); //  Chỉ đếm bình luận cha
+
+        //  Đếm bình luận con chỉ từ cha
+        for (Comment parent : parentComments) {
+            totalComments += countReplies(parent);
         }
-    
+
+        //  Lưu số lượng bình luận vào Post
+        Post post = postRepo.findById(postId).get();
+        post.setCmtCount(totalComments);
+        postRepo.save(post);
+
         return totalComments;
     }
     
@@ -46,7 +57,7 @@ public class PostServiceImpl implements PostService {
     
         List<Comment> replies = commentRepo.findByParentId(comment.getId());
         long count = replies.size(); // Đếm số bình luận con trực tiếp
-    
+
         for (Comment reply : replies) {
             count += countReplies(reply); // Đếm thêm bình luận con cấp tiếp theo
         }

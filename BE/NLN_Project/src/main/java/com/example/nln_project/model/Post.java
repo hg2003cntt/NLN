@@ -32,8 +32,8 @@ public class Post {
     private String author;
     private String image;
     private Date createdAt;
-    private int likeCount;
-    private int cmtCount;
+    private long likeCount;
+    private long cmtCount;
     private String userId;
 
     private String topicId;

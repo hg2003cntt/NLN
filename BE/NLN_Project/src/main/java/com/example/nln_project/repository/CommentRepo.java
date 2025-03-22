@@ -6,12 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface CommentRepo extends MongoRepository<Comment, String> {
-//    List<Comment> findByPostId(String postId);
-//    Boolean getParentId();
-//    void deleteByPostId(String postId);
-//     void deleteByParentId(String parentId);
-//     List<Comment> findByPostIdAndParentIsNull(String postId); // Lấy bình luận chính
-//     List<Comment> findByParentId(String parentId); // Lấy phản hồi của bình luận
+
     List<Comment> findByPostId(String postId);
     List<Comment> findByParentId(String parentId); // Lấy phản hồi của bình luận
     void deleteByPostId(String postId);

@@ -8,7 +8,7 @@ const ArticleForm = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
-    image: "",
+    image:"",
     topicId: "",
     content: "",
     author: "",
@@ -135,7 +135,7 @@ const ArticleForm = () => {
         <div className="form-group">
           <label>Chủ đề</label>
           <select name="topicId" value={formData.topicId} onChange={handleChange} required>
-            <option value="">Select a topic</option>
+            <option value="">Chọn 1 chủ đề</option>
             {topics.map((topic) => (
               <option key={topic.topicID} value={topic.topicID}>
                 {topic.name}
