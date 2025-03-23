@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate,useLocation  } from "react-router-dom";
 import apiService from "../../service/apiService";
 import {
   FaHeart,
@@ -24,6 +24,18 @@ const ArticleDetail = () => {
   const [replyText, setReplyText] = useState({});
   const [commentCount, setCommentCount] = useState(0);
   const [liked, setLiked] = useState(false);
+  const location = useLocation();
+  
+  useEffect(() => { 
+    setTimeout(() => {
+        if (location.hash) {
+            const element = document.querySelector(location.hash);
+            if (element) {
+                element.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+        }
+    }, 100);
+  }, [location]);
 
   useEffect(() => {
     const fetchArticleAndUser = async () => {
@@ -179,22 +191,19 @@ const ArticleDetail = () => {
           return (
             <li
               key={comment.id}
+              id={`comment-${comment.id}`} // Thêm ID để hỗ trợ cuộn
               className={`comment-item ${parentExists ? "has-parent" : ""}`}
             >
               <div className="comment-container">
-                {/* Dấu phân cấp: Hiển thị | nếu có từ 2 bình luận cùng cấp */}
                 {parentExists && (
                   <div
-                    className={`vertical-line ${
-                      hasSiblings ? "visible" : "hidden"
-                    }`}
-                    style={{ marginLeft: `${level * 10}px` }} // Điều chỉnh khoảng cách theo cấp
+                    className={`vertical-line ${hasSiblings ? "visible" : "hidden"}`}
+                    style={{ marginLeft: `${level * 10}px` }}
                   ></div>
                 )}
-
-                {/* Đường ngang kết nối cha-con */}
+  
                 {parentExists && <div className="horizontal-line"></div>}
-
+  
                 <div className="comment-header">
                   <img
                     src={comment.avatar || "/default-avatar.png"}
@@ -204,17 +213,12 @@ const ArticleDetail = () => {
                   <div>
                     <strong>{comment.name}</strong>
                     <p>{comment.content}</p>
-                    <small>
-                      {new Date(comment.createdAt).toLocaleString("vi-VN")}
-                    </small>
+                    <small>{new Date(comment.createdAt).toLocaleString("vi-VN")}</small>
                   </div>
                 </div>
-
+  
                 <div className="comment-actions">
-                  <button
-                    classname="btn-reply"
-                    onClick={() => setReplyingTo(comment.id)}
-                  >
+                  <button className="btn-reply" onClick={() => setReplyingTo(comment.id)}>
                     Phản hồi
                   </button>
                   {(user?.id === comment.userId ||
@@ -224,13 +228,11 @@ const ArticleDetail = () => {
                     </button>
                   )}
                 </div>
-
+  
                 {replyingTo === comment.id && (
                   <form
                     className="comment-section"
-                    onSubmit={(e) =>
-                      handleReplySubmit(e, article.id, comment.id)
-                    }
+                    onSubmit={(e) => handleReplySubmit(e, article.id, comment.id)}
                   >
                     <input
                       type="text"
@@ -248,14 +250,9 @@ const ArticleDetail = () => {
                     </button>
                   </form>
                 )}
-
-                {/* Render replies */}
+  
                 {comment.replies && comment.replies.length > 0 && (
-                  <div
-                    className={`replies ${
-                      comment.replies.length > 1 ? "has-multiple" : ""
-                    }`}
-                  >
+                  <div className={`replies ${comment.replies.length > 1 ? "has-multiple" : ""}`}>
                     {renderComments(comment.replies, level + 1, true)}
                   </div>
                 )}
@@ -266,6 +263,7 @@ const ArticleDetail = () => {
       </ul>
     );
   };
+  
 
   if (loading) return <p>Đang tải...</p>;
   if (!article) return <p>Không tìm thấy bài viết.</p>;

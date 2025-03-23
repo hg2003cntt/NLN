@@ -1,76 +1,32 @@
-import {
-    Footer,
-    FooterBrand,
-    FooterDivider,
-    FooterIcon,
-    FooterLink,
-    FooterLinkGroup,
-    FooterTitle,
-  } from "flowbite-react";
-  import { BsFacebook, BsGithub, BsInstagram, BsTwitter, BsDribbble } from "react-icons/bs";
-  
-  export function PsychologyCareFooter() {
-    return (
-      <Footer container className="bg-white shadow-md rounded-lg p-6">
-        <div className="w-full max-w-6xl mx-auto">
-          {/* Footer Sections - Split into Two Columns */}
-          <div className="flex flex-wrap sm:flex-nowrap justify-between gap-6">
-            {/* Left Section - Logo and About */}
-            <div className="flex-1">
-              <FooterBrand
-                href="#"
-                src="/logo/6697109.jpg"
-                alt="Psychology Care Logo"
-                name="Psychology Care"
-              />
-              <div className="mt-4">
-                <FooterTitle title="About" />
-                <FooterLinkGroup col className="space-y-2">
-                  <FooterLink href="#">Our Team</FooterLink>
-                  <FooterLink href="#">Services</FooterLink>
-                </FooterLinkGroup>
-              </div>
+// import { BsFacebook, BsGithub, BsInstagram, BsTwitter, BsDribbble } from "react-icons/bs";
+
+export function PsychologyCareFooter() {
+  return (
+    <footer class="bg-white rounded-lg shadow-sm dark:bg-gray-900 m-4">
+        <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
+            <div class="sm:flex sm:items-center sm:justify-between">
+                <a href="/home" class="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
+                    <img src="/logo/6697109.jpg" class="h-8" alt="Flowbite Logo" />
+                    <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Psychology Care</span>
+                </a>
+                <ul class="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
+                    <li>
+                        <a href="#" class="hover:underline me-4 md:me-6">About</a>
+                    </li>
+                    <li>
+                        <a href="#" class="hover:underline me-4 md:me-6">Privacy Policy</a>
+                    </li>
+                    <li>
+                        <a href="#" class="hover:underline me-4 md:me-6">Licensing</a>
+                    </li>
+                    <li>
+                        <a href="#" class="hover:underline">Contact</a>
+                    </li>
+                </ul>
             </div>
-  
-            {/* Right Section - Follow Us and Legal */}
-            <div className="flex-1">
-              <div className="mt-4">
-                <FooterTitle title="Follow Us" />
-                <FooterLinkGroup col className="space-y-2">
-                  <FooterLink href="#">Github</FooterLink>
-                  <FooterLink href="#">Discord</FooterLink>
-                </FooterLinkGroup>
-              </div>
-              <div className="mt-4">
-                <FooterTitle title="Legal" />
-                <FooterLinkGroup col className="space-y-2">
-                  <FooterLink href="#">Privacy Policy</FooterLink>
-                  <FooterLink href="#">Terms & Conditions</FooterLink>
-                </FooterLinkGroup>
-              </div>
-            </div>
-          </div>
-  
-          {/* Divider */}
-          <div className="my-6 border-t border-gray-200"></div>
-  
-          {/* Copyright and Social Icons Section */}
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-gray-500">
-            <span>© 2025 Psychology Care™</span>
-            <div className="mt-4 flex space-x-6 sm:mt-0 sm:justify-center">
-              <FooterIcon href="#" icon={BsFacebook} />
-              <FooterIcon href="#" icon={BsInstagram} />
-              <FooterIcon href="#" icon={BsTwitter} />
-              <FooterIcon href="#" icon={BsGithub} />
-              <FooterIcon href="#" icon={BsDribbble} />
-            </div>
-          </div>
+            <hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+            <span class="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="https://flowbite.com/" class="hover:underline">Flowbite™</a>. All Rights Reserved.</span>
         </div>
-      </Footer>
-    );
-  }
-  
-  
-  
-  
-  
+    </footer>
+  );
+}

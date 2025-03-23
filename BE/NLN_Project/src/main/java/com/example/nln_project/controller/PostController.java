@@ -4,13 +4,18 @@ import com.example.nln_project.model.Like;
 import com.example.nln_project.model.Account;
 import com.example.nln_project.model.Comment;
 import com.example.nln_project.model.Post;
+import com.example.nln_project.model.Notification;
+
 import com.example.nln_project.repository.AccountRepo;
 import com.example.nln_project.repository.CommentRepo;
 import com.example.nln_project.repository.LikeRepo;
+import com.example.nln_project.repository.NotificationRepo;
 import com.example.nln_project.repository.PostRepo;
 
 import com.example.nln_project.security.services.AccountDetailsImpl;
 import com.example.nln_project.security.services.PostService;
+import com.example.nln_project.security.services.NotificationService;
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +29,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 //@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RestController
@@ -44,6 +50,9 @@ public class PostController {
 
     @Autowired
     private AccountRepo accountRepo;
+
+    @Autowired
+    private NotificationService notificationService;
 
 
     @PostMapping("/createPost")
@@ -162,22 +171,36 @@ public class PostController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
         String userId = userDetails.getId();
+        String name = userDetails.getName();
+
         Optional<Like> existingLike = likeRepo.findByUserIdAndPostId(userId, postId);
+        
+        Post post = postRepo.findById(postId).orElseThrow();
+        String postOwnerId = post.getUserId(); // Chủ bài viết
 
         if (existingLike.isPresent()) {
             likeRepo.deleteByUserIdAndPostId(userId, postId); // Bỏ like
         } else {
             likeRepo.save(new Like(userId, postId)); // Thêm like mới
+            
+            // ✅ Gửi thông báo cho chủ bài viết
+            notificationService.notifyLikePost(
+                postId, 
+                null, // Không có commentId
+                userId, 
+                postOwnerId, 
+                name + " đã thích bài viết của bạn!"
+            );
         }
 
         // Cập nhật số like trong bài viết
         int likeCount = likeRepo.countByPostId(postId);
-        Post post = postRepo.findById(postId).orElseThrow();
         post.setLikeCount(likeCount);
         postRepo.save(post);
 
         return ResponseEntity.ok(post);
     }
+
 
 
     @PostMapping("/{postId}/comments")
@@ -205,6 +228,9 @@ public class PostController {
         Post post = postRepo.findById(postId).orElseThrow();
         post.setCmtCount((int) updatedCount);
         postRepo.save(post);
+
+        notificationService.notifyNewComment(postId, comment.getId(), userDetails.getId(), post.getUserId(), name + " đã bình luận bài viết của bạn!" );
+
 
         return ResponseEntity.ok(savedComment);
     }
@@ -305,13 +331,74 @@ public class PostController {
             }
         }
 
+        // ✅ Lưu comment trước để có ID
+        Comment savedReply = commentRepo.save(reply);
+
+        // ✅ Gửi thông báo sau khi lưu thành công
+        if (reply.getParentId() != null && !reply.getParentId().isEmpty()) {
+            Optional<Comment> parentComment = commentRepo.findById(reply.getParentId());
+            if (parentComment.isPresent()) {
+                notificationService.notifyReplyComment(
+                    postId,
+                    savedReply.getId(),  // Đã có ID sau khi lưu
+                    userDetails.getId(),
+                    parentComment.get().getUserId(),
+                    userDetails.getName()+ " đã phản hồi bạn!"
+                );
+            }
+        }
+
         // ✅ Cập nhật tổng số bình luận cho bài viết
         Post post = postRepo.findById(postId).orElseThrow();
-        postService.countComments(postId);
+        post.setCmtCount((int) postService.countComments(postId));
         postRepo.save(post);
 
-
-        Comment savedReply = commentRepo.save(reply);
         return ResponseEntity.ok(savedReply);
     }
+
+
+    @GetMapping("/notification/unread")
+    public ResponseEntity<List<Map<String, Object>>> getUnreadNotifications() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
+        String userId = userDetails.getId();
+
+        List<Notification> notifications = notificationService.getUnreadNotifications(userId);
+
+        // Trả về danh sách thông báo kèm link
+        List<Map<String, Object>> response = notifications.stream().map(notification -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", notification.getId());
+            map.put("userId", notification.getUserId());
+            map.put("senderId", notification.getSenderId());
+            map.put("postId", notification.getPostId());
+            map.put("commentId", notification.getCommentId());
+            map.put("message", notification.getMessage());
+            map.put("read", notification.isRead());
+            map.put("createdAt", notification.getCreatedAt());
+            map.put("link", notification.getLink()); // Trả về link từ Model
+    
+            return map;
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/notification")
+    public ResponseEntity<List<Notification>> getAllNotifications() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
+        String userId = userDetails.getId();
+
+        List<Notification> notifications = notificationService.getAllNotifications(userId);
+        return ResponseEntity.ok(notifications);
+    }
+
+    @PutMapping("/{notificationId}/read")
+    @PostMapping("/{notificationId}/read")
+    public ResponseEntity<String> markNotificationAsRead(@PathVariable String notificationId) {
+        notificationService.markAsRead(notificationId);
+        return ResponseEntity.ok("Thông báo đã được đánh dấu là đã đọc");
+    }
+
 }

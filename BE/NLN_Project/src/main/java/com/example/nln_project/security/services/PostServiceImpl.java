@@ -7,6 +7,9 @@ import com.example.nln_project.repository.PostRepo;
 import com.example.nln_project.repository.CommentRepo;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -20,14 +23,35 @@ public class PostServiceImpl implements PostService {
     @Autowired  
     private CommentRepo commentRepo;
 
+    @Autowired
+    private NotificationService notificationService; // Thêm NotificationService
 
-    public Post savePost(Post post){
+
+    public Post savePost(Post post) {
         post.setLikeCount(0);
         post.setCmtCount(0);
         post.setCreatedAt(new Date());
-
-        return postRepo.save(post);
+    
+        // Lưu bài viết trước khi sử dụng ID
+        Post savedPost = postRepo.save(post);
+    
+        // Lấy thông tin người đăng bài
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
+        String userName = userDetails.getName(); // Lấy tên người đăng bài
+    
+        // Gửi thông báo cho admin
+        String adminId = "67b352bc5de5c8380e5bded1"; // Thay bằng ID thực tế của admin
+        notificationService.notifyNewPost(
+            savedPost.getId(),     // ✅ Dùng `savedPost` đã lưu
+            savedPost.getUserId(), // ✅ Lấy ID từ `savedPost`
+            List.of(adminId),  
+            userName + " đã đăng một bài viết mới!"
+        );
+    
+        return savedPost;
     }
+    
 
     public long countComments(String postId) {
         // Chỉ lấy bình luận cha (parentId == null)
@@ -87,4 +111,5 @@ public class PostServiceImpl implements PostService {
     public List<Post> findByTopicIdAndTitleContainingIgnoreCase(String topicId, String title) {
         return postRepo.findByTopicIdAndTitleContainingIgnoreCase(topicId, title);
     }
+
 }

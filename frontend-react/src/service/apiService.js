@@ -65,6 +65,28 @@ export default class ApiService {
         return response.data;
     }
 
+    static async getAllNotifications() {
+        const response = await axios.get(`${this.BASE_URL}/api/posts/notification`, {
+            headers: this.getHeader(),
+        });
+        return response.data;
+    }
+
+    static async getNotificationsUnread() {
+        const response = await axios.get(`${this.BASE_URL}/api/posts/notification/unread`, {
+            headers: this.getHeader(),
+        });
+        return response.data;
+    }
+
+    static async markNotificationAsRead(notificationId) {    
+        const response = await axios.put(`${this.BASE_URL}/api/posts/${notificationId}/read`, 
+        {}, { headers: this.getHeader() });
+        return response.data;
+    }
+    
+    
+
     static async getUserProfile() {
             try {
                 const response = await axios.get(`${this.BASE_URL}/api/auth/me`, {

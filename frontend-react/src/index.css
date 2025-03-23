@@ -96,7 +96,7 @@ body {
 }
 
 .modal-content {
-  background: #fff;
+  background: #131212;
   padding: 30px;
   border-radius: 8px;
   width: 400px;
@@ -237,6 +237,7 @@ input {
 
 /* Cải thiện modal */
 .modal-content {
+  color: #131212;
   background: #fff;
   padding: 20px;
   border-radius: 12px;
