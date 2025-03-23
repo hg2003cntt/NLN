@@ -13,6 +13,7 @@ import AdminPage from "./component/admin/AdminPage";
 import { ProtectedRoute, AdminRoute } from "./service/guard";
 import ResponsiveComponent from "./component/common/ResponsiveWindow";
 import ArticleDetail from "./component/articles/ArticleDetail";
+import ArticleChart from "./component/admin/article/ArticleChart"
 import EditArticleForm from "./component/articles/EditArticleForm";
 import ConsultationList from "./component/admin/consultation/ConsultationList";
 import TopicManagement from "./component/admin//topic/TopicManagement";
@@ -20,6 +21,7 @@ import CustomerManagement from "./component/admin/customer/CustomerManage";
 import MyPostsPage from "./component/profile/MyPostsPage";
 import MyRequestPage from "./component/profile/MyRequestPage";
 import ContactPage from "./component/contact/ContactPage";
+
 
 function App() {
   return (
@@ -59,6 +61,7 @@ function App() {
               <Route path="customers" element={<CustomerManagement />} />
               <Route path="consultations" element={<ConsultationList />} />
               <Route path="topics" element={<TopicManagement />} />
+              <Route path="articles" element={<ArticleChart />} />
             </Route>
             {/* Fallback Route */}
             <Route path="*" element={<Navigate to="/login" />} />
