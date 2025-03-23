@@ -502,6 +502,23 @@ export default class ApiService {
             });
             return response.data;
         }
+
+        /** ARTICLE STATS (ADMIN) */
+        static async getArticleByDate(from, to) {
+            const response = await axios.get(`${this.BASE_URL}/api/admin/posts/article-by-date`, {
+                headers: this.getHeader(),
+                params: { from, to },
+            });
+            return response.data;
+        }
+
+        static async getArticleByTopic() {
+            const response = await axios.get(`${this.BASE_URL}/api/admin/posts/article-by-topic`, {
+                headers: this.getHeader(),
+            });
+            return response.data;
+        }
+
         
 
     /** AUTHENTICATION CHECKER */

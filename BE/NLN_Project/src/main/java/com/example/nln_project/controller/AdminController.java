@@ -1,16 +1,17 @@
 package com.example.nln_project.controller;
 
-import com.example.nln_project.model.Account;
-import com.example.nln_project.model.Role;
-import com.example.nln_project.model.AccountRole;
+import com.example.nln_project.model.*;
 import com.example.nln_project.payload.request.SignupRequest;
 import com.example.nln_project.payload.request.UpdateRequest;
 
 import com.example.nln_project.payload.response.MessageResponse;
 import com.example.nln_project.repository.AccountRepo;
+import com.example.nln_project.repository.PostRepo;
 import com.example.nln_project.repository.RoleRepo;
 
+import com.example.nln_project.repository.TopicRepo;
 import com.example.nln_project.security.services.AccountDetailsImpl;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
@@ -22,7 +23,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,6 +44,13 @@ public class AdminController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private PostRepo postRepo;
+
+    @Autowired
+    private TopicRepo topicRepo;
+
 
 
     /**
@@ -170,4 +181,42 @@ public class AdminController {
         accountRepo.save(user);
         return ResponseEntity.ok(new MessageResponse("User created successfully!"));
     }
+
+    @GetMapping("/posts/article-by-date")
+    public ResponseEntity<?> getPostStatsByDate(
+            @RequestParam("from") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam("to") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+
+        List<Post> posts = postRepo.findAll();
+
+        Map<LocalDate, Long> result = posts.stream()
+                .filter(p -> p.getCreatedAt() != null)
+                .filter(p -> {
+                    LocalDate created = p.getCreatedAt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                    return (!created.isBefore(from) && !created.isAfter(to));
+                })
+                .collect(Collectors.groupingBy(
+                        p -> p.getCreatedAt().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+                        Collectors.counting()
+                ));
+
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/posts/article-by-topic")
+    public ResponseEntity<?> getPostStatsByTopic() {
+        List<Topic> topics = topicRepo.findAll();
+        List<Post> posts = postRepo.findAll();
+
+        Map<String, Long> stats = topics.stream().collect(Collectors.toMap(
+                Topic::getName,
+                topic -> posts.stream()
+                        .filter(p -> topic.getId().equals(p.getTopicId()))
+                        .count()
+        ));
+
+        return ResponseEntity.ok(stats);
+    }
+
+
 }
