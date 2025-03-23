@@ -144,7 +144,7 @@ const EditArticleForm = () => {
                     <input type="text" name="author" value={formData.author} onChange={handleChange} required />
                 </div>
 
-                <button type="submit">Đăng bài</button>
+                <button type="submit">Cập nhật bài viết</button>
             </form>
         </div>
     );
