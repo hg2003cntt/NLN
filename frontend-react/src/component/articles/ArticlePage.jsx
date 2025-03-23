@@ -44,7 +44,7 @@ const ArticlePage = () => {
                 <div className="article-grid">
                     {articles.map((article) => (
                         <div key={article.id} className="article-card" onClick={() => handleArticleClick(article.id)}>
-                            <img src={article.image || defaultImage } alt={article.title} className="article-image" />
+                            <img src={article.image || defaultImage} alt={article.title} className="article-image" />
                             <div className="article-content">
                                 <h3 className="article-title">{article.title}</h3>
                                 <p className="article-description">{article.description}</p>

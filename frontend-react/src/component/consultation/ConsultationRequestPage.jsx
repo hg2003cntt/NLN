@@ -105,19 +105,19 @@ const ConsultationModal = ({ showModal, closeModal }) => {
                         {/* Họ và tên */}
                         <div className="consultation-form-group">
                             <label htmlFor="fullName" className="consultation-label">Họ và tên :</label>
-                            <input id="fullName" type="text" value={userInfo.fullName} disabled />
+                            <input id="fullName" type="text" value={userInfo.fullName}/>
                         </div>
 
                         {/* Ngày tháng năm sinh */}
                         <div className="consultation-form-group">
                             <label htmlFor="dateOfBirth" className="consultation-label">Ngày tháng năm sinh :</label>
-                            <input id="dateOfBirth" type="date" value={userInfo.dateOfBirth} disabled />
+                            <input id="dateOfBirth" type="date" value={userInfo.dateOfBirth}/>
                         </div>
 
                         {/* Số điện thoại (cho phép chỉnh sửa) */}
                         <div className="consultation-form-group">
                             <label htmlFor="phoneNumber" className="consultation-label">Số điện thoại :</label>
-                            <input id="phoneNumber" type="text" value={userInfo.phoneNumber} disabled />
+                            <input id="phoneNumber" type="text" value={userInfo.phoneNumber} />
                         </div>
 
                         {/* Ngày tư vấn */}

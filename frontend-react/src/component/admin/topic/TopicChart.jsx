@@ -10,9 +10,14 @@ const COLORS = [
   "#9C27B0",
   "#E91E63",
 ];
-
+const usedColors = new Set();
 const generateRandomColor = () => {
-  return `#${Math.floor(Math.random() * 16777215).toString(16)}`; // Tạo màu ngẫu nhiên
+  let color;
+  do {
+    color = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0")}`;
+  } while (usedColors.has(color)); // Lặp lại nếu màu đã tồn tại
+  usedColors.add(color);
+  return color;
 };
 
 const TopicChart = ({ fetchChartData }) => {
@@ -25,7 +30,7 @@ const TopicChart = ({ fetchChartData }) => {
         const formattedData = data.map((topic, index) => ({
           name: topic.name,
           value: topic.value,
-          color: COLORS[index % COLORS.length] || generateRandomColor(),
+          color: index < COLORS.length ? COLORS[index] : generateRandomColor()
         }));
         setChartData(formattedData);
       } catch (error) {
