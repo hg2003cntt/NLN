@@ -7,6 +7,7 @@ const ArticlePage = () => {
     const [articles, setArticles] = useState([]);
     const navigate = useNavigate();
     const location = useLocation();
+    const [loading, setLoading] = useState(true);
 
 
     useEffect(() => {
@@ -23,24 +24,25 @@ const ArticlePage = () => {
                     response = await ApiService.getAllPosts();
                 }
                 setArticles(response);
+                setLoading(false);
             } catch (error) {
                 console.error("Lỗi khi lấy danh sách bài viết:", error);
             }
         };
 
         fetchArticles();
+      
     }, [location.search]);
 
     const handleArticleClick = (id) => {
         navigate(`/article/${id}`);
     };
-
+    while (loading) return <p>Đang tải...</p>;
+    if (articles.length===0) return <p>Không tìm thấy bài viết.</p>;
     return (
         <div className="article-container">
             <h2>Bài viết</h2>
-            {articles.length === 0 ? (
-                <p>Không có bài viết nào.</p>
-            ) : (
+            
                 <div className="article-grid">
                     {articles.map((article) => (
                         <div key={article.id} className="article-card" onClick={() => handleArticleClick(article.id)}>
@@ -52,7 +54,7 @@ const ArticlePage = () => {
                         </div>
                     ))}
                 </div>
-            )}
+            
         </div>
     );
 };

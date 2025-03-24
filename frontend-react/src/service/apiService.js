@@ -414,15 +414,15 @@ export default class ApiService {
         }
     }
 
-    static async deleteReply(commentId) {
+    static async createReport(reportData) {
         try {
-            const response = await axios.delete(
-                `${this.BASE_URL}/api/posts/comments/${commentId}`,
+            const response = await axios.post(
+                `${this.BASE_URL}/api/reports/create`,reportData,
                 { headers: this.getHeader() }
             );
             return response.data;
         } catch (error) {
-            console.error("Lỗi khi xóa phản hồi:", error.response?.data || error.message);
+            console.error("Lỗi tạo báo cáo vi phạm:", error.response?.data || error.message);
             throw error;
         }
     }
@@ -540,6 +540,22 @@ export default class ApiService {
             });
             return response.data;
         }
+
+        /*Quản lý report*/
+        static async getAllReports(page = 0, size = 10) {
+            try {
+                const response = await axios.get(`${this.BASE_URL}/api/reports/all`, {
+                    params: { page, size },
+                    headers: this.getHeader(),
+                });
+                return response.data; // Backend cần trả về { content: [...], totalPages: n }
+            } catch (error) {
+                console.error("Lỗi khi lấy danh sách báo cáo:", error.response?.data || error.message);
+                throw error;
+            }
+        }
+        
+        
 
         
 

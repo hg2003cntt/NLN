@@ -580,7 +580,7 @@ button:hover {
   font-weight: bold;
   cursor: pointer;
   border-radius: 4px;
-  width: 80px; /* Cố định chiều rộng */
+  width: auto; /* Cố định chiều rộng */
   height: 30px; /* Cố định chiều cao */
   text-align: center;
   white-space: nowrap;
@@ -621,6 +621,25 @@ button:hover {
   margin: auto;
   background: #007bff;
 }
+
+.comment-focus {
+  background-color: #ffeb3b;  /* Màu vàng nhạt */
+  border: 2px solid #f44336;  /* Viền màu đỏ */
+  animation: focusEffect 1s ease;
+}
+
+@keyframes focusEffect {
+  0% {
+    background-color: #ffeb3b;
+    transform: scale(1);
+  }
+  100% {
+    background-color: #ffeb3b;
+    transform: scale(1.05);
+  }
+}
+
+
 /*Menu post*/
 /* Căn chỉnh header để giữ menu ở góc phải */
 .article-header {
@@ -659,7 +678,7 @@ button:hover {
   background: white;
   border-radius: 8px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
-  width: 150px;
+  width: 180px;
   display: flex;
   flex-direction: column;
   z-index: 1000;
@@ -1131,7 +1150,8 @@ button:hover {
   min-height: 500px;
 }
 
-.consultation-table {
+.consultation-table,
+.report-table {
   width: 100%; 
   min-width: 900px; 
   border-collapse: collapse;
@@ -1141,19 +1161,22 @@ button:hover {
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.consultation-table th, .consultation-table td {
+.consultation-table th, .consultation-table td,
+.report-table th, .report-table td {
   padding: 10px;
   text-align: center;
   border: 1px solid #ddd;
 }
 
-.consultation-table th {
+.consultation-table th,
+.report-table th {
   background: #007bff;
   color: white;
   font-weight: bold;
 }
 
-.consultation-table tr:hover {
+.consultation-table tr:hover,
+.report-table tr:hover {
   background: #f1f1f1;
 }
 
@@ -1893,3 +1916,4 @@ background: #c0392b;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
 }
+/*report*/

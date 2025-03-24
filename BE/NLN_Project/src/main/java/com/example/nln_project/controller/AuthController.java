@@ -11,6 +11,7 @@ import com.example.nln_project.payload.request.SignupRequest;
 import com.example.nln_project.repository.RoleRepo;
 import com.example.nln_project.security.jwt.JwtUtils;
 import com.example.nln_project.security.services.AccountDetailsImpl;
+import jakarta.persistence.Cacheable;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 
 //@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true") // Allow cross-origin requests for all origins
 @RestController
@@ -134,7 +136,6 @@ public class AuthController {
         accountRepo.save(account);
         return ResponseEntity.ok(new MessageResponse("Successfully registered!"));
     }
-
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUserInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

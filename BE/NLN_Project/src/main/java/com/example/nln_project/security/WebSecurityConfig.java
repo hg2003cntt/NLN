@@ -70,7 +70,9 @@ public class WebSecurityConfig {
             .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/api/auth/**", "/api/posts/**", "/api/topics/**", "/consultations/**", "/api/user/**").permitAll()
+                    .requestMatchers("/api/auth/**",
+                            "/api/posts/**", "/api/topics/**"
+                    ).permitAll()
                     .anyRequest().authenticated()
             );
 

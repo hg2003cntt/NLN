@@ -68,15 +68,6 @@ public class PostController {
         }
     }
 
-    // @GetMapping("/getPostById/{postID}")
-    // public ResponseEntity<Post> getPostById(@PathVariable String postID) {
-    //     try{
-    //         return ResponseEntity.status(HttpStatus.OK).body(postRepo.findById(postID).get());
-    //     }catch(Exception e){
-    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-    //     }
-    // }
-
     @GetMapping("/getPostById/{postID}")
     public ResponseEntity<Post> getPostById(@PathVariable String postID) {
         try {
@@ -125,7 +116,6 @@ public class PostController {
             postRepo.save(data);
         }
     }
-
     @GetMapping("/getAllPosts")
     public ResponseEntity<List<Post>> getAllPosts() {
         try{
@@ -282,8 +272,7 @@ public class PostController {
 
         // ✅ Cập nhật tổng số bình luận của bài viết
         Post post = postRepo.findById(postId).orElseThrow();
-        postService.countComments(postId); 
-
+        post.setCmtCount((int) postService.countComments(postId));
         postRepo.save(post);
 
         return ResponseEntity.ok("Bình luận đã được xóa");

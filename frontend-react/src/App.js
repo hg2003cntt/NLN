@@ -21,6 +21,7 @@ import CustomerManagement from "./component/admin/customer/CustomerManage";
 import MyPostsPage from "./component/profile/MyPostsPage";
 import MyRequestPage from "./component/profile/MyRequestPage";
 import ContactPage from "./component/contact/ContactPage";
+import ReportManage from "./component/admin/report/ReportManage";
 
 
 function App() {
@@ -62,6 +63,7 @@ function App() {
               <Route path="consultations" element={<ConsultationList />} />
               <Route path="topics" element={<TopicManagement />} />
               <Route path="articles" element={<ArticleChart />} />
+              <Route path="reports" element={<ReportManage />} />
             </Route>
             {/* Fallback Route */}
             <Route path="*" element={<Navigate to="/login" />} />

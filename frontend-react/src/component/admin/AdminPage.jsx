@@ -2,13 +2,7 @@ import React from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import ApiService from "../../service/apiService";
 import { useNavigate } from "react-router-dom";
-import {
-  FaUsers,
-  FaCalendarAlt,
-  FaFileAlt,
-  FaSignOutAlt,
-  FaNewspaper,
-} from "react-icons/fa";
+import { FaUserCircle, FaUsers, FaCalendarAlt, FaFileAlt, FaNewspaper, FaSignOutAlt, FaExclamationTriangle } from "react-icons/fa";
 
 function AdminPage() {
   const navigate = useNavigate();
@@ -29,7 +23,7 @@ function AdminPage() {
               to="/profile"
               className={({ isActive }) => (isActive ? "active" : "")}
             >
-              <FaUsers className="icon" /> Thông tin cá nhân
+              <FaUserCircle className="icon" /> Thông tin cá nhân
             </NavLink>
           </li>
           <li>
@@ -62,6 +56,14 @@ function AdminPage() {
               className={({ isActive }) => (isActive ? "active" : "")}
             >
               <FaNewspaper className="icon" /> Chủ Đề Bài Viết
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/admin/reports"
+              className={({ isActive }) => (isActive ? "active" : "")}
+            >
+              <FaExclamationTriangle className="icon" /> Báo Cáo Vi Phạm
             </NavLink>
           </li>
           <li onClick={handleLogout}>
