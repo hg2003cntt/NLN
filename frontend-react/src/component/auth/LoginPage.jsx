@@ -40,6 +40,7 @@ function LoginPage() {
             }
         } catch (err) {
             setError(err.response?.data?.message || "Đăng nhập thất bại. Vui lòng thử lại!");
+            console.log(err);
         } finally {
             setIsLoading(false);
         }

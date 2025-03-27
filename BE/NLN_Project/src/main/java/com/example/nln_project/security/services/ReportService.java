@@ -30,6 +30,10 @@ public class ReportService {
         return reportRepository.findAll(PageRequest.of(page, size));
     }
 
+    public List<Report> saveAll(List<Report> reports) {
+        return reportRepository.saveAll(reports);
+    }
+
     public Optional<Report> getReportById(String id) {
         return reportRepository.findById(id);
     }

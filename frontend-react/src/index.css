@@ -1166,6 +1166,10 @@ button:hover {
   padding: 10px;
   text-align: center;
   border: 1px solid #ddd;
+  max-width: 200px;
+  word-wrap: break-word; /* Cho phép xuống dòng khi nội dung quá dài */
+  white-space: normal; /* Đảm bảo nội dung không bị giữ nguyên trên một dòng */
+  overflow-wrap: break-word; /* Hỗ trợ thêm cho việc xuống dòng */
 }
 
 .consultation-table th,
@@ -1917,3 +1921,31 @@ background: #c0392b;
   gap: 2rem;
 }
 /*report*/
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  text-align: center;
+}
+
+.modal-buttons {
+  margin: 0px;
+  display: flex;
+}
+.modal-buttons button {
+  margin: 5px;
+}
+

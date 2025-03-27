@@ -2,6 +2,7 @@ import { useState } from "react";
 
 const ReportModal = ({ isOpen, onClose, onSubmit }) => {
   const [reason, setReason] = useState("");
+  const [customReason, setCustomReason] = useState("");
 
   const reasons = [
     "Nội dung phản cảm",
@@ -12,12 +13,16 @@ const ReportModal = ({ isOpen, onClose, onSubmit }) => {
   ];
 
   const handleSubmit = () => {
-    if (!reason.trim()) {
-      alert("Vui lòng chọn lý do báo cáo!");
+    let finalReason = reason === "Khác (ghi rõ)" ? customReason.trim() : reason;
+
+    if (!finalReason) {
+      alert("Vui lòng chọn hoặc nhập lý do báo cáo!");
       return;
     }
-    onSubmit(reason);
+
+    onSubmit(finalReason);
     setReason(""); // Reset sau khi gửi
+    setCustomReason("");
     onClose();
   };
 
@@ -35,6 +40,16 @@ const ReportModal = ({ isOpen, onClose, onSubmit }) => {
             </option>
           ))}
         </select>
+
+        {reason === "Khác (ghi rõ)" && (
+          <input
+            type="text"
+            placeholder="Nhập lý do cụ thể"
+            value={customReason}
+            onChange={(e) => setCustomReason(e.target.value)}
+          />
+        )}
+
         <div className="modal-buttons">
           <button onClick={handleSubmit}>Gửi báo cáo</button>
           <button onClick={onClose}>Hủy</button>
