@@ -26,10 +26,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 //@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true") // Allow cross-origin requests for all origins
@@ -72,12 +69,20 @@ public class AuthController {
             // Lưu authentication vào SecurityContextHolder
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
+            // Lấy thông tin người dùng
+            AccountDetailsImpl accountDetails = (AccountDetailsImpl) authentication.getPrincipal();
+
+            // Kiểm tra nếu tài khoản bị khóa
+            if ("Bị khóa".equals(accountDetails.getStatus())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(Map.of("message", "Tài khoản của bạn đã bị khóa do vi phạm nhiều lần. Vui lòng liên hệ quản trị viên."));
+            }
+
             // Tạo JWT token
             String jwt = jwtUtils.generateJwtToken(authentication);
             System.out.println("token: " + jwt);
 
-            // Lấy thông tin người dùng
-            AccountDetailsImpl accountDetails = (AccountDetailsImpl) authentication.getPrincipal();
+
 
             // Lấy danh sách quyền
             List<String> roles = new ArrayList<>();

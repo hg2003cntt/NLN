@@ -51,6 +51,10 @@ public class Account {
 
     private String avatar;
 
+    private int violationCount; //Số lần vi phạm
+
+    private String status; //Đang hoạt động, bị khóa
+
     @DBRef //Khác với signup request/Khóa ngoaai
     private Set<Role> roles = new HashSet<>();
 
@@ -62,6 +66,8 @@ public class Account {
         this.email = email;
         this.phone = phone;
         this.avatar = null;
+        this.violationCount = 0;
+        this.status = "Đang hoạt động";
     }
 
 }

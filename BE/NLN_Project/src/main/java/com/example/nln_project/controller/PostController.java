@@ -23,6 +23,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.GrantedAuthority;
+
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -30,6 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.Collection;
+
 
 //@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RestController
@@ -95,6 +99,30 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Bài viết không tồn tại");
         }
 
+        //Nếu là admin thì đánh dấu người dùng đã vi phạm
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof AccountDetailsImpl) {
+            AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
+
+            // Lấy danh sách các roles của user
+            Collection<GrantedAuthority> authorities = (Collection<GrantedAuthority>) userDetails.getAuthorities();
+
+
+
+            // Chuyển thành danh sách chuỗi (tên các role)
+            List<String> roles = authorities.stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList());
+
+            String ownerPost = postRepo.findById(id).get().getUserId();
+            // Kiểm tra nếu user có role ADMIN
+            if (roles.contains("ROLE_ADMIN") && !userDetails.getId().equals(ownerPost)) {
+                System.out.println("Người dùng là ADMIN và không phải chủ bài viết");
+                notificationService.notifyReportedUser(id,null,ownerPost);
+            }
+        }
+
         postRepo.deleteById(id);
         likeRepo.deleteByPostId(id);
         commentRepo.deleteByPostId(id);
@@ -156,6 +184,17 @@ public class PostController {
         }
     }
 
+    @PostMapping("/{postId}/checkLiked")
+    public ResponseEntity<Boolean> checkLiked(@PathVariable String postId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
+        String userId = userDetails.getId();
+        Optional<Like> existingLike = likeRepo.findByUserIdAndPostId(userId, postId);
+        return  ResponseEntity.ok(existingLike.isPresent());
+        }
+
+
+
     @PostMapping("/{postId}/like")
     public ResponseEntity<Post> toggleLike(@PathVariable String postId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -166,7 +205,9 @@ public class PostController {
         Optional<Like> existingLike = likeRepo.findByUserIdAndPostId(userId, postId);
         
         Post post = postRepo.findById(postId).orElseThrow();
-        String postOwnerId = post.getUserId(); // Chủ bài viết
+        String postOwnerId = post.getUserId(); // Chủ bài viết'
+        System.out.println("chủ bài viết:"+ postOwnerId);
+        System.out.println("người thích:"+ userId);
 
         if (existingLike.isPresent()) {
             likeRepo.deleteByUserIdAndPostId(userId, postId); // Bỏ like
@@ -264,6 +305,31 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Bình luận không tồn tại");
         }
 
+        //Nếu là admin thì đánh dấu người dùng đã vi phạm
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof AccountDetailsImpl) {
+            AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
+
+            // Lấy danh sách các roles của user
+            Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+
+            // Chuyển thành danh sách chuỗi (tên các role)
+            List<String> roles = authorities.stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList());
+
+            String ownerCmt = commentOpt.get().getUserId();
+            // Kiểm tra nếu user có role ADMIN
+            if (roles.contains("ROLE_ADMIN") && !userDetails.getId().equals(ownerCmt)) {
+                System.out.println("Người dùng là ADMIN và không phải chủ bình luận");
+                System.out.println("chủ cmt:"+ownerCmt+"user:"+userDetails.getId());
+
+
+                notificationService.notifyReportedUser(commentId,null,ownerCmt);
+            }
+        }
+
         Comment comment = commentOpt.get();
         String postId = comment.getPostId();
 
@@ -274,6 +340,7 @@ public class PostController {
         Post post = postRepo.findById(postId).orElseThrow();
         post.setCmtCount((int) postService.countComments(postId));
         postRepo.save(post);
+
 
         return ResponseEntity.ok("Bình luận đã được xóa");
     }

@@ -308,6 +308,22 @@ export default class ApiService {
             throw error;
         }
     }
+    static async checkLiked(articleId) {
+        try {
+            console.log("id: ", articleId);
+            const response = await axios.post(
+                `${this.BASE_URL}/api/posts/${articleId}/checkLiked`,
+                null,  // Không có body nên để null
+                {
+                    headers: this.getHeader(),
+                }
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Lỗi khi cập nhật lượt like:", error);
+            throw error;
+        }
+    }
     
     /** COMMENTS */
     static async addComment(articleId, commentData) {
@@ -369,6 +385,8 @@ export default class ApiService {
         }
     }
 
+    
+
     static async replyToComment(articleId, parentId, replyContent) {
         try {
             const payload = {
@@ -414,18 +432,7 @@ export default class ApiService {
         }
     }
 
-    static async createReport(reportData) {
-        try {
-            const response = await axios.post(
-                `${this.BASE_URL}/api/reports/create`,reportData,
-                { headers: this.getHeader() }
-            );
-            return response.data;
-        } catch (error) {
-            console.error("Lỗi tạo báo cáo vi phạm:", error.response?.data || error.message);
-            throw error;
-        }
-    }
+    
     
     
     
@@ -566,7 +573,35 @@ export default class ApiService {
                 throw error;
             }
         }
+
+        static async updateReportStatus(contentId, status) {
+            try {
+                const response = await axios.put(
+                    `${this.BASE_URL}/api/reports/${contentId}/updateStatus?status=${encodeURIComponent(status)}`,
+                    {}, // Do request của bạn không cần body, nên truyền object rỗng
+                    {
+                        headers: this.getHeader(),
+                    }
+                );
+                return response.data;
+            } catch (error) {
+                console.error("Lỗi khi cập nhật trạng thái báo cáo:", error.response?.data || error.message);
+                throw error;
+            }
+        }
         
+        static async createReport(reportData) {
+            try {
+                const response = await axios.post(
+                    `${this.BASE_URL}/api/reports/create`,reportData,
+                    { headers: this.getHeader() }
+                );
+                return response.data;
+            } catch (error) {
+                console.error("Lỗi tạo báo cáo vi phạm:", error.response?.data || error.message);
+                throw error;
+            }
+        }
         
 
         
