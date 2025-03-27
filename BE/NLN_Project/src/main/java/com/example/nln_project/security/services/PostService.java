@@ -4,6 +4,7 @@ import com.example.nln_project.model.Comment;
 import com.example.nln_project.model.Post;
 
 import java.util.List;
+import java.util.Map;
 
 
 public interface PostService {
@@ -18,5 +19,11 @@ public interface PostService {
     List<Post> findByTitleContainingIgnoreCase(String title);
 
     List<Post> findByTopicIdAndTitleContainingIgnoreCase(String topicId, String title);
+
+    List<Post> getTopInteractedPosts(int limit);
+
+    List<Map<String, Object>> getTopWriters(int limit);
+
+    List<Map<String, Object>> getTopCommenters(int limit);
 
 }

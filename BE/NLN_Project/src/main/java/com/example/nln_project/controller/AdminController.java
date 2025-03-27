@@ -11,6 +11,7 @@ import com.example.nln_project.repository.RoleRepo;
 
 import com.example.nln_project.repository.TopicRepo;
 import com.example.nln_project.security.services.AccountDetailsImpl;
+import com.example.nln_project.security.services.PostService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -25,10 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -51,6 +49,8 @@ public class AdminController {
     @Autowired
     private TopicRepo topicRepo;
 
+    @Autowired
+    private PostService postService;
 
 
     /**
@@ -203,20 +203,36 @@ public class AdminController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/posts/article-by-topic")
-    public ResponseEntity<?> getPostStatsByTopic() {
-        List<Topic> topics = topicRepo.findAll();
-        List<Post> posts = postRepo.findAll();
+    @GetMapping("/posts/top-interacted")
+    public ResponseEntity<?> getTopInteractedPosts() {
+        List<Post> topPosts = postService.getTopInteractedPosts(5); // lấy top 10
 
-        Map<String, Long> stats = topics.stream().collect(Collectors.toMap(
-                Topic::getName,
-                topic -> posts.stream()
-                        .filter(p -> topic.getId().equals(p.getTopicId()))
-                        .count()
-        ));
+        List<Map<String, Object>> result = topPosts.stream().map(post -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("title", post.getTitle());
+            map.put("author", post.getAuthor());
+            map.put("likeCount", post.getLikeCount());
+            map.put("cmtCount", post.getCmtCount());
+            map.put("totalInteractions", post.getLikeCount() + post.getCmtCount());
+            return map;
+        }).toList();
 
-        return ResponseEntity.ok(stats);
+        return ResponseEntity.ok(result);
     }
+
+    @GetMapping("/users/top-writers")
+    public ResponseEntity<?> getTopWriters() {
+        List<Map<String, Object>> topWriters = postService.getTopWriters(5);
+        return ResponseEntity.ok(topWriters);
+    }
+
+    @GetMapping("/users/top-commenters")
+    public ResponseEntity<?> getTopCommenters() {
+        List<Map<String, Object>> topCommenters = postService.getTopCommenters(5);
+        return ResponseEntity.ok(topCommenters);
+    }
+
+
 
 
 }

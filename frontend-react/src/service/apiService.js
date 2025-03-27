@@ -533,7 +533,7 @@ export default class ApiService {
         }
 
         /** ARTICLE STATS (ADMIN) */
-        static async getArticleByDate(from, to) {
+        static async getPostStatsByDate(from, to) {
             const response = await axios.get(`${this.BASE_URL}/api/admin/posts/article-by-date`, {
                 headers: this.getHeader(),
                 params: { from, to },
@@ -541,11 +541,23 @@ export default class ApiService {
             return response.data;
         }
 
-        static async getArticleByTopic() {
-            const response = await axios.get(`${this.BASE_URL}/api/admin/posts/article-by-topic`, {
-                headers: this.getHeader(),
-            });
-            return response.data;
+        static async getTopCommenters() {
+                    const response = await axios.get(`${this.BASE_URL}/api/admin/users/top-commenters`, {
+                        headers: this.getHeader(),
+                    });
+                    return response.data;
+        }
+        static async getTopWriters() {
+                    const response = await axios.get(`${this.BASE_URL}/api/admin/users/top-writers`, {
+                        headers: this.getHeader(),
+                    });
+                    return response.data;
+        }
+        static async getTopInteractedPosts() {
+                    const response = await axios.get(`${this.BASE_URL}/api/admin/posts/top-interacted`, {
+                        headers: this.getHeader(),
+                    });
+                    return response.data;
         }
 
         /*Quản lý report*/
