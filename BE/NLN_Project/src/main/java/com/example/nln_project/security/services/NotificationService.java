@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Date;
+
 
 @Service
 public class NotificationService {
@@ -58,18 +60,20 @@ public class NotificationService {
     }
 
     // Gửi thông báo khi bài viết được thích
-    public void notifyLikePost(String postId, String commentId, String senderId, String receiverId, String Content) {
-        if (!senderId.equals(receiverId)) { // Không gửi thông báo nếu tự thích bài viết của mình
+    public void notifyLikePost(String postId, String senderId, String receiverId, String commentId, String content) {
+        if (!senderId.equals(receiverId)) { // Không gửi thông báo nếu tự like bài viết của mình
             Notification notification = new Notification(
                 postId,
                 senderId,
-                receiverId,
-                null,
-                Content
+                receiverId, 
+                commentId,
+                content
             );
+            notification.setCreatedAt(new Date(System.currentTimeMillis())); // Chuyển long thành Date
             notificationRepo.save(notification);
         }
     }
+    
 
     // Đánh dấu thông báo là đã đọc
     public void markAsRead(String notificationId) {

@@ -76,6 +76,7 @@ export default class ApiService {
         const response = await axios.get(`${this.BASE_URL}/api/posts/notification/unread`, {
             headers: this.getHeader(),
         });
+        console.log("🔔 Dữ liệu thông báo:", response.data); // Kiểm tra dữ liệu
         return response.data;
     }
 
@@ -294,7 +295,6 @@ export default class ApiService {
 
     static async likeArticle(articleId) {
         try {
-            console.log("id: ", articleId);
             const response = await axios.post(
                 `${this.BASE_URL}/api/posts/${articleId}/like`,
                 null,  // Không có body nên để null
