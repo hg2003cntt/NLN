@@ -29,7 +29,7 @@ const ReportManage = () => {
     let link = ""; // Khởi tạo biến link
 
     // Kiểm tra loại nội dung và tạo liên kết tương ứng
-    if (contentType === "COMMENT") {
+    if (contentType === "Bình luận") {
       link = `/article/${contentId.split("_")[0]}#comment-${
         contentId.split("_")[1]
       }`;
@@ -42,7 +42,18 @@ const ReportManage = () => {
     return link;
   };
 
-  const handleStatusChange = async () => {};
+  const handleStatusChange = async (contentId, newStatus) => {
+     try {
+          console.log("id:",contentId,"status:",newStatus);
+          await ApiService.updateReportStatus(contentId, newStatus);
+          setReports((prev) =>
+            prev.map((c) => (c.contentId === contentId ? { ...c, status: newStatus } : c))
+          );
+        } catch (error) {
+          console.error("Lỗi khi cập nhật trạng thái:", error);
+          alert("Cập nhật trạng thái thất bại!");
+        }
+  };
   return (
     <div className="report-container">
       <h1 className="title">Quản lý báo cáo</h1>
@@ -56,13 +67,13 @@ const ReportManage = () => {
               <thead>
                 <tr>
                   <th>STT</th>
-                  <th>ID Người Báo Cáo</th>
                   <th>ID Người Bị Báo Cáo</th>
                   <th>ID Nội Dung</th>
                   <th>Loại Nội Dung</th>
-                  <th>Lý Do</th>
-                  <th>Ngày Báo Cáo</th>
-                  <th>Chi tiết</th>
+                  <th>Số Lần Báo Cáo</th>
+                  <th>Lý Do Phổ Biến Nhất</th>
+                  <th>Ngày Báo Cáo Gần Nhất</th>
+                  <th>Chi Tiết</th>
                   <th>Trạng Thái</th>
                 </tr>
               </thead>
@@ -71,12 +82,12 @@ const ReportManage = () => {
                   reports.map((item, index) => (
                     <tr key={item.id}>
                       <td>{currentPage * pageSize + index + 1}</td>
-                      <td>{item.reporterId}</td>
                       <td>{item.reportedUserId}</td>
                       <td>{item.contentId}</td>
                       <td>{item.contentType}</td>
-                      <td>{item.reason}</td>
-                      <td>{new Date(item.reportedAt).toLocaleString()}</td>
+                      <td>{item.reportCount}</td>
+                      <td>{item.mostCommonReason}</td>
+                      <td>{item.latestReportedAt}</td>
                       <td>
                         <NavLink
                           className="view-button"
@@ -90,10 +101,10 @@ const ReportManage = () => {
                           className="status-dropdown"
                           value={item.status}
                           onChange={(e) =>
-                            handleStatusChange(item.id, e.target.value)
+                            handleStatusChange(item.contentId, e.target.value)
                           }
                         >
-                          <option value="Chưa duyệt">Chưa duyệt</option>
+                          <option value="Chưa duyệt">Chờ duyệt</option>
                           <option value="Đã giải quyết">Đã giải quyết</option>
                           <option value="Từ chối">Từ chối</option>
                         </select>

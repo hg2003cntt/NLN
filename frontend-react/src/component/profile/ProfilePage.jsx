@@ -123,10 +123,8 @@ const UserProfile = () => {
                 <div className="profile-avatar-section">
                     <img src={user.avatar || "/default-avatar.png"} alt="Avatar" className="profile-avatar" />
                     <label className="upload-btn">Thêm ảnh đại diện <input type="file" onChange={handleAvatarChange} accept="image/*" /> </label>
-
-                    <Link to="/my-requests" className="btn request-btn">Xem yêu cầu tư vấn </Link>
                     <Link to="/my-posts" className="btn my-posts-btn">Bài viết của tôi</Link>
-
+                    <Link to="/my-requests" className="btn request-btn">Xem yêu cầu tư vấn </Link>
                 </div>
 
                 <div className="profile-info">

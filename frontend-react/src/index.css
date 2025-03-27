@@ -1166,6 +1166,10 @@ button:hover {
   padding: 10px;
   text-align: center;
   border: 1px solid #ddd;
+  max-width: 200px;
+  word-wrap: break-word; /* Cho phép xuống dòng khi nội dung quá dài */
+  white-space: normal; /* Đảm bảo nội dung không bị giữ nguyên trên một dòng */
+  overflow-wrap: break-word; /* Hỗ trợ thêm cho việc xuống dòng */
 }
 
 .consultation-table th,
@@ -1497,16 +1501,15 @@ background: #c0392b;
   }
 }
 .request-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: #28a745;
+    display: inline-block;
+    text-decoration: none;
+    background-color: #28a745;
     color: white;
     padding: 10px 20px;
     border-radius: 5px;
     font-size: 16px;
+    text-align: center;
     font-weight: bold;
-    text-decoration: none;
     border: none;
     cursor: pointer;
     transition: background 0.3s ease;
@@ -1856,8 +1859,8 @@ background: #c0392b;
 .social-icon:hover {
   transform: scale(1.1);
 }
+/* ArticleChart CSS */
 
-/* ArticleAdmin */
 .article-chart-container {
   padding: 2rem;
   background-color: #ffffff;
@@ -1869,41 +1872,36 @@ background: #c0392b;
   font-size: 1.8rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
+  text-align: center;
 }
 
-.article-chart-filter {
-  display: flex;
-  gap: 2rem;
-  margin-bottom: 2.5rem;
-  align-items: center;
-}
-
-.article-chart-filter input[type='date'] {
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-}
-
-.article-chart-wrapper {
+.dashboard-grid-custom {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: 2fr 1fr;
   gap: 2rem;
+  margin-top: 2rem;
   align-items: start;
 }
 
+.secondary-chart-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
 
 .chart-block {
   background-color: #f9fafb;
   padding: 1.5rem;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease-in-out;
+  height: 100%;
 }
 
 .chart-block:hover {
   transform: translateY(-3px);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
 }
 
 .chart-block h3 {
@@ -1911,9 +1909,61 @@ background: #c0392b;
   font-weight: 600;
   margin-bottom: 1rem;
 }
-.fixed-2-cols {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
+
+.article-top-posts .recharts-wrapper {
+  width: 100% !important;
 }
+
+.article-top-posts .recharts-y-axis .recharts-cartesian-axis-tick {
+  text-anchor: start;
+  transform: translateX(10px);
+}
+
+.article-top-posts .recharts-y-axis .recharts-cartesian-axis-tick tspan {
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+  display: inline-block;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .dashboard-grid-custom {
+    grid-template-columns: 1fr;
+  }
+  .secondary-chart-row {
+    grid-template-columns: 1fr;
+  }
+}
+
 /*report*/
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  text-align: center;
+}
+
+.modal-buttons {
+  margin: 0px;
+  display: flex;
+}
+.modal-buttons button {
+  margin: 5px;
+}
+

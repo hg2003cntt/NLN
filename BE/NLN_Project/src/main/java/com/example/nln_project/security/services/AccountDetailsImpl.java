@@ -29,6 +29,7 @@ public class AccountDetailsImpl implements UserDetails {
 
 	@JsonIgnore // Prevent serialization of the password field
 	private String password; // Password of the account
+	private String status; //Status of account
 
 	private Collection<? extends GrantedAuthority> authorities; // Collection of account's authorities (roles)
 
@@ -44,7 +45,7 @@ public class AccountDetailsImpl implements UserDetails {
 	 * @param password     The password of the account.
 	 * @param authorities  The collection of account's authorities.
 	 */
-	public AccountDetailsImpl(String id, String username, String name, LocalDate dateOfBirth, String email, String phone, String password,
+	public AccountDetailsImpl(String id, String username, String name, LocalDate dateOfBirth, String email, String phone, String password,String status,
 							  Collection<? extends GrantedAuthority> authorities) {
 		this.id = id; // Set account ID
 		this.username = username; // Set username
@@ -53,6 +54,7 @@ public class AccountDetailsImpl implements UserDetails {
 		this.email = email; // Set email
 		this.phone = phone; // Set phone number
 		this.password = password; // Set password
+		this.status = status;
 		this.authorities = authorities; // Set authorities
 	}
 
@@ -76,7 +78,8 @@ public class AccountDetailsImpl implements UserDetails {
 				account.getDateOfBirth(), // Date of Birth
 				account.getEmail(), // Email
 				account.getPhone(), // Phone Number
-				account.getPassword(), // Password
+				account.getPassword(),
+				account.getStatus(),// Password
 				authorities); // Account authorities
 	}
 
@@ -85,25 +88,6 @@ public class AccountDetailsImpl implements UserDetails {
 		return authorities; // Return account's authorities
 	}
 
-//	public String getId() {
-//		return id; // Return account ID
-//	}
-//
-//	public String getName() {
-//		return name; // Return account name
-//	}
-//
-//	public LocalDate getDateOfBirth() {
-//		return dateOfBirth; // Return account date of birth
-//	}
-//
-//	public String getEmail() {
-//		return email; // Return email
-//	}
-//
-//	public String getPhone() {
-//		return phone; // Return phone number
-//	}
 
 	@Override
 	public String getPassword() {

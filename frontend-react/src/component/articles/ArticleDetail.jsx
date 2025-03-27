@@ -99,11 +99,12 @@ const ArticleDetail = () => {
   useEffect(() => {
     const fetchArticleAndUser = async () => {
       try {
-        const [data, user] = await Promise.all([
+        const [data, user, isliked] = await Promise.all([
           apiService.getPostById(id),
           apiService.getUserProfile(),
+          apiService.checkLiked(id),
         ]);
-    
+        setLiked(isliked);
         setArticle(data);
         setUser(user);
         setCommentCount(data.cmtCount || 0); // Cập nhật số lượng bình luận từ backend
@@ -316,7 +317,7 @@ const ArticleDetail = () => {
                     <button
                       onClick={() =>
                         openReportModal(
-                          "COMMENT",
+                          "Bình luận",
                           article.id,
                           comment.id,
                           article.userId
@@ -448,7 +449,7 @@ const ArticleDetail = () => {
       <div className="article-actions">
         <button onClick={handleLike} className="like-button">
           <FaHeart color={liked ? "pink" : "red"} />{" "}
-          {liked ? "Đã thích" : "Thích"}
+          {liked ? "Đã thích" : "   Thích"}
         </button>
         <div className="article-like">
           <h3>{article.likeCount} lượt thích</h3>

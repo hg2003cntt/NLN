@@ -14,4 +14,7 @@ import org.springframework.data.domain.Pageable;
 public interface ReportRepo extends MongoRepository<Report, String> {
     List<Report> findByStatus(String status);
     Page<Report> findAll(Pageable pageable);
+    List<Report> findByContentId(String contentId);
+
+    Optional<Report> findByContentIdAndReporterId(String contentId, String reporterId);
 }

@@ -1,19 +1,30 @@
 package com.example.nln_project.security.services;
 
+import com.example.nln_project.model.Account;
 import com.example.nln_project.model.Post;
 import com.example.nln_project.model.Comment;
 
+import com.example.nln_project.repository.AccountRepo;
 import com.example.nln_project.repository.PostRepo;
 import com.example.nln_project.repository.CommentRepo;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.security.core.Authentication;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.bson.Document;
+
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -25,6 +36,13 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private NotificationService notificationService; // Thêm NotificationService
+
+    @Autowired
+    private AccountRepo accountRepo;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
 
 
     public Post savePost(Post post) {
@@ -88,9 +106,76 @@ public class PostServiceImpl implements PostService {
     
         return count;
     }
-    
-    
-    
+    @Override
+    public List<Post> getTopInteractedPosts(int limit) {
+        List<Post> allPosts = postRepo.findAll();
+
+        return allPosts.stream()
+                .sorted((a, b) -> Long.compare(
+                        b.getLikeCount() + b.getCmtCount(),
+                        a.getLikeCount() + a.getCmtCount()
+                ))
+                .limit(limit)
+                .toList();
+    }
+
+    @Override
+    public List<Map<String, Object>> getTopWriters(int limit) {
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.group("userId").count().as("postCount"),
+                Aggregation.sort(Sort.by(Sort.Direction.DESC, "postCount")),
+                Aggregation.limit(limit)
+        );
+
+        AggregationResults<Document> results = mongoTemplate.aggregate(
+                aggregation, "posts", Document.class
+        );
+
+        return results.getMappedResults().stream().map(doc -> {
+            String userId = (String) doc.get("_id");
+            long count = ((Number) doc.get("postCount")).longValue();
+
+            Account acc = accountRepo.findById(userId).orElse(null);
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("userId", userId);
+            map.put("name", acc != null ? acc.getName() : "Không xác định");
+            map.put("postCount", count);
+            return map;
+        }).collect(Collectors.toList());
+    }
+    @Override
+    public List<Map<String, Object>> getTopCommenters(int limit) {
+        Aggregation aggregation = Aggregation.newAggregation(
+                Aggregation.group("userId").count().as("commentCount"),
+                Aggregation.sort(Sort.by(Sort.Direction.DESC, "commentCount")),
+                Aggregation.limit(limit)
+        );
+
+        AggregationResults<org.bson.Document> results = mongoTemplate.aggregate(
+                aggregation, "comments", org.bson.Document.class
+        );
+
+        return results.getMappedResults().stream().map(doc -> {
+            String userId = (String) doc.get("_id");
+            long count = ((Number) doc.get("commentCount")).longValue();
+
+            Account acc = accountRepo.findById(userId).orElse(null);
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("userId", userId);
+            map.put("name", acc != null ? acc.getName() : "Không xác định");
+            map.put("commentCount", count);
+            return map;
+        }).collect(Collectors.toList());
+    }
+
+
+
+
+
+
+
 
     public List<Post> getAllPosts(){
         return postRepo.findAll();

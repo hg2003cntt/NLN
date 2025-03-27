@@ -55,11 +55,16 @@ public class ConsultationController {
             if (consultationRequest.getConsultationDate().isBefore(LocalDate.now())) {
                 return ResponseEntity.badRequest().body("Ngày tư vấn không hợp lệ!");
             }
+            if (consultationRequest.getFullName() == null || consultationRequest.getFullName().trim().isEmpty()) {
+                consultationRequest.setFullName(userDetails.getName());
+            }
+            if (consultationRequest.getDateOfBirth() == null) {
+                consultationRequest.setDateOfBirth(userDetails.getDateOfBirth());
+            }
+            if (consultationRequest.getPhoneNumber() == null || consultationRequest.getPhoneNumber().trim().isEmpty()) {
+                consultationRequest.setPhoneNumber(userDetails.getPhone());
+            }
 
-            // Thiết lập thông tin user
-            consultationRequest.setFullName(userDetails.getName());
-            consultationRequest.setDateOfBirth(userDetails.getDateOfBirth());
-            consultationRequest.setPhoneNumber(userDetails.getPhone());
             consultationRequest.setUserId(userDetails.getId());
             consultationRequest.setStatus("Chưa liên hệ");
 
