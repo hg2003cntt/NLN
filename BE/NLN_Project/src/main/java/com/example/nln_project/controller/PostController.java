@@ -320,13 +320,14 @@ public class PostController {
                     .collect(Collectors.toList());
 
             String ownerCmt = commentOpt.get().getUserId();
+            String postId = commentOpt.get().getPostId();
             // Kiểm tra nếu user có role ADMIN
             if (roles.contains("ROLE_ADMIN") && !userDetails.getId().equals(ownerCmt)) {
                 System.out.println("Người dùng là ADMIN và không phải chủ bình luận");
                 System.out.println("chủ cmt:"+ownerCmt+"user:"+userDetails.getId());
 
 
-                notificationService.notifyReportedUser(commentId,null,ownerCmt);
+                notificationService.notifyReportedUser(postId,commentId,ownerCmt);
             }
         }
 

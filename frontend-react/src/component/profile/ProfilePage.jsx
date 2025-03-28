@@ -7,6 +7,7 @@ import Modal from "react-modal"; // Import modal
 Modal.setAppElement("#root"); // Cấu hình modal
 
 const UserProfile = () => {
+    const isUser = ApiService.isUser();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [phone, setPhone] = useState("");
@@ -124,7 +125,7 @@ const UserProfile = () => {
                     <img src={user.avatar || "/default-avatar.png"} alt="Avatar" className="profile-avatar" />
                     <label className="upload-btn">Thêm ảnh đại diện <input type="file" onChange={handleAvatarChange} accept="image/*" /> </label>
                     <Link to="/my-posts" className="btn my-posts-btn">Bài viết của tôi</Link>
-                    <Link to="/my-requests" className="btn request-btn">Xem yêu cầu tư vấn </Link>
+                    {isUser && <Link to="/my-requests" className="btn request-btn">Xem yêu cầu tư vấn </Link>}
                 </div>
 
                 <div className="profile-info">

@@ -1,24 +1,20 @@
 import React from "react";
 import Slider from "react-slick";
-import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import img1 from "../img/cer1.png";
+import img2 from "../img/cer2.png";
+import img3 from "../img/cer3.png";
 
-// Custom Arrow Components
 const NextArrow = ({ onClick }) => (
-  <div 
-    className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-gray-800 text-white p-3 rounded-full cursor-pointer hover:bg-gray-700 transition-all z-10"
-    onClick={onClick}
-  >
+  <div className="custom-arrow next-arrow" onClick={onClick}>
     <FaChevronRight size={24} />
   </div>
 );
 
 const PrevArrow = ({ onClick }) => (
-  <div 
-    className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-gray-800 text-white p-3 rounded-full cursor-pointer hover:bg-gray-700 transition-all z-10"
-    onClick={onClick}
-  >
+  <div className="custom-arrow prev-arrow" onClick={onClick}>
     <FaChevronLeft size={24} />
   </div>
 );
@@ -36,46 +32,82 @@ const HomePage = () => {
     prevArrow: <PrevArrow />,
   };
 
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
-      {/* Tiêu đề */}
-      <div className="text-center py-8">
-        <h1 className="text-4xl font-extrabold text-gray-800">
-          Chào mừng bạn đến với dịch vụ tư vấn tâm lý
-        </h1>
-        <p className="text-lg text-gray-600 mt-3">
-          Hãy đặt lịch hẹn với chuyên gia ngay hôm nay!
-        </p>
-      </div>
-    
-      {/* Slider ảnh */}
-      <div className="relative w-full max-w-3xl mx-auto bg-white p-4 rounded-xl shadow-lg border border-gray-200">
-        <Slider {...settings}>
-          {[
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/24701-nature-natural-beauty.jpg/1200px-24701-nature-natural-beauty.jpg?20160607144903",
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Devils_Punchbowl_State_Natural_Area.jpg/1199px-Devils_Punchbowl_State_Natural_Area.jpg?20240322161219",
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Natural_Bridges_Cove_-_Boardman_State_Park%2C_Oregon.jpg/1200px-Natural_Bridges_Cove_-_Boardman_State_Park%2C_Oregon.jpg"
-          ].map((src, index) => (
-            <div key={index} className="relative flex items-center justify-center">
-              <img
-                src={src}
-                alt={`Slide ${index + 1}`}
-                className="max-w-full max-h-[500px] object-contain rounded-lg mx-auto"
-              />
-            </div>
-          ))}
-        </Slider>
-      </div>
+  const images = [img1, img2, img3];
 
-      {/* Nút Đặt lịch */}
-      <div className="mt-8">
-        <button className="w-48 py-4 bg-blue-600 text-white text-lg font-semibold rounded-full shadow-md hover:bg-blue-700 transition-all duration-300">
-          Đặt lịch ngay
-        </button>
+  return (
+    <div className="homepage-container">
+      <div className="homepage-row">
+        {/* Cột trái */}
+        <div className="homepage-left">
+          <h1 className="display-5 fw-bold text-dark">
+            Chào mừng bạn đến với{" "}
+            <span className="text-primary">dịch vụ tư vấn tâm lý</span>
+          </h1>
+          <p className="lead text-secondary mt-3">
+            Hãy đặt lịch hẹn với chuyên gia ngay hôm nay!
+          </p>
+
+          <div class="intro-box">
+            <h4 class="h4 fw-semibold mb-3 text-primary">
+              Giới thiệu Bác sĩ Huỳnh Minh Tâm
+            </h4>
+            <p>
+              <strong>Bác sĩ Huỳnh Minh Tâm</strong> là chuyên gia tư vấn tâm lý
+              với nhiều năm kinh nghiệm trong lĩnh vực tâm lý trị liệu và phát
+              triển cá nhân. Anh đã hoàn thành{" "}
+              <strong>
+                Chứng chỉ Nâng cao về Liệu pháp Tâm lý Phân tâm học
+              </strong>{" "}
+              tại Viện Nghiên cứu Tâm lý Tiên tiến, chứng minh sự am hiểu sâu
+              sắc về các phương pháp điều trị tâm lý chuyên sâu.
+            </p>
+            <p>
+              Ngoài ra, bác sĩ còn đạt <strong>Chứng chỉ Tâm lý Trẻ em</strong>{" "}
+              sau khóa đào tạo chuyên sâu kéo dài 3 tháng, giúp anh có thêm kiến
+              thức vững chắc trong việc hỗ trợ trẻ nhỏ và thanh thiếu niên vượt
+              qua những khó khăn tâm lý.
+            </p>
+            <p>
+              Bên cạnh đó, bác sĩ Huỳnh Minh Tâm cũng sở hữu{" "}
+              <strong>Chứng chỉ Hành nghề Tâm lý Tích cực</strong>, một phương
+              pháp tiếp cận hiện đại giúp cải thiện sức khỏe tinh thần và nâng
+              cao chất lượng cuộc sống.
+            </p>
+            <p>
+              Với chuyên môn vững vàng và tâm huyết với nghề, bác sĩ Huỳnh Minh
+              Tâm cam kết đồng hành cùng khách hàng trên hành trình tìm lại sự
+              cân bằng và hạnh phúc trong cuộc sống.
+            </p>
+            <button
+              class="btn-success px-4 py-2 mt-3"
+              onClick={() =>
+                window.dispatchEvent(new CustomEvent("openConsultationModal"))
+              }
+            >
+              Đặt lịch ngay
+            </button>
+          </div>
+        </div>
+
+        {/* Cột phải */}
+        <div className="homepage-right">
+          <div className="slider-wrapper">
+            <Slider {...settings}>
+              {images.map((src, index) => (
+                <div key={index} className="slider-item">
+                  <img
+                    src={src}
+                    alt={`Slide ${index + 1}`}
+                    className="img-fluid rounded"
+                  />
+                </div>
+              ))}
+            </Slider>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
 export default HomePage;
- 

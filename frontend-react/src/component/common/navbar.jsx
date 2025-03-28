@@ -25,6 +25,15 @@ function Navbar() {
       navigate("/home");
     }
   };
+  useEffect(() => {
+    const handleOpenModal = () => setShowModal(true);
+    window.addEventListener("openConsultationModal", handleOpenModal);
+
+    return () => {
+        window.removeEventListener("openConsultationModal", handleOpenModal);
+    };
+}, []);
+
 
   useEffect(() => {
     async function fetchTopics() {
