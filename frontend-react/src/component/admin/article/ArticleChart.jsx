@@ -33,30 +33,29 @@ const ArticleChart = () => {
 
   const formattedPosts = topPosts.map(post => ({
     ...post,
+    totalInteraction: post.likeCount + post.cmtCount,
     formattedTitle: post.title.length > 30 ? post.title.slice(0, 30) + "..." : post.title
   }));
 
   return (
     <div className="article-chart-container">
-      <h2 className="article-chart-title">Thống kê bài viết</h2>
+      <h2 className="article-chart-title">📊 Thống kê nội dung</h2>
 
-      {/* Biểu đồ bài viết theo ngày */}
-      <div className="chart-block full-width">
-        <h3>Bài viết theo ngày</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={postStatsByDate} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis allowDecimals={false} />
-            <Tooltip />
-            <Bar dataKey="count" fill="#8884d8" name="Số bài viết" />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+      <div className="chart-section row full-width">
+        <div className="chart-card full-half">
+          <h3>Bài viết theo ngày</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={postStatsByDate} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" />
+              <YAxis allowDecimals={false} />
+              <Tooltip />
+              <Bar dataKey="count" fill="#4facfe" name="Số bài viết" radius={[8, 8, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
 
-      {/* Biểu đồ Top tương tác & Top người viết */}
-      <div className="dashboard-grid-2">
-        <div className="chart-block article-top-posts">
+        <div className="chart-card full-half">
           <h3>Top bài viết tương tác</h3>
           <ResponsiveContainer width="100%" height={350}>
             <BarChart data={formattedPosts} layout="vertical">
@@ -71,38 +70,39 @@ const ArticleChart = () => {
               />
               <Tooltip />
               <Legend />
-              <Bar dataKey="likeCount" fill="#82ca9d" name="Lượt thích" />
-              <Bar dataKey="cmtCount" fill="#8884d8" name="Bình luận" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="chart-block">
-          <h3>Top người viết nhiều</h3>
-          <ResponsiveContainer width="100%" height={350}>
-            <BarChart data={topWriters} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis type="number" />
-              <YAxis dataKey="name" type="category" width={140} />
-              <Tooltip />
-              <Bar dataKey="postCount" fill="#ffc658" name="Số bài viết" />
+              <Bar dataKey="likeCount" fill="#00c49f" name="Lượt thích" />
+              <Bar dataKey="cmtCount" fill="#ff8042" name="Bình luận" />
             </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      {/* Biểu đồ bình luận */}
-      <div className="chart-block full-width">
-        <h3>Top người bình luận nhiều</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={topCommenters} layout="vertical">
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis type="number" />
-            <YAxis dataKey="name" type="category" width={140} />
-            <Tooltip />
-            <Bar dataKey="commentCount" fill="#ff7f50" name="Số bình luận" />
-          </BarChart>
-        </ResponsiveContainer>
+      <div className="chart-section row full-width">
+        <div className="chart-card full-half">
+          <h3>Top người viết</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={topWriters} layout="vertical">
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis type="number" />
+              <YAxis dataKey="name" type="category" width={140} />
+              <Tooltip />
+              <Bar dataKey="postCount" fill="#ffbb28" name="Số bài viết" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="chart-card full-half">
+          <h3>Top người bình luận</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={topCommenters} layout="vertical">
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis type="number" />
+              <YAxis dataKey="name" type="category" width={140} />
+              <Tooltip />
+              <Bar dataKey="commentCount" fill="#ff6384" name="Số bình luận" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   );
