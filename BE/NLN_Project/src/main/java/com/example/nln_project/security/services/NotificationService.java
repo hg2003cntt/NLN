@@ -67,11 +67,11 @@ public class NotificationService {
     public void notifyLikePost(String postId, String senderId, String receiverId, String commentId, String content) {
         if (!senderId.equals(receiverId)) { // Không gửi thông báo nếu tự like bài viết của mình
             Notification notification = new Notification(
-                postId,
-                senderId,
-                receiverId, 
-                commentId,
-                content
+                    receiverId,
+                    senderId,
+                    postId,
+                    commentId,
+                    content
             );
             notification.setCreatedAt(new Date(System.currentTimeMillis())); // Chuyển long thành Date
             notificationRepo.save(notification);

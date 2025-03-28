@@ -216,9 +216,9 @@ public class PostController {
             
             // ✅ Gửi thông báo cho chủ bài viết
             notificationService.notifyLikePost(
-                postId, 
+                postId,
+                    userId,
                 postOwnerId,
-                userId, 
                 null, // Không có commentId
                 name + " đã thích bài viết của bạn!"
             );

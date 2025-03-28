@@ -66,7 +66,7 @@ function App() {
               <Route path="reports" element={<ReportManage />} />
             </Route>
             {/* Fallback Route */}
-            <Route path="*" element={<Navigate to="/login" />} />
+            <Route path="*" element={<Navigate to="/home" />} />
           </Routes>
         </div>
         <PsychologyCareFooter />
