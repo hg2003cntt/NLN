@@ -62,7 +62,7 @@ public class ConsultationController {
                             consultationRequest.getAvailableTimeSlots()
             );
             if (existing.isPresent()) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Khung giờ này đã có người đăng ký. Vui lòng chọn khung khác!");
+                return ResponseEntity.status(409).body("Khung giờ này đã có người đăng ký. Vui lòng chọn khung khác!");
             }
 
             if (consultationRequest.getFullName() == null || consultationRequest.getFullName().trim().isEmpty()) {

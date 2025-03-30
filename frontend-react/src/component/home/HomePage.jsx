@@ -47,8 +47,8 @@ const HomePage = () => {
             Hãy đặt lịch hẹn với chuyên gia ngay hôm nay!
           </p>
 
-          <div class="intro-box">
-            <h4 class="h4 fw-semibold mb-3 text-primary">
+          <div className="intro-box">
+          <h4 className="h4 fw-semibold mb-3 text-primary">
               Giới thiệu Bác sĩ Huỳnh Minh Tâm
             </h4>
             <p>
@@ -79,7 +79,7 @@ const HomePage = () => {
               cân bằng và hạnh phúc trong cuộc sống.
             </p>
             <button
-              class="btn-success px-4 py-2 mt-3"
+              className="btn-success px-4 py-2 mt-3"
               onClick={() =>
                 window.dispatchEvent(new CustomEvent("openConsultationModal"))
               }
