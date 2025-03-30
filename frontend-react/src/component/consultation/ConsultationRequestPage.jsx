@@ -137,7 +137,7 @@ const ConsultationModal = ({ showModal, closeModal }) => {
                 const status = error.response?.status;
                 const message = error.response?.data || "Đăng ký thất bại, vui lòng thử lại!";
 
-                if (status === 409 && message.includes("Khung giờ")) {
+                if (status === 409 ) {
                     alert("Khung giờ bạn chọn đã có người đăng ký. Vui lòng chọn khung giờ khác.");
                 } else if (status === 401) {
                     alert("Bạn cần đăng nhập để đăng ký tư vấn!");
