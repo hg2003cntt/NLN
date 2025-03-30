@@ -594,6 +594,22 @@ export default class ApiService {
     }
   }
 
+  static async getBookedSlots(date) {
+      try {
+        const response = await axios.get(
+          `${this.BASE_URL}/consultations/booked-slots`,
+          {
+            headers: this.getHeader(),
+            params: { date },
+          }
+        );
+        return response.data;
+      } catch (error) {
+        console.error("Lỗi khi lấy các khung giờ đã đặt:", error);
+        throw error;
+      }
+    }
+
   /** CUSTOMER MANAGEMENT */
 
   static async searchUserByPhone(phone) {

@@ -13,6 +13,7 @@ const ConsultationModal = ({ showModal, closeModal }) => {
 
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(true);
+    const [takenSlots, setTakenSlots] = useState([]);
 
     useEffect(() => {
         if (showModal) {
@@ -37,6 +38,17 @@ const ConsultationModal = ({ showModal, closeModal }) => {
                 });
         }
     }, [showModal]);
+
+    // Gọi API khi chọn ngày để biết slot nào đã bị đặt
+    useEffect(() => {
+        if (formData.consultationDate) {
+            ApiService.getBookedSlots(formData.consultationDate)
+                .then(slots => setTakenSlots(slots))
+                .catch(err => console.error("Lỗi lấy slot đã đặt:", err));
+        } else {
+            setTakenSlots([]);
+        }
+    }, [formData.consultationDate]);
 
     if (!showModal) return null;
 
@@ -100,12 +112,6 @@ const ConsultationModal = ({ showModal, closeModal }) => {
     const handleSubmit = (e) => {
       e.preventDefault();
 
-      const isLoggedIn = !!localStorage.getItem("token");
-        if (!isLoggedIn) {
-          alert("Bạn cần đăng nhập để đăng ký tư vấn!");
-          return;
-        }
-
       if (!validateForm()) return;
 
       const finalData = {
@@ -128,8 +134,18 @@ const ConsultationModal = ({ showModal, closeModal }) => {
                 closeModal();
             })
             .catch(error => {
+                const status = error.response?.status;
+                const message = error.response?.data || "Đăng ký thất bại, vui lòng thử lại!";
+
+                if (status === 409 && message.includes("Khung giờ")) {
+                    alert("Khung giờ bạn chọn đã có người đăng ký. Vui lòng chọn khung giờ khác.");
+                } else if (status === 401) {
+                    alert("Bạn cần đăng nhập để đăng ký tư vấn!");
+                } else {
+                    alert(message);
+                }
+
                 console.error("Lỗi khi đăng ký tư vấn:", error);
-                alert("Đăng ký thất bại, vui lòng thử lại!");
             });
     };
 
@@ -199,11 +215,16 @@ const ConsultationModal = ({ showModal, closeModal }) => {
                             <label htmlFor="availableTimeSlots" className="consultation-label">Khung giờ tư vấn</label>
                             <select id="availableTimeSlots" name="availableTimeSlots" value={formData.availableTimeSlots} onChange={handleChange}>
                                 <option value="">Chọn khung giờ tư vấn :</option>
-                                <option value="08:30 - 10:00">08:30 - 10:00</option>
-                                <option value="10:30 - 12:00">10:30 - 12:00</option>
-                                <option value="14:30 - 16:00">14:30 - 16:00</option>
-                                <option value="16:30 - 18:00">16:30 - 18:00</option>
-                                <option value="18:30 - 20:00">18:30 - 20:00</option>
+                                <option value="08:30 - 10:00" disabled={takenSlots.includes("08:30 - 10:00")} >
+                                    08:30 - 10:00 {takenSlots.includes("08:30 - 10:00") ? "– Đã được đặt" : ""}</option>
+                                <option value="10:30 - 12:00" disabled={takenSlots.includes("10:30 - 12:00")}
+                                    >10:30 - 12:00 {takenSlots.includes("10:30 - 12:00") ? "– Đã được đặt" : ""}</option>
+                                <option value="14:30 - 16:00" disabled={takenSlots.includes("14:30 - 16:00")}
+                                    >14:30 - 16:00 {takenSlots.includes("14:30 - 16:00") ? "– Đã được đặt" : ""}</option>
+                                <option value="16:30 - 18:00" disabled={takenSlots.includes("16:30 - 18:00")}
+                                    >16:30 - 18:00 {takenSlots.includes("16:30 - 18:00") ? "– Đã được đặt" : ""}</option>
+                                <option value="18:30 - 20:00" disabled={takenSlots.includes("18:30 - 20:00")}
+                                    >18:30 - 20:00 {takenSlots.includes("18:30 - 20:00") ? "– Đã được đặt" : ""}</option>
                             </select>
                             {errors.availableTimeSlots && <p className="error-text">{errors.availableTimeSlots}</p>}
                         </div>
