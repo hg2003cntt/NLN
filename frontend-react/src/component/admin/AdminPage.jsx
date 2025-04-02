@@ -31,7 +31,7 @@ function AdminPage() {
               to="/admin/customers"
               className={({ isActive }) => (isActive ? "active" : "")}
             >
-              <FaUsers className="icon" /> Khách Hàng
+              <FaUsers className="icon" /> Tài Khoản
             </NavLink>
           </li>
           <li>

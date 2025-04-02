@@ -28,6 +28,7 @@ const ArticleDetail = () => {
   const [liked, setLiked] = useState(false);
   const location = useLocation();
   const [reporting, setReporting] = useState(null); // Lưu thông tin đang báo cáo (bài viết hoặc bình luận)
+  const isAuthenticated = apiService.isAuthenticated();
 
   useEffect(() => {
     const handleScrollToHash = () => {
