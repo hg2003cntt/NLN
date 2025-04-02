@@ -47,19 +47,34 @@ const ConsultationList = () => {
   };
 
   const handleStatusChange = async (id, newStatus) => {
+    let cancelReason = null;
+
+    if (newStatus === "Hủy bỏ") {
+      cancelReason = prompt("Nhập lý do hủy bỏ:");
+      if (!cancelReason) {
+        alert("Bạn phải nhập lý do để hủy bỏ.");
+        return; // Dừng nếu không có lý do
+      }
+    }
+
     try {
-      await ApiService.updateConsultationStatus(id, newStatus);
+      await ApiService.updateConsultationStatus(id, newStatus, cancelReason);
       setConsultations((prev) =>
-        prev.map((c) => (c.id === id ? { ...c, status: newStatus } : c))
+        prev.map((c) =>
+          c.id === id ? { ...c, status: newStatus, cancelReason } : c
+        )
       );
       setFilteredConsultations((prev) =>
-        prev.map((c) => (c.id === id ? { ...c, status: newStatus } : c))
+        prev.map((c) =>
+          c.id === id ? { ...c, status: newStatus, cancelReason } : c
+        )
       );
     } catch (error) {
       console.error("Lỗi khi cập nhật trạng thái:", error);
       alert("Cập nhật trạng thái thất bại!");
     }
-  };
+};
+
 
   // Lấy dữ liệu của trang hiện tại
   const paginatedConsultations = filteredConsultations.slice(

@@ -1,7 +1,10 @@
 package com.example.nln_project.controller;
 
+import com.example.nln_project.dto.ConsultationStatusUpdateRequest;
 import com.example.nln_project.dto.UpdateCustomerPhone;
 import com.example.nln_project.model.ConsultationRequest;
+import com.example.nln_project.model.Notification;
+import com.example.nln_project.repository.NotificationRepo;
 import com.example.nln_project.security.services.AccountDetailsImpl;
 import com.example.nln_project.repository.ConsultationRequestRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,8 @@ public class ConsultationController {
 
     @Autowired
     private ConsultationRequestRepo consultationRequestRepo;
+    @Autowired
+    private NotificationRepo notificationRepo;
 
     // API để đăng ký tư vấn
     @PostMapping("/register")
@@ -113,7 +118,9 @@ public class ConsultationController {
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<?> updateConsultationStatus(@PathVariable String id, @RequestBody ConsultationRequest request) {
+    public ResponseEntity<?> updateConsultationStatus(
+            @PathVariable String id,
+            @RequestBody ConsultationStatusUpdateRequest request) {
         Optional<ConsultationRequest> consultationOpt = consultationRequestRepo.findById(id);
         if (!consultationOpt.isPresent()) {
             return ResponseEntity.notFound().build();
@@ -121,9 +128,29 @@ public class ConsultationController {
 
         ConsultationRequest consultation = consultationOpt.get();
         consultation.setStatus(request.getStatus());
+
+
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        AccountDetailsImpl userDetails = (AccountDetailsImpl) authentication.getPrincipal();
+
+        // Nếu trạng thái là "Hủy bỏ", lưu lý do
+        if ("Hủy bỏ".equals(request.getStatus())) {
+            String detail = "ngày " + consultation.getConsultationDate()+" vào khung giờ "+consultation.getAvailableTimeSlots();
+            Notification notification = new Notification(
+                    consultation.getUserId(),
+                    null,
+                    null,
+                    null,
+                    "Lịch đăng ký " + detail + " bị hủy bỏ vì lý do: " + request.getCancelReason()
+
+            );
+            notificationRepo.save(notification);
+        }
+
         consultationRequestRepo.save(consultation);
         return ResponseEntity.ok(consultation);
     }
+
 
     // Tìm kiếm khách hàng theo số điện thoại
     @GetMapping("/admin/search")

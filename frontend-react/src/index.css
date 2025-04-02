@@ -1131,12 +1131,13 @@ button:hover {
 }
 
 .table-section {
-  flex: 3; /* Chiếm 3 phần của không gian */
+  flex: 4; /* Chiếm 3 phần của không gian */
 }
 .filter {
   flex: 1; /* Chiếm 1 phần của không gian */
   width: fit-content;
   height: fit-content; 
+  /* max-width: 250px; */
   margin-left: 0px;
   margin-top: 75px;
   padding: 30px;

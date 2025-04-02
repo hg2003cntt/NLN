@@ -172,7 +172,7 @@ export default class ApiService {
     const response = await axios.get(
       `${this.BASE_URL}/api/topics/getAlltopics`,
       {
-        headers: this.getHeader(),
+        // headers: this.getHeader(),
       }
     );
     return response.data;
@@ -311,7 +311,7 @@ export default class ApiService {
       const response = await axios.get(
         `${this.BASE_URL}/api/posts/getAllPosts`,
         {
-          headers: this.getHeader(),
+          // headers: this.getHeader(),
         }
       );
       return response.data;
@@ -577,11 +577,11 @@ export default class ApiService {
     }
   }
 
-  static async updateConsultationStatus(id, newStatus) {
+  static async updateConsultationStatus(id, newStatus, cancelReason = null) {
     try {
       const response = await axios.put(
         `${this.BASE_URL}/consultations/${id}/status`,
-        { status: newStatus },
+        { status: newStatus, cancelReason },
         { headers: this.getHeader() }
       );
       return response.data;
@@ -592,7 +592,8 @@ export default class ApiService {
       );
       throw error;
     }
-  }
+}
+
 
   static async getBookedSlots(date) {
       try {

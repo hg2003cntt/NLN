@@ -8,6 +8,7 @@ const ArticlePage = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [loading, setLoading] = useState(true);
+    const isAuthenticated = ApiService.isAuthenticated();
 
 
     useEffect(() => {
@@ -35,6 +36,10 @@ const ArticlePage = () => {
     }, [location.search]);
 
     const handleArticleClick = (id) => {
+        if (!isAuthenticated) {
+            navigate("/login", { state: { from: `/article/${id}` } });
+            return;
+        }
         navigate(`/article/${id}`);
     };
     while (loading) return <p>Đang tải...</p>;
