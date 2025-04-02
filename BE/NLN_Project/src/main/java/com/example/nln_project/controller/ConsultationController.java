@@ -55,6 +55,16 @@ public class ConsultationController {
             if (consultationRequest.getConsultationDate().isBefore(LocalDate.now())) {
                 return ResponseEntity.badRequest().body("Ngày tư vấn không hợp lệ!");
             }
+
+            // Check trùng lịch tư vấn
+            Optional<ConsultationRequest> existing = consultationRequestRepo.findByConsultationDateAndAvailableTimeSlots(
+                            consultationRequest.getConsultationDate(),
+                            consultationRequest.getAvailableTimeSlots()
+            );
+            if (existing.isPresent()) {
+                return ResponseEntity.status(409).body("Khung giờ này đã có người đăng ký. Vui lòng chọn khung khác!");
+            }
+
             if (consultationRequest.getFullName() == null || consultationRequest.getFullName().trim().isEmpty()) {
                 consultationRequest.setFullName(userDetails.getName());
             }
@@ -148,5 +158,18 @@ public class ConsultationController {
 
         return ResponseEntity.ok("Cập nhật số điện thoại thành công!");
     }
+
+    @GetMapping("/booked-slots")
+    public ResponseEntity<?> getBookedSlots(@RequestParam("date") LocalDate date) {
+        List<ConsultationRequest> booked = consultationRequestRepo.findByConsultationDate(date);
+
+        List<String> takenSlots = booked.stream()
+                .map(ConsultationRequest::getAvailableTimeSlots)
+                .distinct()
+                .toList();
+
+        return ResponseEntity.ok(takenSlots);
+    }
+
 
 }

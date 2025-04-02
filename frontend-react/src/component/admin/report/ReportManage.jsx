@@ -56,7 +56,7 @@ const ReportManage = () => {
   };
   return (
     <div className="report-container">
-      <h1 className="title">Quản lý báo cáo</h1>
+      <h1 className="title">Quản lý báo cáo vi phạm</h1>
 
       {loading ? (
         <p className="loading">Đang tải...</p>

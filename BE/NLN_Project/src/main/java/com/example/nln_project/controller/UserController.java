@@ -95,5 +95,35 @@ public class UserController {
         }
     }
 
+    @PutMapping("/update-status/{id}")
+    public ResponseEntity<String> updateUserStatus(@PathVariable String id, @RequestBody Map<String, String> request) {
+        try {
 
+            Account user = accountRepo.findById(id)
+                    .orElseThrow(() -> new UsernameNotFoundException("Người dùng không tồn tại!"));
+
+
+            // Lấy giá trị status từ request
+            String status = request.get("status");
+            if (status == null || status.trim().isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Status không được để trống!");
+            }
+
+            // Cập nhật status
+            user.setStatus(status);
+            if (status.equals("Đang hoạt động")) {
+                try{
+                    int violationCount = user.getViolationCount()-1;
+                    user.setViolationCount(violationCount);
+                }catch (Exception e){
+                    System.out.println(e);
+                }
+            }
+            accountRepo.save(user);
+            System.out.println(user);
+            return ResponseEntity.ok("Cập nhật trạng thái thành công!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi khi cập nhật trạng thái!");
+        }
+    }
 }
