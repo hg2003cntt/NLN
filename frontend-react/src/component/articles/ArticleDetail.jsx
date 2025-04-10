@@ -1,4 +1,4 @@
-import { useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import apiService from "../../service/apiService";
 import ReportModal from "./ReportModal";
@@ -28,23 +28,22 @@ const ArticleDetail = () => {
   const [liked, setLiked] = useState(false);
   const location = useLocation();
   const [reporting, setReporting] = useState(null); // Lưu thông tin đang báo cáo (bài viết hoặc bình luận)
-  const isAuthenticated = apiService.isAuthenticated();
 
   useEffect(() => {
     const handleScrollToHash = () => {
       if (!location.hash || loading) return; // Nếu đang loading hoặc không có hash thì thoát
-  
+
       console.log("📜 Chuẩn bị cuộn trang đến:", location.hash);
-  
+
       setTimeout(() => {
         const hash = location.hash.slice(1); // Bỏ dấu #
         let baseId = hash;
         let commentId = null;
-  
+
         if (hash.includes("#comment-")) {
           [baseId, commentId] = hash.split("#comment-");
         }
-  
+
         // Chờ phần tử xuất hiện trên DOM
         const waitForElement = (id, callback) => {
           const element = document.getElementById(id);
@@ -58,90 +57,94 @@ const ArticleDetail = () => {
                 callback(element);
               }
             });
-  
+
             observer.observe(document.body, { childList: true, subtree: true });
           }
         };
-  
+
         // Cuộn đến phần tử chính
         waitForElement(baseId, (element) => {
           element.scrollIntoView({ behavior: "smooth", block: "center" });
-  
+
           if (element.classList.contains("comment-item")) {
             element.classList.add("comment-focus");
             setTimeout(() => element.classList.remove("comment-focus"), 5000);
           }
         });
-  
+
         // Cuộn đến bình luận nếu có
         if (commentId) {
           waitForElement(commentId, (commentElement) => {
-            commentElement.scrollIntoView({ behavior: "smooth", block: "center" });
+            commentElement.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+            });
           });
         }
       }, 200); // Delay để chắc chắn DOM đã render
     };
-  
+
     if (!loading) {
       handleScrollToHash();
     }
-  
+
     // Lắng nghe sự kiện thay đổi hash trên URL
     window.addEventListener("hashchange", handleScrollToHash);
-  
+
     return () => {
       window.removeEventListener("hashchange", handleScrollToHash);
     };
   }, [location.hash, loading]); // Chỉ chạy lại khi hash hoặc loading thay đổi
-  
 
- 
-  
   useEffect(() => {
     const fetchArticleAndUser = async () => {
+      // setLoading(true);
       try {
         const [data, user, isliked] = await Promise.all([
           apiService.getPostById(id),
           apiService.getUserProfile(),
           apiService.checkLiked(id),
         ]);
-        setLiked(isliked);
         setArticle(data);
+        setLiked(isliked);
         setUser(user);
         setCommentCount(data.cmtCount || 0); // Cập nhật số lượng bình luận từ backend
-        
-  
-    
+
         if (data.topicId) {
           const topicData = await apiService.getTopicById(data.topicId);
           setTopic(topicData.name); // Giả sử API trả về { name: "Tâm lý học" }
         }
         console.log("data:", data);
         console.log("user:", user);
+
       } catch (error) {
         console.error("Lỗi khi lấy bài viết:", error);
-        setLoading(false);
+      } finally {
+        setLoading(false); 
+        console.log("Kết thúc tải dữ liệu.",loading); // Chắc chắn rằng setLoading sẽ chạy sau khi data đã được lấy hoặc xảy ra lỗi
       }
-    }
+    };
     fetchArticleAndUser();
     fetchComments();
     setLoading(false);
+    console.log("loading:",loading);
   }, [id]);
 
-    const fetchComments = async () => {
-      try {
-        
-        const response = await apiService.getCommentsByPost(id);
-        console.log("Danh sách bình luận:", response);
-        // console.log("id:",id,"cmtcount:",commentCount);
-        setComments(response || []); // Đảm bảo setComment là mảng
-      } catch (error) {
-        console.error("Lỗi khi lấy comment:", error);
-        setComments([]); // Nếu lỗi, gán mảng rỗng để tránh lỗi .map()
-      }
-    };
- 
-  
+  const fetchComments = async () => {
+    try {
+      const response = await apiService.getCommentsByPost(id);
+      console.log("Danh sách bình luận:", response);
+      // console.log("id:",id,"cmtcount:",commentCount);
+      setComments(response || []); // Đảm bảo setComment là mảng
+      
+    } catch (error) {
+      console.error("Lỗi khi lấy comment:", error);
+      setComments([]); // Nếu lỗi, gán mảng rỗng để tránh lỗi .map()
+    }finally {
+      setLoading(false);
+      console.log("loading cmt:",loading);
+    }
+  };
 
   const handleLike = async () => {
     try {
@@ -180,6 +183,7 @@ const ArticleDetail = () => {
       // setComments(comment.filter((c) => c.id !== commentId));
       setCommentCount((prevCount) => Math.max(0, prevCount - 1)); // Cập nhật số lượng bình luận
       fetchComments();
+      alert("Bình luận đã bị xóa.");
     } catch (error) {
       console.error("Lỗi khi xóa bình luận:", error);
     }
@@ -229,12 +233,8 @@ const ArticleDetail = () => {
     if (!replyText[parentId]?.trim()) return;
 
     try {
-      await apiService.replyToComment(
-        postId,
-        parentId,
-        replyText[parentId]
-      );
-      setCommentCount(prevCount => prevCount + 1);
+      await apiService.replyToComment(postId, parentId, replyText[parentId]);
+      setCommentCount((prevCount) => prevCount + 1);
       // Reset ô nhập phản hồi cho comment này
       setReplyText((prev) => ({ ...prev, [parentId]: "" }));
       setReplyingTo(null);
@@ -313,21 +313,21 @@ const ArticleDetail = () => {
                       Xóa
                     </button>
                   )}
-                  {(user?.id !== comment.userId &&
-                    user?.roles.some((role) => role.name === "ROLE_USER")) && (
-                    <button
-                      onClick={() =>
-                        openReportModal(
-                          "Bình luận",
-                          article.id,
-                          comment.id,
-                          article.userId
-                        )
-                      }
-                    >
-                      Báo cáo vi phạm
-                    </button>
-                  )}
+                  {user?.id !== comment.userId &&
+                    user?.roles.some((role) => role.name === "ROLE_USER") && (
+                      <button
+                        onClick={() =>
+                          openReportModal(
+                            "Bình luận",
+                            article.id,
+                            comment.id,
+                            article.userId
+                          )
+                        }
+                      >
+                        Báo cáo vi phạm
+                      </button>
+                    )}
                 </div>
 
                 {replyingTo === comment.id && (
@@ -370,9 +370,7 @@ const ArticleDetail = () => {
       </ul>
     );
   };
-
-  if (loading) return <p>Đang tải...</p>;
-  if (!article) return <p>Không tìm thấy bài viết.</p>;
+  if (!article || loading) return <p>Đang tải bài viết...</p>;
 
   return (
     <div className="article-detail">

@@ -11,7 +11,6 @@ import ArticleForm from "./component/articles/ArticleForm";
 import ConsultationRequestPage from "./component/consultation/ConsultationRequestPage";
 import AdminPage from "./component/admin/AdminPage";
 import { ProtectedRoute, AdminRoute } from "./service/guard";
-import ResponsiveComponent from "./component/common/ResponsiveWindow";
 import ArticleDetail from "./component/articles/ArticleDetail";
 import ArticleChart from "./component/admin/article/ArticleChart"
 import EditArticleForm from "./component/articles/EditArticleForm";

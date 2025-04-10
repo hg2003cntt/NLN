@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import logo from "./logo/6697109.jpg";
-
+import logo from "./logo/logo.jpg"
 
 export function PsychologyCareFooter() {
   const footerStyle = {
@@ -127,7 +126,7 @@ export function PsychologyCareFooter() {
         </div>
         <hr style={hrStyle} />
         <div style={footerBottomStyle}>
-          <span>© 2023 <a href="/home" style={linkStyle}>Flowbite™</a>. All Rights Reserved.</span>
+          <span>© 2025 <a href="/home" style={linkStyle}>Psychology Care™</a>. All Rights Reserved.</span>
         </div>
       </div>
     </footer>

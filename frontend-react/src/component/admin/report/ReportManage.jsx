@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ApiService from "../../../service/apiService";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const ReportManage = () => {
   const [reports, setReports] = useState([]);

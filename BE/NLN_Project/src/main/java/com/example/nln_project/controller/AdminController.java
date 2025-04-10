@@ -169,6 +169,8 @@ public class AdminController {
         user.setDateOfBirth(signUpRequest.getDateOfBirth());
         user.setEmail(signUpRequest.getEmail());
         user.setPhone(signUpRequest.getPhone());
+        user.setStatus("Đang hoạt động");
+
         
         // Gán quyền mặc định là ROLE_USER
         Set<Role> roles = new HashSet<>();

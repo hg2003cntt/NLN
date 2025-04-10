@@ -133,6 +133,7 @@ function Navbar() {
           onChange={(e) => setSearchKeyword(e.target.value)}
         />
         <button onClick={handleSearch}>Tìm kiếm</button>
+        <ul></ul>
       </div>
 
       <ul className="navbar-ul">

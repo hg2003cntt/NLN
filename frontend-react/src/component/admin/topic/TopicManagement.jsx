@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import TopicChart from "./TopicChart";
 import ApiService from "../../../service/apiService";
-import { EditOutlined, DeleteOutlined} from "@ant-design/icons";
+// import { EditOutlined, DeleteOutlined} from "@ant-design/icons";
 const ITEMS_PER_PAGE = 5; // Số chủ đề mỗi trang
 
 const TopicManagement = () => {
