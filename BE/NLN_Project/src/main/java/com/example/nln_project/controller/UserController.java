@@ -113,7 +113,8 @@ public class UserController {
             user.setStatus(status);
             if (status.equals("Đang hoạt động")) {
                 try{
-                    int violationCount = user.getViolationCount()-1;
+                    int violationCount = user.getViolationCount();
+                    if (violationCount==3) violationCount--;
                     user.setViolationCount(violationCount);
                 }catch (Exception e){
                     System.out.println(e);

@@ -26,7 +26,7 @@ public class ReportController {
     private ReportService reportService;
     @Autowired
     private ReportRepo reportRepo;
-    @Autowired
+
     private NotificationService notificationService;
     @Autowired
     private NotificationRepo notificationRepo;
